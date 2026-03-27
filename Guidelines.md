@@ -4,6 +4,7 @@
 > **Projet**: Morning Routine Builder
 > **Ce document définit les règles OBLIGATOIRES pour tout le code du projet.**
 
+A chaque session de code tu écris dans le fichier progression.md ce que tu es en train de faire et où tu as fini donc également a chaque début de session tu vas lire ce fichier poour savoir où tu en es
 ---
 
 ## 📋 TABLE DES MATIÈRES
