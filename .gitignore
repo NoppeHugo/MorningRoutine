@@ -1,126 +1,81 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
 
-analysis_options.yaml
-+8
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
 
-pubspec.yaml
-+48
+# VS Code
+.vscode/
 
-lib/core/constants/app_constants.dart
-+45
-abstract class AppConstants {
-  static const int maxBlocks = 10;
-  static const int minBlockDurationMinutes = 1;
-  static const int maxBlockDurationMinutes = 60;
-  static const int successScoreThreshold = 80;
-  static const String appName = 'Morning Routine';
-  static const String appVersion = '1.0.0';
- 
-  // Hive box names
-  static const String routineBoxName = 'routines';
-  static const String scoresBoxName = 'scores';
-  static const String settingsBoxName = 'settings';
- 
-  // Duration options for onboarding
-  static const List<int> durationOptions = [15, 30, 45, 60];
- 
-  // Duration labels
-  static const Map<int, String> durationLabels = {
-    15: 'Express',
-    30: 'Standard',
-    45: 'Complète',
-    60: 'Warrior',
-  };
- 
-  // Goal options
-  static const List<GoalOption> goalOptions = [
-    GoalOption(id: 'energy', label: 'Énergie', emoji: '⚡'),
-    GoalOption(id: 'focus', label: 'Focus', emoji: '🎯'),
-    GoalOption(id: 'calm', label: 'Calme', emoji: '🧘'),
-    GoalOption(id: 'fitness', label: 'Forme', emoji: '💪'),
-    GoalOption(id: 'productivity', label: 'Productivité', emoji: '📈'),
-  ];
-}
- 
-class GoalOption {
-  const GoalOption({
-    required this.id,
-    required this.label,
-    required this.emoji,
-  });
- 
-  final String id;
-  final String label;
-  final String emoji;
-}
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
 
-lib/core/router/app_router.dart
-+69
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
- 
-import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
-import '../../features/routine_builder/presentation/screens/block_selector_screen.dart';
-import '../../features/routine_builder/presentation/screens/routine_builder_screen.dart';
-import '../../features/settings/presentation/screens/settings_screen.dart';
-import '../../features/timer/presentation/screens/completion_screen.dart';
-import '../../features/timer/presentation/screens/timer_screen.dart';
-import '../../shared/providers/storage_provider.dart';
- 
-abstract class AppRoutes {
-  static const home = '/';
-  static const onboarding = '/onboarding';
-  static const builder = '/builder';
-  static const builderBlocks = '/builder/blocks';
-  static const timer = '/timer';
-  static const completion = '/completion';
-  static const settings = '/settings';
-}
- 
-final appRouterProvider = Provider<GoRouter>((ref) {
-  final isOnboardingCompleted = ref.watch(isOnboardingCompletedProvider);
- 
-  return GoRouter(
-    initialLocation: AppRoutes.home,
-    redirect: (context, state) {
-      final isOnboarding =
-          state.matchedLocation == AppRoutes.onboarding;
- 
-      if (!isOnboardingCompleted && !isOnboarding) {
-        return AppRoutes.onboarding;
-      }
-      return null;
-    },
-    routes: [
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.onboarding,
-        builder: (context, state) => const OnboardingScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.builder,
-        builder: (context, state) => const RoutineBuilderScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.builderBlocks,
-        builder: (context, state) => const BlockSelectorScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.timer,
-        builder: (context, state) => const TimerScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.completion,
-        builder: (context, state) => const CompletionScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.settings,
-        builder: (context, state) => const SettingsScreen(),
-      ),
-    ],
-  );
-});
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio specific
+**/android/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+
+# iOS/XCode related
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+**/macos/Flutter/ephemeral/
+
+# Coverage
+coverage/
