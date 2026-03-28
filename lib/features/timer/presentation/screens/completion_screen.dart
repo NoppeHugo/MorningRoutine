@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
- 
+
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -11,24 +12,48 @@ import '../../../../core/widgets/app_card.dart';
 import '../../../scoring/presentation/scoring_controller.dart';
 import '../../domain/timer_state.dart';
 import '../timer_controller.dart';
- 
+
 class CompletionScreen extends ConsumerStatefulWidget {
   const CompletionScreen({super.key});
- 
+
   @override
   ConsumerState<CompletionScreen> createState() => _CompletionScreenState();
 }
- 
-class _CompletionScreenState extends ConsumerState<CompletionScreen> {
+
+class _CompletionScreenState extends ConsumerState<CompletionScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
   @override
   void initState() {
     super.initState();
-    // Save score after the widget builds
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
+    );
+    _animController.forward();
+
+    // Save score and trigger haptic after the widget builds
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _saveScore();
+      HapticFeedback.heavyImpact();
     });
   }
- 
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveScore() async {
     try {
       final timerState = ref.read(timerControllerProvider);
@@ -39,7 +64,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
       // Timer provider may have been disposed already
     }
   }
- 
+
   @override
   Widget build(BuildContext context) {
     late final TimerState timerState;
@@ -52,7 +77,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
       });
       return const SizedBox.shrink();
     }
- 
+
     final completedCount =
         timerState.completedBlocks.where((b) => b.completed).length;
     final skippedCount =
@@ -60,146 +85,157 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
     final totalBlocks = timerState.totalBlocksCount;
     final scorePercent =
         totalBlocks > 0 ? (completedCount / totalBlocks * 100).round() : 0;
- 
+
     final totalActualSeconds = timerState.completedBlocks
         .fold<int>(0, (sum, b) => sum + b.actualDurationSeconds);
     final totalMinutes = totalActualSeconds ~/ 60;
- 
+
     final scoringState = ref.watch(scoringControllerProvider);
     final streak = scoringState.currentStreak;
- 
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
- 
-              // Celebration emoji
-              const Text('🎉', style: TextStyle(fontSize: 80)),
-              const SizedBox(height: AppSpacing.lg),
- 
-              // Title
-              Text(
-                'Routine terminée !',
-                style: AppTypography.displayMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xxl),
- 
-              // Score card
-              AppCard(
-                child: Column(
-                  children: [
-                    Text(
-                      '$scorePercent%',
-                      style: AppTypography.displayLarge.copyWith(
-                        color: scorePercent >= 80
-                            ? AppColors.secondary
-                            : AppColors.warning,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Score',
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
- 
-              // Stats
-              Row(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: _StatCard(
-                      value: '$completedCount/$totalBlocks',
-                      label: 'blocs complétés',
+                  const Spacer(),
+
+                  // Celebration emoji
+                  const Text('🎉', style: TextStyle(fontSize: 80)),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Title
+                  Text(
+                    'Routine terminée !',
+                    style: AppTypography.displayMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // Score card with gradient shader
+                  AppCard(
+                    child: Column(
+                      children: [
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [AppColors.primary, AppColors.secondary],
+                          ).createShader(bounds),
+                          child: Text(
+                            '$scorePercent%',
+                            style: AppTypography.displayLarge.copyWith(
+                              fontSize: 48,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Score',
+                          style: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      value: '$skippedCount',
-                      label: 'blocs skippés',
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      value: '${totalMinutes}min',
-                      label: 'durée',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.xl),
- 
-              // Streak
-              if (streak > 0)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.streak.withValues(alpha: 0.15),
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radiusMedium),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Stats
+                  Row(
                     children: [
-                      const Text('🔥', style: TextStyle(fontSize: 28)),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        '$streak jour${streak > 1 ? 's' : ''}',
-                        style: AppTypography.headingMedium.copyWith(
-                          color: AppColors.streak,
+                      Expanded(
+                        child: _StatCard(
+                          value: '$completedCount/$totalBlocks',
+                          label: 'blocs complétés',
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        'de streak',
-                        style: AppTypography.bodyMedium.copyWith(
-                          color: AppColors.streak,
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: _StatCard(
+                          value: '$skippedCount',
+                          label: 'blocs skippés',
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: _StatCard(
+                          value: '${totalMinutes}min',
+                          label: 'durée',
                         ),
                       ),
                     ],
                   ),
-                ),
- 
-              const Spacer(),
- 
-              // Return button
-              AppButton(
-                label: 'Retour à l\'accueil',
-                onPressed: () => context.go(AppRoutes.home),
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // Streak
+                  if (streak > 0)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.lg,
+                        vertical: AppSpacing.md,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.streak.withValues(alpha: 0.15),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMedium),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('🔥', style: TextStyle(fontSize: 28)),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            '$streak jour${streak > 1 ? 's' : ''}',
+                            style: AppTypography.headingMedium.copyWith(
+                              color: AppColors.streak,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Text(
+                            'de streak',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.streak,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const Spacer(),
+
+                  // Return button
+                  AppButton(
+                    label: 'Retour à l\'accueil',
+                    variant: AppButtonVariant.secondary,
+                    onPressed: () => context.go(AppRoutes.home),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
               ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 }
- 
+
 class _StatCard extends StatelessWidget {
   const _StatCard({
     required this.value,
     required this.label,
   });
- 
+
   final String value;
   final String label;
- 
+
   @override
   Widget build(BuildContext context) {
     return AppCard(

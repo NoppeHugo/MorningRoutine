@@ -11,9 +11,9 @@ abstract class AppColors {
   static const Color secondaryLight = Color(0xFF5EFFC1);
  
   // Backgrounds
-  static const Color background = Color(0xFF0F0F1A);
-  static const Color surface = Color(0xFF1A1A2E);
-  static const Color surfaceLight = Color(0xFF252542);
+  static const Color background = Color(0xFF000000);  // noir pur iOS
+  static const Color surface = Color(0xFF1C1C1E);  // iOS systemGray6
+  static const Color surfaceLight = Color(0xFF2C2C2E);  // iOS systemGray5
   static const Color surfaceHighlight = Color(0xFF2F2F4A);
  
   // Text

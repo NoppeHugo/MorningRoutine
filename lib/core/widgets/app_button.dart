@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
- 
+import 'package:flutter/services.dart';
+
 import '../theme/app_colors.dart';
 import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
- 
+
 enum AppButtonVariant { primary, secondary, text }
- 
+
 class AppButton extends StatefulWidget {
   const AppButton({
     super.key,
@@ -16,23 +18,23 @@ class AppButton extends StatefulWidget {
     this.isExpanded = true,
     this.icon,
   });
- 
+
   final String label;
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
   final bool isLoading;
   final bool isExpanded;
   final IconData? icon;
- 
+
   @override
   State<AppButton> createState() => _AppButtonState();
 }
- 
+
 class _AppButtonState extends State<AppButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _scaleController;
   late final Animation<double> _scaleAnimation;
- 
+
   @override
   void initState() {
     super.initState();
@@ -40,24 +42,30 @@ class _AppButtonState extends State<AppButton>
       vsync: this,
       duration: const Duration(milliseconds: 150),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
       CurvedAnimation(parent: _scaleController, curve: Curves.easeOut),
     );
   }
- 
+
   @override
   void dispose() {
     _scaleController.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null || widget.isLoading;
- 
+
     return GestureDetector(
       onTapDown: isDisabled ? null : (_) => _scaleController.forward(),
-      onTapUp: isDisabled ? null : (_) => _scaleController.reverse(),
+      onTapUp: isDisabled
+          ? null
+          : (_) {
+              _scaleController.reverse();
+              HapticFeedback.lightImpact();
+              widget.onPressed?.call();
+            },
       onTapCancel: isDisabled ? null : () => _scaleController.reverse(),
       child: AnimatedBuilder(
         animation: _scaleAnimation,
@@ -69,7 +77,7 @@ class _AppButtonState extends State<AppButton>
       ),
     );
   }
- 
+
   Widget _buildButton(bool isDisabled) {
     switch (widget.variant) {
       case AppButtonVariant.primary:
@@ -80,14 +88,14 @@ class _AppButtonState extends State<AppButton>
         return _buildTextButton(isDisabled);
     }
   }
- 
+
   Widget _buildPrimaryButton(bool isDisabled) {
     return SizedBox(
       width: widget.isExpanded ? double.infinity : null,
       child: Container(
         decoration: BoxDecoration(
           color: isDisabled ? AppColors.surfaceLight : AppColors.primary,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+          borderRadius: BorderRadius.circular(14),
           boxShadow: isDisabled
               ? null
               : [
@@ -98,87 +106,73 @@ class _AppButtonState extends State<AppButton>
                   ),
                 ],
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: isDisabled ? null : widget.onPressed,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacing.md,
-                horizontal: AppSpacing.lg,
-              ),
-              child: _buildContent(
-                isDisabled
-                    ? AppColors.textTertiary
-                    : AppColors.textOnPrimary,
-              ),
-            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.lg,
+          ),
+          child: _buildContent(
+            isDisabled
+                ? AppColors.textTertiary
+                : AppColors.textOnPrimary,
           ),
         ),
       ),
     );
   }
- 
+
   Widget _buildSecondaryButton(bool isDisabled) {
     return SizedBox(
       width: widget.isExpanded ? double.infinity : null,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isDisabled ? AppColors.surfaceLight : AppColors.primary,
             width: 1.5,
           ),
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: isDisabled ? null : widget.onPressed,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppSpacing.md,
-                horizontal: AppSpacing.lg,
-              ),
-              child: _buildContent(
-                isDisabled ? AppColors.textTertiary : AppColors.primary,
-              ),
-            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.lg,
+          ),
+          child: _buildContent(
+            isDisabled ? AppColors.textTertiary : AppColors.primary,
           ),
         ),
       ),
     );
   }
- 
+
   Widget _buildTextButton(bool isDisabled) {
-    return TextButton(
-      onPressed: isDisabled ? null : widget.onPressed,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSpacing.sm,
+        horizontal: AppSpacing.md,
+      ),
       child: _buildContent(
         isDisabled ? AppColors.textTertiary : AppColors.primary,
       ),
     );
   }
- 
+
   Widget _buildContent(Color color) {
     if (widget.isLoading) {
-      return SizedBox(
+      return const SizedBox(
         height: 20,
         width: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: color,
-        ),
+        child: CupertinoActivityIndicator(),
       );
     }
- 
+
     final text = Text(
       widget.label,
       style: AppTypography.labelLarge.copyWith(color: color),
       textAlign: TextAlign.center,
     );
- 
+
     if (widget.icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
@@ -190,7 +184,7 @@ class _AppButtonState extends State<AppButton>
         ],
       );
     }
- 
+
     return text;
   }
 }

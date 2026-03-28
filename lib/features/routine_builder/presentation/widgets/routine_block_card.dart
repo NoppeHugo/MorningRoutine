@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
- 
+import 'package:flutter/services.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../domain/block_model.dart';
- 
+
 class RoutineBlockCard extends StatelessWidget {
   const RoutineBlockCard({
     super.key,
@@ -12,41 +14,41 @@ class RoutineBlockCard extends StatelessWidget {
     required this.onDelete,
     required this.onDurationChanged,
   });
- 
+
   final BlockModel block;
   final VoidCallback onDelete;
   final ValueChanged<int> onDurationChanged;
- 
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
+          horizontal: 16,
+          vertical: 14,
         ),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
             // Drag handle
             const Icon(
-              Icons.drag_handle,
+              CupertinoIcons.line_horizontal_3,
               color: AppColors.textTertiary,
               size: AppSpacing.iconMd,
             ),
             const SizedBox(width: AppSpacing.sm),
- 
+
             // Emoji
             Text(
               block.emoji,
               style: const TextStyle(fontSize: 24),
             ),
             const SizedBox(width: AppSpacing.sm),
- 
+
             // Name and duration
             Expanded(
               child: Column(
@@ -64,71 +66,64 @@ class RoutineBlockCard extends StatelessWidget {
                 ],
               ),
             ),
- 
+
             // Duration controls
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _DurationButton(
-                  icon: Icons.remove,
-                  onPressed: block.durationMinutes > 1
-                      ? () => onDurationChanged(block.durationMinutes - 1)
+                GestureDetector(
+                  onTap: block.durationMinutes > 1
+                      ? () {
+                          HapticFeedback.lightImpact();
+                          onDurationChanged(block.durationMinutes - 1);
+                        }
                       : null,
+                  child: Icon(
+                    CupertinoIcons.minus_circle,
+                    size: 20,
+                    color: block.durationMinutes > 1
+                        ? AppColors.primary
+                        : AppColors.textTertiary,
+                  ),
                 ),
-                const SizedBox(width: AppSpacing.xs),
-                _DurationButton(
-                  icon: Icons.add,
-                  onPressed: block.durationMinutes < 60
-                      ? () => onDurationChanged(block.durationMinutes + 1)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.xs,
+                  ),
+                  child: Text(
+                    '${block.durationMinutes}',
+                    style: AppTypography.labelMedium,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: block.durationMinutes < 60
+                      ? () {
+                          HapticFeedback.lightImpact();
+                          onDurationChanged(block.durationMinutes + 1);
+                        }
                       : null,
+                  child: Icon(
+                    CupertinoIcons.plus_circle,
+                    size: 20,
+                    color: block.durationMinutes < 60
+                        ? AppColors.primary
+                        : AppColors.textTertiary,
+                  ),
                 ),
               ],
             ),
             const SizedBox(width: AppSpacing.sm),
- 
+
             // Delete button
             GestureDetector(
               onTap: onDelete,
               child: const Icon(
-                Icons.close,
+                CupertinoIcons.xmark,
                 color: AppColors.textTertiary,
                 size: AppSpacing.iconSm,
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
- 
-class _DurationButton extends StatelessWidget {
-  const _DurationButton({
-    required this.icon,
-    this.onPressed,
-  });
- 
-  final IconData icon;
-  final VoidCallback? onPressed;
- 
-  @override
-  Widget build(BuildContext context) {
-    final isDisabled = onPressed == null;
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          color: isDisabled
-              ? AppColors.surfaceLight.withValues(alpha: 0.5)
-              : AppColors.surfaceLight,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-        ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
         ),
       ),
     );

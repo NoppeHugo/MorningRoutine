@@ -1,58 +1,82 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
- 
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
- 
-class SettingsTile extends StatelessWidget {
+
+class SettingsTile extends StatefulWidget {
   const SettingsTile({
     super.key,
     required this.title,
     this.trailing,
     this.onTap,
     this.titleColor,
+    this.isLast = false,
   });
- 
+
   final String title;
   final Widget? trailing;
   final VoidCallback? onTap;
   final Color? titleColor;
- 
+  final bool isLast;
+
+  @override
+  State<SettingsTile> createState() => _SettingsTileState();
+}
+
+class _SettingsTileState extends State<SettingsTile> {
+  bool _pressed = false;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+    final isNavigable = widget.onTap != null && widget.trailing == null;
+
+    return GestureDetector(
+      onTapDown: widget.onTap != null ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: widget.onTap != null
+          ? (_) {
+              setState(() => _pressed = false);
+              widget.onTap?.call();
+            }
+          : null,
+      onTapCancel: widget.onTap != null
+          ? () => setState(() => _pressed = false)
+          : null,
+      child: AnimatedOpacity(
+        opacity: _pressed ? 0.7 : 1.0,
+        duration: const Duration(milliseconds: 100),
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.md,
           ),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.surfaceLight,
-                width: 0.5,
-              ),
-            ),
+            color: AppColors.surface,
+            border: widget.isLast
+                ? null
+                : const Border(
+                    bottom: BorderSide(
+                      color: AppColors.surfaceLight,
+                      width: 0.5,
+                    ),
+                  ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                title,
+                widget.title,
                 style: AppTypography.bodyLarge.copyWith(
-                  color: titleColor ?? AppColors.textPrimary,
+                  color: widget.titleColor ?? AppColors.textPrimary,
                 ),
               ),
-              if (trailing != null) trailing!,
-              if (onTap != null && trailing == null)
+              if (widget.trailing != null) widget.trailing!,
+              if (isNavigable)
                 const Icon(
-                  Icons.chevron_right,
+                  CupertinoIcons.chevron_right,
                   color: AppColors.textTertiary,
+                  size: AppSpacing.iconSm,
                 ),
             ],
           ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ref.read(scoringControllerProvider.notifier).refresh();
     });
   }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Bonjour ☀️';
+    if (hour < 18) return 'Bonne après-midi';
+    return 'Bonsoir 🌙';
+  }
  
   @override
   Widget build(BuildContext context) {
@@ -50,13 +58,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Bonjour ! ☀️',
+                    _getGreeting(),
                     style: AppTypography.headingLarge,
                   ),
-                  IconButton(
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
                     onPressed: () => context.push(AppRoutes.settings),
-                    icon: const Icon(
-                      Icons.settings_outlined,
+                    child: const Icon(
+                      CupertinoIcons.settings,
                       color: AppColors.textSecondary,
                     ),
                   ),

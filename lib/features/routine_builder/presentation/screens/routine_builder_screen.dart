@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
- 
+
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -13,23 +15,23 @@ import '../../../../core/widgets/app_scaffold.dart';
 import '../routine_builder_controller.dart';
 import '../widgets/empty_routine_placeholder.dart';
 import '../widgets/routine_block_card.dart';
- 
+
 class RoutineBuilderScreen extends ConsumerWidget {
   const RoutineBuilderScreen({super.key});
- 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(routineBuilderControllerProvider);
     final controller = ref.read(routineBuilderControllerProvider.notifier);
- 
+
     if (state.isLoading) {
       return const AppScaffold(
         title: 'Ma Routine',
         showBackButton: true,
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: CupertinoActivityIndicator()),
       );
     }
- 
+
     final routine = state.routine;
     if (routine == null) {
       return const AppScaffold(
@@ -38,25 +40,28 @@ class RoutineBuilderScreen extends ConsumerWidget {
         body: Center(child: Text('Erreur de chargement')),
       );
     }
- 
+
     return AppScaffold(
       title: 'Ma Routine',
       showBackButton: true,
       actions: [
-        IconButton(
+        CupertinoButton(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           onPressed: state.isSaving
               ? null
               : () async {
+                  HapticFeedback.lightImpact();
                   await controller.saveRoutine();
                   if (context.mounted) context.pop();
                 },
-          icon: state.isSaving
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.check, color: AppColors.primary),
+          child: state.isSaving
+              ? const CupertinoActivityIndicator()
+              : Text(
+                  'Enregistrer',
+                  style: AppTypography.labelMedium.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
         ),
       ],
       body: Column(
@@ -105,7 +110,7 @@ class RoutineBuilderScreen extends ConsumerWidget {
               ],
             ),
           ),
- 
+
           // Block list
           Expanded(
             child: routine.blocks.isEmpty
@@ -125,21 +130,62 @@ class RoutineBuilderScreen extends ConsumerWidget {
                     },
                     itemBuilder: (context, index) {
                       final block = routine.blocks[index];
-                      return RoutineBlockCard(
-                        key: ValueKey(block.id),
-                        block: block,
-                        onDelete: () => _confirmDelete(
-                          context,
-                          () => controller.removeBlock(block.id),
+                      return Dismissible(
+                        key: ValueKey('dismissible_${block.id}'),
+                        direction: DismissDirection.endToStart,
+                        confirmDismiss: (_) async {
+                          bool confirmed = false;
+                          await showCupertinoModalPopup<void>(
+                            context: context,
+                            builder: (ctx) => CupertinoActionSheet(
+                              title: const Text('Supprimer ce bloc ?'),
+                              actions: [
+                                CupertinoActionSheetAction(
+                                  isDestructiveAction: true,
+                                  onPressed: () {
+                                    confirmed = true;
+                                    Navigator.pop(ctx);
+                                  },
+                                  child: const Text('Supprimer'),
+                                ),
+                              ],
+                              cancelButton: CupertinoActionSheetAction(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('Annuler'),
+                              ),
+                            ),
+                          );
+                          return confirmed;
+                        },
+                        onDismissed: (_) => controller.removeBlock(block.id),
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: AppSpacing.lg),
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            CupertinoIcons.trash,
+                            color: Colors.white,
+                          ),
                         ),
-                        onDurationChanged: (duration) =>
-                            controller.updateBlockDuration(
-                                block.id, duration),
+                        child: RoutineBlockCard(
+                          key: ValueKey(block.id),
+                          block: block,
+                          onDelete: () => _confirmDelete(
+                            context,
+                            () => controller.removeBlock(block.id),
+                          ),
+                          onDurationChanged: (duration) =>
+                              controller.updateBlockDuration(
+                                  block.id, duration),
+                        ),
                       );
                     },
                   ),
           ),
- 
+
           // Add button
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -150,36 +196,36 @@ class RoutineBuilderScreen extends ConsumerWidget {
               variant: AppButtonVariant.secondary,
               onPressed: routine.blocks.length >= AppConstants.maxBlocks
                   ? null
-                  : () => context.push(AppRoutes.builderBlocks),
+                  : () {
+                      HapticFeedback.lightImpact();
+                      context.push(AppRoutes.builderBlocks);
+                    },
             ),
           ),
         ],
       ),
     );
   }
- 
+
   void _confirmDelete(BuildContext context, VoidCallback onConfirm) {
-    showDialog(
+    showCupertinoModalPopup<void>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => CupertinoActionSheet(
         title: const Text('Supprimer ce bloc ?'),
-        content: const Text('Cette action est irréversible.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
-          ),
-          TextButton(
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
             onPressed: () {
               Navigator.pop(ctx);
               onConfirm();
             },
-            child: Text(
-              'Supprimer',
-              style: TextStyle(color: AppColors.error),
-            ),
+            child: const Text('Supprimer'),
           ),
         ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Annuler'),
+        ),
       ),
     );
   }
