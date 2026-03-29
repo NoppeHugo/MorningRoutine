@@ -20,9 +20,10 @@
 10. [Module M6 — Home Dashboard](#10-module-m6--home-dashboard)
 11. [Module M7 — Settings](#11-module-m7--settings)
 12. [Module M8 — Notifications](#12-module-m8--notifications)
-13. [Modèles de Données](#13-modèles-de-données)
-14. [Assets Requis](#14-assets-requis)
-15. [Critères de Validation](#15-critères-de-validation)
+13. [Module M9 — Marketplace](#13-module-m9--marketplace)
+14. [Modèles de Données](#14-modèles-de-données)
+15. [Assets Requis](#15-assets-requis)
+16. [Critères de Validation](#16-critères-de-validation)
 
 ---
 
@@ -48,8 +49,7 @@
 | Stockage local | Backend / Cloud sync |
 | Thème dark uniquement | Multi-thèmes |
 | Notifications basiques | Alarme intégrée |
-| — | Marketplace Pro |
-| — | Social / Partage |
+| Marketplace (M9) | Social / Partage |
 | — | Apple Watch |
 | — | Widgets iOS |
 
@@ -131,6 +131,13 @@ dependencies:
   # Utils
   uuid: ^4.2.1
   intl: ^0.18.1
+
+  # Marketplace (M9)
+  in_app_purchase: ^3.1.0
+  firebase_core: ^2.24.0
+  cloud_firestore: ^4.14.0
+  firebase_auth: ^4.16.0
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -240,16 +247,36 @@ lib/
 │   │           ├── today_stats_card.dart
 │   │           └── start_routine_button.dart
 │   │
-│   └── settings/
+│   ├── settings/
+│   │   ├── data/
+│   │   │   └── settings_repository.dart
+│   │   ├── domain/
+│   │   │   └── settings_model.dart
+│   │   └── presentation/
+│   │       ├── screens/
+│   │       │   └── settings_screen.dart
+│   │       └── widgets/
+│   │           └── settings_tile.dart
+│   │
+│   └── marketplace/
 │       ├── data/
-│       │   └── settings_repository.dart
+│       │   ├── marketplace_repository.dart
+│       │   └── purchase_repository.dart
 │       ├── domain/
-│       │   └── settings_model.dart
+│       │   ├── expert_model.dart
+│       │   ├── expert_pack_model.dart
+│       │   └── purchase_state.dart
 │       └── presentation/
 │           ├── screens/
-│           │   └── settings_screen.dart
-│           └── widgets/
-│               └── settings_tile.dart
+│           │   ├── marketplace_screen.dart
+│           │   ├── pack_detail_screen.dart
+│           │   └── my_purchases_screen.dart
+│           ├── widgets/
+│           │   ├── pack_card.dart
+│           │   ├── expert_header.dart
+│           │   ├── pack_preview_blocks.dart
+│           │   └── purchase_button.dart
+│           └── marketplace_controller.dart
 │
 └── shared/
     ├── models/
@@ -285,8 +312,9 @@ lib/
 | 6 | **M6 — Home Dashboard** | M1, M3, M5 | 3-4h |
 | 7 | **M7 — Settings** | M1 | 2h |
 | 8 | **M8 — Notifications** | M1, M3, M7 | 2-3h |
+| 9 | **M9 — Marketplace** | M1, M2, M3, M6 | 8-12h |
 
-**Total estimé**: 22-29 heures de développement
+**Total estimé**: 30-41 heures de développement
 
 ---
 
@@ -1393,9 +1421,327 @@ class TimeOfDayAdapter extends TypeAdapter<TimeOfDay> {
 
 ---
 
-## 14. ASSETS REQUIS
+## 13. MODULE M9 — MARKETPLACE
 
-### 14.1 Structure des assets
+### 13.1 Objectif
+
+Permettre aux utilisateurs de découvrir et acheter des routines créées par des experts (coachs, athlètes, nutritionnistes). Modèle freemium : certains packs gratuits, les packs premium achetables via **In-App Purchase StoreKit 2**.
+
+---
+
+### 13.2 Modèle économique
+
+| Option | Description | Prix |
+|--------|-------------|------|
+| **Pack one-time** | Achat unique d'un pack expert | €1.99 – €4.99 |
+| **Abonnement mensuel** | Accès illimité à tous les packs | €4.99/mois |
+| **Abonnement annuel** | Accès illimité, -50% vs mensuel | €29.99/an |
+
+> **Recommandation** : proposer les 3. Les abonnements génèrent plus de revenu récurrent — modèle utilisé par Headspace, Calm, Nike Training Club.
+
+---
+
+### 13.3 Écrans
+
+| Écran | Contenu | Interaction |
+|-------|---------|-------------|
+| **Marketplace** | Liste des packs par catégorie + featured | Scroll, filtre, tap |
+| **Pack Detail** | Description, blocs inclus, expert, prix | Preview 1er bloc gratuit, acheter |
+| **Mes Achats** | Packs débloqués, bouton importer | Import comme routine active |
+| **Paywall Premium** | Abonnement mensuel vs annuel | StoreKit native sheet |
+
+---
+
+### 13.4 User Flow
+
+```
+[Home Dashboard]
+    ↓ tab "Découvrir"
+[Marketplace Screen]
+    ↓ tap un pack
+[Pack Detail Screen]
+    ├── "Essayer" → preview 1er bloc (gratuit, timer limité)
+    └── "Débloquer" → Paywall ou achat direct
+            ↓ StoreKit sheet (natif iOS)
+            ↓ Succès
+[Confirmation + accès débloqué]
+    ↓ "Utiliser cette routine"
+[Home Dashboard — routine importée]
+```
+
+---
+
+### 13.5 Backend — Firebase
+
+#### Structure Firestore
+
+```
+/experts/{expertId}
+  name: string              // "Marie Dupont"
+  bio: string               // "Coach certifiée, 10 ans d'expérience"
+  specialty: string         // "Mindfulness & Énergie"
+  photoUrl: string          // Firebase Storage URL
+  rating: double            // 4.8
+  packCount: int            // 3
+
+/packs/{packId}
+  expertId: string          // ref vers /experts
+  title: string             // "Morning Power — 30 min"
+  description: string
+  category: string          // energy | focus | calm | fitness | productivity
+  isFeatured: bool
+  isFree: bool
+  storeKitProductId: string // "com.morningroutine.pack.powermorning"
+  price: double             // 2.99 (affiché, prix réel vient de StoreKit)
+  rating: double
+  reviewCount: int
+  previewBlockCount: int    // nb de blocs accessibles gratuitement (1)
+  blocks: List<Map>
+    - id: string
+    - name: string
+    - emoji: string
+    - durationMinutes: int
+    - tip: string           // conseil expert affiché pendant le timer
+  createdAt: timestamp
+
+/users/{userId}/purchases/{packId}
+  purchasedAt: timestamp
+  transactionId: string
+  isSubscription: bool
+```
+
+---
+
+### 13.6 Fichiers à créer
+
+```
+lib/features/marketplace/
+├── data/
+│   ├── marketplace_repository.dart   // Firestore — lire experts + packs
+│   └── purchase_repository.dart      // StoreKit 2 + Firestore purchases
+├── domain/
+│   ├── expert_model.dart             // Expert immutable model
+│   ├── expert_pack_model.dart        // Pack immutable model + liste de blocs
+│   └── purchase_state.dart           // État d'achat (loading/success/error)
+└── presentation/
+    ├── screens/
+    │   ├── marketplace_screen.dart   // Browse
+    │   ├── pack_detail_screen.dart   // Detail + achat
+    │   └── my_purchases_screen.dart  // Mes achats
+    ├── widgets/
+    │   ├── pack_card.dart            // Card grille (image + titre + prix)
+    │   ├── expert_header.dart        // Photo + nom + bio expert
+    │   ├── pack_preview_blocks.dart  // Liste des blocs du pack
+    │   └── purchase_button.dart      // CTA avec état loading/acheté
+    └── marketplace_controller.dart   // StateNotifier
+```
+
+---
+
+### 13.7 Spécifications détaillées
+
+#### expert_pack_model.dart
+
+```dart
+@immutable
+class ExpertPack {
+  final String id;
+  final String expertId;
+  final String title;
+  final String description;
+  final String category;        // 'energy' | 'focus' | 'calm' | 'fitness' | 'productivity'
+  final bool isFeatured;
+  final bool isFree;
+  final String? storeKitProductId;
+  final double price;
+  final double rating;
+  final int reviewCount;
+  final int previewBlockCount;
+  final List<PackBlock> blocks;
+  final bool isUnlocked;        // true si acheté ou abonné
+
+  // copyWith, fromFirestore, toMap
+}
+
+@immutable
+class PackBlock {
+  final String id;
+  final String name;
+  final String emoji;
+  final int durationMinutes;
+  final String? tip;            // conseil expert pendant le timer
+}
+```
+
+#### marketplace_repository.dart
+
+```dart
+// Méthodes:
+// - Stream<List<ExpertPack>> watchFeaturedPacks()
+// - Stream<List<ExpertPack>> watchPacksByCategory(String category)
+// - Future<ExpertPack> getPackById(String id)
+// - Future<Expert> getExpertById(String id)
+// - Future<List<ExpertPack>> getUserPurchases(String userId)
+```
+
+#### purchase_repository.dart
+
+```dart
+// Méthodes:
+// - Future<void> initStoreKit()          → charge les produits depuis Apple
+// - Future<PurchaseResult> buyPack(String productId)
+// - Future<PurchaseResult> subscribe(SubscriptionType type)  // monthly | yearly
+// - Future<void> restorePurchases()
+// - Future<bool> isPackUnlocked(String packId)
+// - Stream<List<PurchaseDetails>> get purchaseStream
+```
+
+#### marketplace_screen.dart
+
+```
+┌─────────────────────────────┐
+│  Découvrir              [🔍] │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ⚡ FEATURED          │    │
+│  │ Morning Power        │    │
+│  │ par Marie Dupont     │    │
+│  │ ★★★★★  €2.99        │    │
+│  └─────────────────────┘    │
+│                             │
+│  [Énergie][Focus][Calme]... │  ← CupertinoSlidingSegmentedControl
+│                             │
+│  ┌────────┐  ┌────────┐     │
+│  │ 🧘     │  │ 💪     │     │  ← grille 2 colonnes
+│  │Calm Pro│  │FitStart│     │
+│  │€1.99   │  │Gratuit │     │
+│  └────────┘  └────────┘     │
+└─────────────────────────────┘
+```
+
+#### pack_detail_screen.dart
+
+```
+┌─────────────────────────────┐
+│ ←                           │
+│                             │
+│  [Photo Expert]             │
+│  Marie Dupont               │
+│  Coach certifiée            │
+│                             │
+│  Morning Power — 30 min     │
+│  ★ 4.8 (124 avis)           │
+│                             │
+│  "Commence ta journée avec  │
+│   puissance et clarté..."   │
+│                             │
+│  CE QUI EST INCLUS          │
+│  💧 Verre d'eau   2 min     │  ← blocs (grisés si locked)
+│  🧘 Méditation   10 min     │
+│  🔒 Sport        15 min     │  ← preview seulement
+│  🔒 ...                     │
+│                             │
+│  [ Essayer gratuitement ]   │
+│  [ Débloquer — €2.99    ]   │
+└─────────────────────────────┘
+```
+
+#### purchase_button.dart
+
+```dart
+// États:
+// - idle: affiche le prix, tap → StoreKit
+// - loading: CupertinoActivityIndicator
+// - owned: "Utiliser cette routine" (vert)
+// - subscribed: "Inclus dans Premium" (badge violet)
+```
+
+#### Routes à ajouter dans app_router.dart
+
+```dart
+'/marketplace'              → MarketplaceScreen
+'/marketplace/:packId'      → PackDetailScreen
+'/marketplace/purchases'    → MyPurchasesScreen
+'/paywall'                  → PaywallScreen
+```
+
+---
+
+### 13.8 Intégration StoreKit 2 (iOS)
+
+#### Product IDs à configurer dans App Store Connect
+
+```
+com.morningroutine.premium.monthly     // Abonnement mensuel
+com.morningroutine.premium.yearly      // Abonnement annuel
+com.morningroutine.pack.{packId}       // Un par pack payant
+```
+
+#### Flux d'achat Flutter
+
+```dart
+// 1. Init
+final products = await InAppPurchase.instance.queryProductDetails(productIds);
+
+// 2. Achat
+final purchaseParam = PurchaseParam(productDetails: product);
+await InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+
+// 3. Listener (dans main.dart ou controller)
+InAppPurchase.instance.purchaseStream.listen((purchases) {
+  for (final purchase in purchases) {
+    if (purchase.status == PurchaseStatus.purchased) {
+      // Vérifier le receipt côté Firebase Functions (recommandé)
+      // ou stocker directement dans Firestore /users/{uid}/purchases
+      await purchase.deliverProduct();
+      await InAppPurchase.instance.completePurchase(purchase);
+    }
+  }
+});
+
+// 4. Restore
+await InAppPurchase.instance.restorePurchases();
+```
+
+> ⚠️ **Important** : Apple exige un bouton "Restaurer les achats" visible dans l'UI (Settings ou Marketplace). Obligatoire pour la validation App Store Review.
+
+---
+
+### 13.9 Firebase Auth — Compte utilisateur
+
+Le Marketplace nécessite un compte pour lier les achats à un utilisateur.
+
+```dart
+// Connexion anonyme automatique (invisible pour l'user)
+// Permet de stocker les achats sans forcer la création de compte
+await FirebaseAuth.instance.signInAnonymously();
+
+// Si l'user veut un vrai compte plus tard → upgrade anonyme vers email/Apple
+await currentUser.linkWithCredential(emailCredential);
+```
+
+> Stratégie recommandée : **auth anonyme au premier lancement**, upgrade optionnel si l'user achète quelque chose (pour récupérer ses achats sur un autre téléphone).
+
+---
+
+### 13.10 Critères de validation M9
+
+- [ ] Browse packs chargés depuis Firestore
+- [ ] Filtre par catégorie fonctionnel
+- [ ] Pack Detail affiche les blocs (locked/unlocked)
+- [ ] Preview 1er bloc fonctionne (timer limité)
+- [ ] StoreKit sheet s'ouvre correctement
+- [ ] Après achat : pack débloqué instantanément
+- [ ] "Restaurer les achats" fonctionne
+- [ ] Import d'un pack comme routine active fonctionne
+- [ ] Auth anonyme créée automatiquement
+- [ ] Pas d'achat possible sans connexion réseau (message d'erreur clair)
+
+---
+
+## 15. ASSETS REQUIS
+
+### 15.1 Structure des assets
 
 ```
 assets/
@@ -1408,7 +1754,7 @@ assets/
     └── (Google Fonts chargées dynamiquement)
 ```
 
-### 14.2 pubspec.yaml assets
+### 15.2 pubspec.yaml assets
 
 ```yaml
 flutter:
@@ -1419,9 +1765,9 @@ flutter:
 
 ---
 
-## 15. CRITÈRES DE VALIDATION
+## 16. CRITÈRES DE VALIDATION
 
-### 15.1 Checklist finale
+### 16.1 Checklist finale
 
 #### Fonctionnel
 - [ ] Onboarding complet fonctionne
@@ -1447,7 +1793,7 @@ flutter:
 - [ ] Données persistées après kill de l'app
 - [ ] Build iOS réussit
 
-### 15.2 Tests à effectuer
+### 16.2 Tests à effectuer
 
 | Scénario | Attendu |
 |----------|---------|
