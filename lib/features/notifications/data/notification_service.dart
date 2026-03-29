@@ -41,10 +41,10 @@ class NotificationService {
       await android.requestNotificationsPermission();
     }
  
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
-    if (ios != null) {
-      final granted = await ios.requestPermissions(
+    final darwin = _plugin.resolvePlatformSpecificImplementation<
+        DarwinFlutterLocalNotificationsPlugin>();
+    if (darwin != null) {
+      final granted = await darwin.requestPermissions(
         alert: true,
         badge: true,
         sound: true,

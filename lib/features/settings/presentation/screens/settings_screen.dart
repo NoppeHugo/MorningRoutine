@@ -1,46 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
- 
+
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../shared/providers/storage_provider.dart';
+import '../../../paywall/presentation/premium_controller.dart';
 import '../../data/settings_repository.dart';
 import '../../domain/settings_model.dart';
 import '../widgets/settings_tile.dart';
- 
+
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
- 
+
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
- 
+
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late SettingsModel _settings;
- 
+
   @override
   void initState() {
     super.initState();
     _settings = settingsRepositoryInstance.loadSettings();
   }
- 
+
   Future<void> _saveSettings() async {
     await settingsRepositoryInstance.saveSettings(_settings);
   }
- 
+
   @override
   Widget build(BuildContext context) {
+    final isPremium = ref.watch(premiumControllerProvider).isPremium;
+
     return AppScaffold(
       title: 'Réglages',
       showBackButton: true,
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
+          // PRO banner
+          if (!isPremium) ...[
+            _buildProBanner(context),
+            const SizedBox(height: AppSpacing.xl),
+          ],
+
           // ROUTINE section
           _buildSectionTitle('ROUTINE'),
           const SizedBox(height: AppSpacing.sm),
@@ -63,9 +73,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               },
             ),
           ),
- 
+
           const SizedBox(height: AppSpacing.xl),
- 
+
           // NOTIFICATIONS section
           _buildSectionTitle('NOTIFICATIONS'),
           const SizedBox(height: AppSpacing.sm),
@@ -104,9 +114,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 },
               ),
             ),
- 
+
           const SizedBox(height: AppSpacing.xl),
- 
+
           // SONS & VIBRATIONS section
           _buildSectionTitle('SONS & VIBRATIONS'),
           const SizedBox(height: AppSpacing.sm),
@@ -137,9 +147,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               },
             ),
           ),
- 
+
           const SizedBox(height: AppSpacing.xl),
- 
+
           // ABOUT section
           _buildSectionTitle('À PROPOS'),
           const SizedBox(height: AppSpacing.sm),
@@ -153,6 +163,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           SettingsTile(
+            title: 'Politique de confidentialité',
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 14,
+              color: AppColors.textTertiary,
+            ),
+            onTap: () => context.push(AppRoutes.privacyPolicy),
+          ),
+          SettingsTile(
             title: 'Réinitialiser les données',
             titleColor: AppColors.error,
             onTap: () => _confirmReset(context),
@@ -161,7 +180,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
   }
- 
+
+  Widget _buildProBanner(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.push(AppRoutes.paywall),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.primary.withValues(alpha: 0.8),
+              AppColors.secondary.withValues(alpha: 0.6),
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        ),
+        child: Row(
+          children: [
+            const Text('⭐', style: TextStyle(fontSize: 28)),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Passe à Pro',
+                    style: AppTypography.labelMedium.copyWith(
+                      color: AppColors.textOnPrimary,
+                    ),
+                  ),
+                  Text(
+                    'Blocs illimités + historique complet',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textOnPrimary.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: AppColors.textOnPrimary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -171,7 +240,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
   }
- 
+
   Future<void> _pickTime(
     BuildContext context, {
     required TimeOfDay initial,
@@ -197,7 +266,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       onPicked(picked);
     }
   }
- 
+
   void _confirmReset(BuildContext context) {
     showDialog(
       context: context,

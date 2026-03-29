@@ -10,6 +10,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import '../../../paywall/presentation/premium_controller.dart';
 import '../routine_builder_controller.dart';
 import '../widgets/empty_routine_placeholder.dart';
 import '../widgets/routine_block_card.dart';
@@ -143,14 +144,8 @@ class RoutineBuilderScreen extends ConsumerWidget {
           // Add button
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: AppButton(
-              label: routine.blocks.length >= AppConstants.maxBlocks
-                  ? 'Maximum ${AppConstants.maxBlocks} blocs atteint'
-                  : '+ Ajouter un bloc',
-              variant: AppButtonVariant.secondary,
-              onPressed: routine.blocks.length >= AppConstants.maxBlocks
-                  ? null
-                  : () => context.push(AppRoutes.builderBlocks),
+            child: _AddBlockButton(
+              blockCount: routine.blocks.length,
             ),
           ),
         ],
@@ -158,7 +153,8 @@ class RoutineBuilderScreen extends ConsumerWidget {
     );
   }
  
-  void _confirmDelete(BuildContext context, VoidCallback onConfirm) {
+  void _confirmDelete(
+      BuildContext context, VoidCallback onConfirm) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -181,6 +177,55 @@ class RoutineBuilderScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AddBlockButton extends ConsumerWidget {
+  const _AddBlockButton({required this.blockCount});
+
+  final int blockCount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isPremium = ref.watch(premiumControllerProvider).isPremium;
+    final isAtMax = blockCount >= AppConstants.maxBlocks;
+    final isAtFreeLimit =
+        !isPremium && blockCount >= AppConstants.freeBlockLimit;
+
+    if (isAtMax) {
+      return AppButton(
+        label: 'Maximum ${AppConstants.maxBlocks} blocs atteint',
+        variant: AppButtonVariant.secondary,
+        onPressed: null,
+      );
+    }
+
+    if (isAtFreeLimit) {
+      return Column(
+        children: [
+          AppButton(
+            label: '+ Ajouter un bloc',
+            variant: AppButtonVariant.secondary,
+            onPressed: () => context.push(AppRoutes.paywall),
+            icon: Icons.lock_outline,
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Passe à Pro pour ajouter plus de ${AppConstants.freeBlockLimit} blocs',
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textTertiary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+    }
+
+    return AppButton(
+      label: '+ Ajouter un bloc',
+      variant: AppButtonVariant.secondary,
+      onPressed: () => context.push(AppRoutes.builderBlocks),
     );
   }
 }
