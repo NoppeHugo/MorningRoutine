@@ -61,13 +61,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     _getGreeting(),
                     style: AppTypography.headingLarge,
                   ),
-                  CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => context.push(AppRoutes.settings),
-                    child: const Icon(
-                      CupertinoIcons.settings,
-                      color: AppColors.textSecondary,
-                    ),
+                  Row(
+                    children: [
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => context.push(AppRoutes.marketplace),
+                        child: const Icon(
+                          CupertinoIcons.bag,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () => context.push(AppRoutes.settings),
+                        child: const Icon(
+                          CupertinoIcons.settings,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/marketplace/presentation/screens/marketplace_screen.dart';
+import '../../features/marketplace/presentation/screens/my_purchases_screen.dart';
+import '../../features/marketplace/presentation/screens/pack_detail_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/routine_builder/presentation/screens/block_selector_screen.dart';
 import '../../features/routine_builder/presentation/screens/routine_builder_screen.dart';
@@ -18,6 +21,9 @@ abstract class AppRoutes {
   static const timer = '/timer';
   static const completion = '/completion';
   static const settings = '/settings';
+  static const marketplace = '/marketplace';
+  static const marketplacePurchases = '/marketplace/purchases';
+  // Pack detail is dynamic: '/marketplace/$packId'
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -61,6 +67,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.marketplace,
+        builder: (context, state) => const MarketplaceScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.marketplacePurchases,
+        builder: (context, state) => const MyPurchasesScreen(),
+      ),
+      GoRoute(
+        path: '/marketplace/:packId',
+        builder: (context, state) => PackDetailScreen(
+          packId: state.pathParameters['packId']!,
+        ),
       ),
     ],
   );
