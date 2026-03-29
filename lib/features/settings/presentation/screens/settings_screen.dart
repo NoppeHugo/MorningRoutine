@@ -10,6 +10,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../shared/providers/storage_provider.dart';
+import '../../../notifications/data/notification_service.dart';
 import '../../../paywall/presentation/premium_controller.dart';
 import '../../data/settings_repository.dart';
 import '../../domain/settings_model.dart';
@@ -84,12 +85,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             trailing: Switch(
               value: _settings.notificationsEnabled,
               activeColor: AppColors.primary,
-              onChanged: (value) {
+              onChanged: (value) async {
                 setState(() {
                   _settings =
                       _settings.copyWith(notificationsEnabled: value);
                 });
-                _saveSettings();
+                await _saveSettings();
+                if (value) {
+                  await NotificationService.instance.requestPermissions();
+                  await NotificationService.instance
+                      .scheduleMorningReminder(_settings.notificationTime);
+                } else {
+                  await NotificationService.instance.cancelAll();
+                }
               },
             ),
           ),
@@ -105,12 +113,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onTap: () => _pickTime(
                 context,
                 initial: _settings.notificationTime,
-                onPicked: (time) {
+                onPicked: (time) async {
                   setState(() {
                     _settings =
                         _settings.copyWith(notificationTime: time);
                   });
-                  _saveSettings();
+                  await _saveSettings();
+                  if (_settings.notificationsEnabled) {
+                    await NotificationService.instance
+                        .scheduleMorningReminder(time);
+                  }
                 },
               ),
             ),
@@ -199,7 +211,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         child: Row(
           children: [
-            const Text('⭐', style: TextStyle(fontSize: 28)),
+            const Icon(
+              Icons.workspace_premium_rounded,
+              size: 28,
+              color: AppColors.textOnPrimary,
+            ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(

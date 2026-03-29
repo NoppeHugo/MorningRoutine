@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
  
 import '../../../core/constants/app_constants.dart';
 import '../data/blocks_repository.dart';
+import '../data/preset_routines.dart';
 import '../data/routine_repository.dart';
 import '../domain/block_model.dart';
 import '../domain/routine_model.dart';
@@ -161,10 +162,43 @@ class RoutineBuilderController extends StateNotifier<RoutineBuilderState> {
   Future<void> saveRoutine() async {
     final routine = state.routine;
     if (routine == null) return;
- 
+
     state = state.copyWith(isSaving: true);
     await _repository.saveRoutine(routine);
     state = state.copyWith(isSaving: false);
+  }
+
+  Future<void> loadPreset(PresetRoutine preset) async {
+    final routine = state.routine;
+    if (routine == null) return;
+
+    final blocks = preset.blockIds
+        .asMap()
+        .entries
+        .map((entry) {
+          final index = entry.key;
+          final templateId = entry.value;
+          final template = BlocksRepository.findById(templateId);
+          if (template == null) return null;
+          return BlockModel(
+            id: _uuid.v4(),
+            templateId: template.id,
+            name: template.name,
+            emoji: template.emoji,
+            durationMinutes: template.defaultDurationMinutes,
+            order: index,
+          );
+        })
+        .whereType<BlockModel>()
+        .toList();
+
+    state = state.copyWith(
+      routine: routine.copyWith(
+        blocks: blocks,
+        updatedAt: DateTime.now(),
+      ),
+    );
+    await saveRoutine();
   }
 }
  

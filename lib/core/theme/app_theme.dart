@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
- 
+
 import 'app_colors.dart';
 import 'app_spacing.dart';
 import 'app_typography.dart';
- 
+
 abstract class AppTheme {
-  static ThemeData get dark => ThemeData(
+  static ThemeData get light => ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.dark(
+        colorScheme: const ColorScheme.light(
           primary: AppColors.primary,
           onPrimary: AppColors.textOnPrimary,
           secondary: AppColors.secondary,
-          onSecondary: AppColors.textOnSecondary,
+          onSecondary: AppColors.textOnPrimary,
           surface: AppColors.surface,
           onSurface: AppColors.textPrimary,
           error: AppColors.error,
           onError: AppColors.textOnPrimary,
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color(0xFFFFFFFF),
           elevation: 0,
           centerTitle: true,
           iconTheme: IconThemeData(color: AppColors.textPrimary),
@@ -39,7 +39,7 @@ abstract class AppTheme {
               horizontal: AppSpacing.lg,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+              borderRadius: BorderRadius.circular(14),
             ),
             elevation: 0,
             textStyle: AppTypography.labelLarge,
@@ -53,7 +53,7 @@ abstract class AppTheme {
               horizontal: AppSpacing.lg,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+              borderRadius: BorderRadius.circular(14),
             ),
             side: const BorderSide(color: AppColors.primary, width: 1.5),
             textStyle: AppTypography.labelLarge,
@@ -90,18 +90,20 @@ abstract class AppTheme {
           color: AppColors.surface,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+            borderRadius: BorderRadius.circular(16),
           ),
           margin: EdgeInsets.zero,
         ),
         dividerTheme: const DividerThemeData(
-          color: AppColors.surfaceLight,
+          color: AppColors.separator,
           thickness: 1,
           space: 0,
         ),
         snackBarTheme: SnackBarThemeData(
           backgroundColor: AppColors.surface,
-          contentTextStyle: AppTypography.bodyMedium,
+          contentTextStyle: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textPrimary,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
           ),
@@ -120,8 +122,12 @@ abstract class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
           ),
-          titleTextStyle: AppTypography.headingSmall,
-          contentTextStyle: AppTypography.bodyMedium,
+          titleTextStyle: AppTypography.headingSmall.copyWith(
+            color: AppColors.textPrimary,
+          ),
+          contentTextStyle: AppTypography.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
         ),
       );
 }

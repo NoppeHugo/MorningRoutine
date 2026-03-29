@@ -34,7 +34,23 @@ class PremiumController extends StateNotifier<PremiumState> {
     _init();
   }
 
+  bool get _forcePremiumForLocalTesting {
+    if (!kDebugMode) {
+      return false;
+    }
+
+    return kIsWeb ||
+        defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux ||
+        defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
   Future<void> _init() async {
+    if (_forcePremiumForLocalTesting) {
+      state = state.copyWith(isPremium: true, isLoading: false);
+      return;
+    }
+
     try {
       final results = await Future.wait([
         Purchases.getCustomerInfo(),
@@ -54,6 +70,11 @@ class PremiumController extends StateNotifier<PremiumState> {
   }
 
   Future<bool> purchase(Package package) async {
+    if (_forcePremiumForLocalTesting) {
+      state = state.copyWith(isPremium: true);
+      return true;
+    }
+
     try {
       final customerInfo = await Purchases.purchasePackage(package);
       final isPremium = customerInfo.entitlements.active
@@ -66,6 +87,11 @@ class PremiumController extends StateNotifier<PremiumState> {
   }
 
   Future<void> restore() async {
+    if (_forcePremiumForLocalTesting) {
+      state = state.copyWith(isPremium: true);
+      return;
+    }
+
     try {
       final customerInfo = await Purchases.restorePurchases();
       state = state.copyWith(

@@ -78,8 +78,22 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
             children: [
               const Spacer(),
  
-              // Celebration emoji
-              const Text('🎉', style: TextStyle(fontSize: 80)),
+              // Celebration icon
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.emoji_events_outlined,
+                    size: 56,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
               const SizedBox(height: AppSpacing.lg),
  
               // Title
@@ -156,7 +170,11 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('🔥', style: TextStyle(fontSize: 28)),
+                      const Icon(
+                        Icons.local_fire_department_rounded,
+                        size: 28,
+                        color: AppColors.warning,
+                      ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
                         '$streak jour${streak > 1 ? 's' : ''}',

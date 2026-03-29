@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -6,6 +7,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'app.dart';
 import 'core/constants/app_constants.dart';
+import 'features/notifications/data/notification_service.dart';
 import 'features/routine_builder/domain/block_model.dart';
 import 'features/routine_builder/domain/routine_model.dart';
 import 'shared/models/time_of_day_adapter.dart';
@@ -41,10 +43,17 @@ Future<void> main() async {
     Hive.openBox(AppConstants.settingsBoxName),
   ]);
 
-  // Initialize RevenueCat
-  await Purchases.configure(
-    PurchasesConfiguration(AppConstants.revenueCatApiKey),
-  );
+  // Initialize notifications
+  await NotificationService.instance.initialize();
+
+  // RevenueCat is not implemented on Windows/Linux/Web.
+  if (!kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS)) {
+    await Purchases.configure(
+      PurchasesConfiguration(AppConstants.revenueCatApiKey),
+    );
+  }
 
   runApp(
     const ProviderScope(

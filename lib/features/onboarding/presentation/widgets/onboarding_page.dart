@@ -7,15 +7,15 @@ import '../../../../core/theme/app_colors.dart';
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({
     super.key,
-    required this.icon,
+    required this.iconWidget,
     required this.title,
     required this.subtitle,
   });
- 
-  final String icon;
+
+  final Widget iconWidget;
   final String title;
   final String subtitle;
- 
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -23,10 +23,7 @@ class OnboardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            icon,
-            style: const TextStyle(fontSize: 80),
-          ),
+          iconWidget,
           const SizedBox(height: AppSpacing.xxl),
           Text(
             title,

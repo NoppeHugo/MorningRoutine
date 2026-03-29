@@ -1,75 +1,110 @@
 import 'package:flutter/material.dart';
- 
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
- 
+
 class StartRoutineButton extends StatelessWidget {
   const StartRoutineButton({
     super.key,
     required this.hasCompletedToday,
     required this.onPressed,
+    this.totalDurationMinutes,
   });
- 
+
   final bool hasCompletedToday;
   final VoidCallback onPressed;
- 
+
+  /// Optional total routine duration shown as subtitle.
+  final int? totalDurationMinutes;
+
   @override
   Widget build(BuildContext context) {
+    final isCompleted = hasCompletedToday;
+
     return SizedBox(
       width: double.infinity,
       child: GestureDetector(
         onTap: onPressed,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.lg,
+            horizontal: AppSpacing.lg,
+          ),
           decoration: BoxDecoration(
-            gradient: hasCompletedToday
+            gradient: isCompleted
                 ? null
                 : const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF6C5CE7),
-                      Color(0xFF8B7CF7),
-                    ],
+                    colors: AppColors.primaryGradient,
                   ),
-            color: hasCompletedToday ? AppColors.surfaceLight : null,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-            boxShadow: hasCompletedToday
+            color: isCompleted ? AppColors.surfaceLight : null,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+            boxShadow: isCompleted
                 ? null
                 : [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      offset: const Offset(0, 4),
-                      blurRadius: 16,
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      offset: const Offset(0, 6),
+                      blurRadius: 20,
+                      spreadRadius: 0,
                     ),
                   ],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                hasCompletedToday
-                    ? Icons.replay_rounded
-                    : Icons.play_arrow_rounded,
-                color: hasCompletedToday
-                    ? AppColors.textTertiary
-                    : AppColors.textOnPrimary,
-                size: AppSpacing.iconLg,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    isCompleted
+                        ? Icons.replay_rounded
+                        : Icons.play_circle_filled_rounded,
+                    color: isCompleted
+                        ? AppColors.textSecondary
+                        : AppColors.textOnPrimary,
+                    size: AppSpacing.iconLg,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    isCompleted ? 'Refaire ma routine' : 'Lancer ma routine',
+                    style: AppTypography.labelLarge.copyWith(
+                      color: isCompleted
+                          ? AppColors.textSecondary
+                          : AppColors.textOnPrimary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                hasCompletedToday ? 'Refaire' : 'Commencer',
-                style: AppTypography.labelLarge.copyWith(
-                  color: hasCompletedToday
-                      ? AppColors.textTertiary
-                      : AppColors.textOnPrimary,
+              if (totalDurationMinutes != null && totalDurationMinutes! > 0) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  _formatDuration(totalDurationMinutes!),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: isCompleted
+                        ? AppColors.textTertiary
+                        : AppColors.textOnPrimary.withValues(alpha: 0.75),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+
+  String _formatDuration(int minutes) {
+    if (minutes < 60) {
+      return '$minutes min';
+    }
+    final h = minutes ~/ 60;
+    final m = minutes % 60;
+    return m == 0 ? '${h}h' : '${h}h $m min';
   }
 }

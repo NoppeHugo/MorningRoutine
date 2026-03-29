@@ -129,7 +129,21 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
  
   Widget _buildWelcomePage() {
     return OnboardingPage(
-      icon: '🌅',
+      iconWidget: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          color: AppColors.primaryLight,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.wb_sunny_rounded,
+            size: 56,
+            color: AppColors.primary,
+          ),
+        ),
+      ),
       title: 'Morning Routine\nBuilder',
       subtitle: 'Construis ta matinée\nparfaite, bloc par bloc',
     );

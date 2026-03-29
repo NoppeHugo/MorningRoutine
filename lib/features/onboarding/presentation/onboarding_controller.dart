@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
- 
+
 import '../../../shared/providers/storage_provider.dart';
+import '../../notifications/data/notification_service.dart';
 import '../data/onboarding_repository.dart';
 import '../domain/onboarding_state.dart';
  
@@ -53,6 +54,11 @@ class OnboardingController extends StateNotifier<OnboardingState> {
     );
  
     ref.read(isOnboardingCompletedProvider.notifier).state = true;
+    await NotificationService.instance.requestPermissions();
+    if (state.wakeTime != null) {
+      await NotificationService.instance
+          .scheduleMorningReminder(state.wakeTime!);
+    }
     state = state.copyWith(isCompleted: true);
   }
 }

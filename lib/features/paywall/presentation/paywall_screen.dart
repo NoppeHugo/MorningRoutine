@@ -113,7 +113,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             ],
           ),
           child: const Center(
-            child: Text('🌅', style: TextStyle(fontSize: 40)),
+            child: Icon(
+              Icons.wb_sunny_rounded,
+              size: 44,
+              color: AppColors.textOnPrimary,
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
@@ -142,22 +146,22 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   Widget _buildFeatures() {
     final features = [
       _FeatureItem(
-        emoji: '∞',
+        iconData: Icons.all_inclusive_rounded,
         title: 'Blocs illimités',
         subtitle: 'Jusqu\'à 10 blocs dans ta routine (gratuit : 3)',
       ),
       _FeatureItem(
-        emoji: '📊',
+        iconData: Icons.bar_chart_rounded,
         title: 'Historique complet',
         subtitle: 'Consulte tes stats des 30 derniers jours',
       ),
       _FeatureItem(
-        emoji: '🎯',
+        iconData: Icons.track_changes_rounded,
         title: 'Routines d\'experts',
         subtitle: 'Accède aux routines des meilleurs performers (bientôt)',
       ),
       _FeatureItem(
-        emoji: '🔔',
+        iconData: Icons.notifications_outlined,
         title: 'Rappels avancés',
         subtitle: 'Notifications personnalisées par bloc (bientôt)',
       ),
@@ -196,9 +200,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
                 ),
                 child: Center(
-                  child: Text(
-                    feature.emoji,
-                    style: const TextStyle(fontSize: 20),
+                  child: Icon(
+                    feature.iconData,
+                    size: 22,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -378,7 +383,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('⭐', style: TextStyle(fontSize: 64)),
+              const Icon(
+                Icons.workspace_premium_rounded,
+                size: 64,
+                color: AppColors.primary,
+              ),
               const SizedBox(height: AppSpacing.lg),
               Text('Tu es déjà Pro !', style: AppTypography.headingLarge),
               const SizedBox(height: AppSpacing.sm),
@@ -404,11 +413,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
 class _FeatureItem {
   const _FeatureItem({
-    required this.emoji,
+    required this.iconData,
     required this.title,
     required this.subtitle,
   });
-  final String emoji;
+  final IconData iconData;
   final String title;
   final String subtitle;
 }

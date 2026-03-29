@@ -96,7 +96,11 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Text('✅', style: TextStyle(fontSize: 20)),
+                const Icon(
+                  Icons.verified_user_outlined,
+                  size: 24,
+                  color: AppColors.secondary,
+                ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(

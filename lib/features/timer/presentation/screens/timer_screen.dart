@@ -139,8 +139,14 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       ),
       child: Row(
         children: [
+          const Icon(
+            Icons.skip_next_rounded,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
+          const SizedBox(width: AppSpacing.xs),
           Text(
-            'Prochain: ${nextBlock.emoji}',
+            'Prochain :',
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
