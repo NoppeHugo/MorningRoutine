@@ -62,7 +62,7 @@ class _SharedRoutineDetailScreenState
           children: [
             _Header(template: template, creatorName: creator?.displayName),
             const SizedBox(height: AppSpacing.md),
-            _InfoCard(template: template),
+            _InfoCard(template: template, langCode: langCode),
             const SizedBox(height: AppSpacing.md),
             Text(AppI18n.t('shared.sequence', langCode), style: AppTypography.headingSmall),
             const SizedBox(height: AppSpacing.sm),
@@ -263,9 +263,10 @@ class _Header extends StatelessWidget {
 }
 
 class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.template});
+  const _InfoCard({required this.template, required this.langCode});
 
   final SharedRoutineTemplate template;
+  final String langCode;
 
   @override
   Widget build(BuildContext context) {
@@ -285,11 +286,18 @@ class _InfoCard extends StatelessWidget {
             spacing: AppSpacing.xs,
             runSpacing: AppSpacing.xs,
             children: [
-              _Pill(text: template.theme.label),
-              _Pill(text: template.level.label),
-              _Pill(text: template.status.label),
-              _Pill(text: '${template.totalDurationMinutes} min'),
-              _Pill(text: template.isPremium ? 'Pro' : 'Free'),
+              _Pill(text: AppI18n.t(template.theme.i18nKey, langCode)),
+              _Pill(text: AppI18n.t(template.level.i18nKey, langCode)),
+              _Pill(text: AppI18n.t(template.status.i18nKey, langCode)),
+              _Pill(
+                text:
+                    '${template.totalDurationMinutes} ${AppI18n.t('common.min', langCode)}',
+              ),
+              _Pill(
+                text: template.isPremium
+                    ? AppI18n.t('common.pro', langCode)
+                    : AppI18n.t('common.free', langCode),
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),

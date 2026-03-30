@@ -19,71 +19,49 @@ class PrivacyPolicyScreen extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           Text(
-            'Politique de confidentialité',
+            AppI18n.t('privacy.heading', langCode),
             style: AppTypography.headingMedium,
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Dernière mise à jour : Mars 2026',
+            AppI18n.t('privacy.updated', langCode),
             style: AppTypography.bodySmall,
           ),
           const SizedBox(height: AppSpacing.xl),
 
           _Section(
-            title: 'Résumé',
-            body:
-                'Morning Routine ne collecte aucune donnée personnelle. '
-                'Toutes tes données restent sur ton appareil. '
-                'Nous ne vendons, ne partageons et ne transmettons aucune information à des tiers.',
+            title: AppI18n.t('privacy.summary.title', langCode),
+            body: AppI18n.t('privacy.summary.body', langCode),
           ),
 
           _Section(
-            title: '1. Données collectées',
-            body:
-                'Morning Routine ne collecte aucune donnée personnelle identifiable.\n\n'
-                'Les seules données créées sont :\n'
-                '• Ta routine (blocs, durées) — stockée localement sur ton iPhone\n'
-                '• Tes scores quotidiens et streak — stockés localement\n'
-                '• Tes préférences (heure de réveil, notifications) — stockées localement\n\n'
-                'Aucune de ces données ne quitte ton appareil.',
+            title: AppI18n.t('privacy.collected.title', langCode),
+            body: AppI18n.t('privacy.collected.body', langCode),
           ),
 
           _Section(
-            title: '2. Abonnements (RevenueCat)',
-            body:
-                'Si tu souscris à Morning Routine Pro, ta transaction est gérée par Apple '
-                'via l\'App Store. RevenueCat est utilisé uniquement pour vérifier le statut '
-                'de ton abonnement. RevenueCat peut recevoir un identifiant anonyme d\'appareil '
-                'à cet effet. Consulte la politique de RevenueCat : revenuecat.com/privacy',
+            title: AppI18n.t('privacy.subscriptions.title', langCode),
+            body: AppI18n.t('privacy.subscriptions.body', langCode),
           ),
 
           _Section(
-            title: '3. Notifications',
-            body:
-                'Les notifications sont gérées localement par iOS. '
-                'Aucune notification n\'est envoyée depuis nos serveurs. '
-                'Tu peux désactiver les notifications à tout moment dans les Réglages iOS.',
+            title: AppI18n.t('privacy.notifications.title', langCode),
+            body: AppI18n.t('privacy.notifications.body', langCode),
           ),
 
           _Section(
-            title: '4. Publicité et tracking',
-            body:
-                'Morning Routine ne contient aucune publicité.\n'
-                'Aucun SDK de tracking publicitaire (Facebook, Google Ads, etc.) n\'est intégré.',
+            title: AppI18n.t('privacy.ads.title', langCode),
+            body: AppI18n.t('privacy.ads.body', langCode),
           ),
 
           _Section(
-            title: '5. Mineurs',
-            body:
-                'Morning Routine ne collecte pas de données. '
-                'L\'application est utilisable par tous les âges.',
+            title: AppI18n.t('privacy.minors.title', langCode),
+            body: AppI18n.t('privacy.minors.body', langCode),
           ),
 
           _Section(
-            title: '6. Contact',
-            body:
-                'Pour toute question concernant ta confidentialité, contacte-nous à :\n'
-                'privacy@morningroutineapp.com',
+            title: AppI18n.t('privacy.contact.title', langCode),
+            body: AppI18n.t('privacy.contact.body', langCode),
           ),
 
           const SizedBox(height: AppSpacing.xl),
@@ -106,7 +84,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    'Aucune donnée personnelle collectée.\nTout reste sur ton iPhone.',
+                    AppI18n.t('privacy.badge', langCode),
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.secondary,
                     ),

@@ -1,5 +1,58 @@
 # Progression — Morning Routine Builder
 
+## Session : 30 Mars 2026 — Reparation coherence globale post-review
+
+### Corrections appliquees
+
+- Cache Shared Routines corrige:
+  - serialisation/deserialisation JSON reelle templates + creators
+  - lecture cache active (ne retourne plus systematiquement `null`)
+  - import Riverpod replace en tete de fichier
+- Labels shared routines (theme/niveau/statut) passes en vraies cles i18n
+- Ecran detail/catalog shared routines adapte aux nouvelles cles i18n
+- Completion screen securise:
+  - sauvegarde brouillon immediate pour limiter la perte de session
+  - sauvegarde finale conservee avec mood/journal
+- Politique de confidentialite entierement localisee FR/NL/EN (titre + sections + badge)
+
+### Etat
+
+✅ Cohesion produit/technique renforcee
+✅ Points critiques de la review traites
+
+### Passe UX micro-copy (timer/history/paywall/shared)
+
+- Harmonisation ton premium et wording:
+  - `completion.finishSave`, `completion.journalTitle`, `completion.proInsightsTitle`
+  - `timer.modeGuided`
+  - `history.energyAvgDeltaFmt`
+- Uniformisation labels transverses:
+  - ajout `common.min`
+  - ajout `completion.streakFmt`
+  - `common.free` passe en FR/NL naturel
+- Application UI:
+  - carte completion (duree + streak)
+  - chips duree dans shared catalog/detail
+
+### Passe App Store ready (FR/NL/EN)
+
+- CTA et titres rendus plus naturels et orientés conversion:
+  - `home.inspiredButton`
+  - `timer.done`
+  - `completion.proInsightsTitle`
+  - `completion.proInsightsSub`
+  - `paywall.ctaAnnual`
+  - `paywall.ctaMonthly`
+  - `history.fullSub`
+
+### Passe ASO copy globale (finale)
+
+- Repositionnement wording onboarding/home pour renforcer la promesse resultat
+- Repositionnement paywall subtitle + analytics copy pour clarifier la valeur Pro
+- Repositionnement completion (titre + score du jour) pour un ressenti de progression
+- Repositionnement history energy wording pour un angle impact/performance
+- Repositionnement settings goPro subtitle pour aligner avec le nouveau coeur premium
+
 ## Session : 30 Mars 2026 — Ajout modes routine + mood check + mini journal premium
 
 ### Ce qui a ete implemente

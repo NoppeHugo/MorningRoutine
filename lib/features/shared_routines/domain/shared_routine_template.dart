@@ -74,44 +74,44 @@ class SharedRoutineTemplate {
 }
 
 extension RoutineTemplateStatusLabel on RoutineTemplateStatus {
-  String get label {
+  String get i18nKey {
     switch (this) {
       case RoutineTemplateStatus.inspired:
-        return 'Inspiree';
+        return 'shared.status.inspired';
       case RoutineTemplateStatus.verified:
-        return 'Verifiee';
+        return 'shared.status.verified';
       case RoutineTemplateStatus.official:
-        return 'Officielle';
+        return 'shared.status.official';
     }
   }
 }
 
 extension RoutineTemplateLevelLabel on RoutineTemplateLevel {
-  String get label {
+  String get i18nKey {
     switch (this) {
       case RoutineTemplateLevel.beginner:
-        return 'Debutant';
+        return 'shared.level.beginner';
       case RoutineTemplateLevel.intermediate:
-        return 'Intermediaire';
+        return 'shared.level.intermediate';
       case RoutineTemplateLevel.advanced:
-        return 'Avance';
+        return 'shared.level.advanced';
     }
   }
 }
 
 extension RoutineTemplateThemeLabel on RoutineTemplateTheme {
-  String get label {
+  String get i18nKey {
     switch (this) {
       case RoutineTemplateTheme.productivite:
-        return 'Productivite';
+        return 'shared.theme.productivite';
       case RoutineTemplateTheme.fitness:
-        return 'Fitness';
+        return 'shared.theme.fitness';
       case RoutineTemplateTheme.bienEtre:
-        return 'Bien-etre';
+        return 'shared.theme.bienEtre';
       case RoutineTemplateTheme.spiritualite:
-        return 'Spiritualite';
+        return 'shared.theme.spiritualite';
       case RoutineTemplateTheme.leadership:
-        return 'Leadership';
+        return 'shared.theme.leadership';
     }
   }
 }

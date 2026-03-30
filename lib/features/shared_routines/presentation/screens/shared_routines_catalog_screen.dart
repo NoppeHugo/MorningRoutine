@@ -107,6 +107,7 @@ class _SharedRoutinesCatalogScreenState
 
                           return _RoutineCard(
                             template: template,
+                            langCode: langCode,
                             creatorName: creator?.displayName ?? AppI18n.t('shared.creatorFallback', langCode),
                             onTap: () => context.push(
                               '${AppRoutes.sharedRoutines}/${template.id}',
@@ -146,7 +147,7 @@ class _FiltersRow extends StatelessWidget {
                 value: state.selectedTheme,
                 hint: AppI18n.t('shared.theme', langCode),
                 items: RoutineTemplateTheme.values,
-                labelBuilder: (theme) => theme.label,
+                labelBuilder: (theme) => AppI18n.t(theme.i18nKey, langCode),
                 onChanged: controller.setTheme,
               ),
             ),
@@ -156,7 +157,7 @@ class _FiltersRow extends StatelessWidget {
                 value: state.selectedLevel,
                 hint: AppI18n.t('shared.level', langCode),
                 items: RoutineTemplateLevel.values,
-                labelBuilder: (level) => level.label,
+                labelBuilder: (level) => AppI18n.t(level.i18nKey, langCode),
                 onChanged: controller.setLevel,
               ),
             ),
@@ -253,11 +254,13 @@ class _FilterDropdown<T> extends StatelessWidget {
 class _RoutineCard extends StatelessWidget {
   const _RoutineCard({
     required this.template,
+    required this.langCode,
     required this.creatorName,
     required this.onTap,
   });
 
   final SharedRoutineTemplate template;
+  final String langCode;
   final String creatorName;
   final VoidCallback onTap;
 
@@ -334,7 +337,7 @@ class _RoutineCard extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSpacing.xxs),
                         Text(
-                          'PRO',
+                          AppI18n.t('common.pro', langCode),
                           style: AppTypography.labelSmall.copyWith(
                             color: AppColors.textOnPrimary,
                             fontWeight: FontWeight.w700,
@@ -355,11 +358,14 @@ class _RoutineCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
-                _MetaChip(label: template.theme.label),
+                _MetaChip(label: AppI18n.t(template.theme.i18nKey, langCode)),
                 const SizedBox(width: AppSpacing.xs),
-                _MetaChip(label: template.level.label),
+                _MetaChip(label: AppI18n.t(template.level.i18nKey, langCode)),
                 const SizedBox(width: AppSpacing.xs),
-                _MetaChip(label: '${template.totalDurationMinutes} min'),
+                  _MetaChip(
+                    label:
+                        '${template.totalDurationMinutes} ${AppI18n.t('common.min', langCode)}',
+                  ),
               ],
             ),
           ],

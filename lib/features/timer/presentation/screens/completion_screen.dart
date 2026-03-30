@@ -27,6 +27,15 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
   final TextEditingController _intentionCtrl = TextEditingController();
   final TextEditingController _priorityCtrl = TextEditingController();
   bool _isSaving = false;
+  bool _hasDraftSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _saveDraftIfNeeded();
+    });
+  }
  
   @override
   void dispose() {
@@ -34,6 +43,19 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
     _intentionCtrl.dispose();
     _priorityCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveDraftIfNeeded() async {
+    if (_hasDraftSaved || !mounted) return;
+    _hasDraftSaved = true;
+
+    try {
+      await ref
+          .read(scoringControllerProvider.notifier)
+          .saveRoutineResult(ref.read(timerControllerProvider));
+    } catch (_) {
+      // Ignore draft save issues; final save action remains available.
+    }
   }
  
   @override
@@ -148,7 +170,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      value: '${totalMinutes}min',
+                      value: '${totalMinutes} ${AppI18n.t('common.min', langCode)}',
                       label: AppI18n.t('completion.duration', langCode),
                     ),
                   ),
@@ -268,15 +290,10 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Text(
-                        '$streak jour${streak > 1 ? 's' : ''}',
+                        AppI18n.tf('completion.streakFmt', langCode, {
+                          'count': '$streak',
+                        }),
                         style: AppTypography.headingMedium.copyWith(
-                          color: AppColors.streak,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        AppI18n.t('completion.streakSuffix', langCode),
-                        style: AppTypography.bodyMedium.copyWith(
                           color: AppColors.streak,
                         ),
                       ),

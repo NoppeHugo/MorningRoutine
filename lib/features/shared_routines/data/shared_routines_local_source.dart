@@ -1,4 +1,7 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:convert';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 
 import '../domain/creator_profile.dart';
 import '../domain/shared_routine_template.dart';
@@ -12,48 +15,45 @@ class SharedRoutinesLocalSource {
   static const String _creatorsBoxName = 'shared_routines_creators';
   static const String _metadataBoxName = 'shared_routines_metadata';
   static const String _lastFetchKey = 'last_fetch_timestamp';
-  static const int _cacheExpiryMinutes = 120; // 2 hours
+  static const int _cacheExpiryMinutes = 120;
+
+  static const String _materialIconsFamily = 'MaterialIcons';
 
   late Box<String> _templatesBox;
   late Box<String> _creatorsBox;
-  late Box<String> _metadataBox;
+  late Box _metadataBox;
 
   /// Initialize Hive boxes for shared routines
   Future<void> initialize() async {
-    await Hive.initFlutter();
     _templatesBox = await Hive.openBox<String>(_templatesBoxName);
     _creatorsBox = await Hive.openBox<String>(_creatorsBoxName);
-    _metadataBox = await Hive.openBox<String>(_metadataBoxName);
+    _metadataBox = await Hive.openBox(_metadataBoxName);
   }
 
   /// Save templates to local cache
   Future<void> saveTemplates(List<SharedRoutineTemplate> templates) async {
-    final jsonList = templates.map((t) => t.toJson()).toList();
-    await _templatesBox.put('all', (jsonList).toString());
+    final payload = templates.map(_encodeTemplate).toList();
+    await _templatesBox.put('all', jsonEncode(payload));
     await _updateLastFetchTime();
   }
 
   /// Save creators to local cache
   Future<void> saveCreators(List<CreatorProfile> creators) async {
-    final jsonList = creators.map((c) => c.toJson()).toList();
-    await _creatorsBox.put('all', jsonList.toString());
+    final payload = creators.map(_encodeCreator).toList();
+    await _creatorsBox.put('all', jsonEncode(payload));
   }
 
   /// Load templates from cache (returns null if empty or expired)
   List<SharedRoutineTemplate>? loadTemplates() {
     final cached = _templatesBox.get('all');
-    if (cached == null) return null;
-
-    if (_isCacheExpired()) {
-      return null; // Cache expired, trigger refresh
-    }
+    if (cached == null || _isCacheExpired()) return null;
 
     try {
-      // Simple string parsing: templates stored as JSON string
-      // In production, use proper JSON decoding: jsonDecode(cached)
-      // For MVP, we rely on seed data being consistent
-      return null; // Return null to force seed data on expired cache
-    } catch (e) {
+      final raw = jsonDecode(cached) as List<dynamic>;
+      return raw
+          .map((item) => _decodeTemplate(Map<String, dynamic>.from(item as Map)))
+          .toList();
+    } catch (_) {
       return null;
     }
   }
@@ -61,16 +61,14 @@ class SharedRoutinesLocalSource {
   /// Load creators from cache
   List<CreatorProfile>? loadCreators() {
     final cached = _creatorsBox.get('all');
-    if (cached == null) return null;
-
-    if (_isCacheExpired()) {
-      return null;
-    }
+    if (cached == null || _isCacheExpired()) return null;
 
     try {
-      // Similar to templates
-      return null;
-    } catch (e) {
+      final raw = jsonDecode(cached) as List<dynamic>;
+      return raw
+          .map((item) => _decodeCreator(Map<String, dynamic>.from(item as Map)))
+          .toList();
+    } catch (_) {
       return null;
     }
   }
@@ -107,11 +105,91 @@ class SharedRoutinesLocalSource {
       _metadataBox.clear(),
     ]);
   }
+
+  Map<String, dynamic> _encodeTemplate(SharedRoutineTemplate template) {
+    return {
+      'id': template.id,
+      'creatorId': template.creatorId,
+      'title': template.title,
+      'subtitle': template.subtitle,
+      'goal': template.goal,
+      'iconCodePoint': template.icon.codePoint,
+      'theme': template.theme.index,
+      'level': template.level.index,
+      'status': template.status.index,
+      'tags': template.tags,
+      'sourceLabel': template.sourceLabel,
+      'disclaimer': template.disclaimer,
+      'isPremium': template.isPremium,
+      'blocks': template.blocks
+          .map(
+            (block) => {
+              'templateId': block.templateId,
+              'durationMinutes': block.durationMinutes,
+              'note': block.note,
+            },
+          )
+          .toList(),
+    };
+  }
+
+  SharedRoutineTemplate _decodeTemplate(Map<String, dynamic> map) {
+    return SharedRoutineTemplate(
+      id: map['id'] as String,
+      creatorId: map['creatorId'] as String,
+      title: map['title'] as String,
+      subtitle: map['subtitle'] as String,
+      goal: map['goal'] as String,
+      icon: IconData(
+        map['iconCodePoint'] as int,
+        fontFamily: _materialIconsFamily,
+      ),
+      theme: RoutineTemplateTheme.values[map['theme'] as int],
+      level: RoutineTemplateLevel.values[map['level'] as int],
+      status: RoutineTemplateStatus.values[map['status'] as int],
+      tags: List<String>.from(map['tags'] as List<dynamic>),
+      sourceLabel: map['sourceLabel'] as String,
+      disclaimer: map['disclaimer'] as String,
+      isPremium: map['isPremium'] as bool,
+      blocks: (map['blocks'] as List<dynamic>)
+          .map(
+            (block) => SharedRoutineBlockTemplate(
+              templateId: (block as Map)['templateId'] as String,
+              durationMinutes: block['durationMinutes'] as int,
+              note: block['note'] as String?,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> _encodeCreator(CreatorProfile creator) {
+    return {
+      'id': creator.id,
+      'displayName': creator.displayName,
+      'slug': creator.slug,
+      'avatarEmoji': creator.avatarEmoji,
+      'bioShort': creator.bioShort,
+      'domains': creator.domains,
+      'verificationStatus': creator.verificationStatus.index,
+    };
+  }
+
+  CreatorProfile _decodeCreator(Map<String, dynamic> map) {
+    return CreatorProfile(
+      id: map['id'] as String,
+      displayName: map['displayName'] as String,
+      slug: map['slug'] as String,
+      avatarEmoji: map['avatarEmoji'] as String,
+      bioShort: map['bioShort'] as String,
+      domains: List<String>.from(map['domains'] as List<dynamic>),
+      verificationStatus:
+          CreatorVerificationStatus.values[map['verificationStatus'] as int],
+    );
+  }
 }
 
-/// Riverpod provider for local source (singleton)
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final sharedRoutinesLocalSourceProvider = Provider<SharedRoutinesLocalSource>((ref) {
+final sharedRoutinesLocalSourceProvider =
+    Provider<SharedRoutinesLocalSource>((ref) {
   return SharedRoutinesLocalSource();
 });
