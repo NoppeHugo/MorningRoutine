@@ -5,22 +5,22 @@ import 'app_spacing.dart';
 import 'app_typography.dart';
 
 abstract class AppTheme {
-  static ThemeData get light => ThemeData(
+  static ThemeData get dark => ThemeData(
         useMaterial3: true,
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         scaffoldBackgroundColor: AppColors.background,
-        colorScheme: const ColorScheme.light(
+        colorScheme: const ColorScheme.dark(
           primary: AppColors.primary,
           onPrimary: AppColors.textOnPrimary,
           secondary: AppColors.secondary,
-          onSecondary: AppColors.textOnPrimary,
+          onSecondary: AppColors.textOnSecondary,
           surface: AppColors.surface,
           onSurface: AppColors.textPrimary,
           error: AppColors.error,
-          onError: AppColors.textOnPrimary,
+          onError: AppColors.textPrimary,
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFFFFFFF),
+          backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
           iconTheme: IconThemeData(color: AppColors.textPrimary),
@@ -39,7 +39,7 @@ abstract class AppTheme {
               horizontal: AppSpacing.lg,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(22),
             ),
             elevation: 0,
             textStyle: AppTypography.labelLarge,
@@ -53,9 +53,9 @@ abstract class AppTheme {
               horizontal: AppSpacing.lg,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(22),
             ),
-            side: const BorderSide(color: AppColors.primary, width: 1.5),
+            side: const BorderSide(color: AppColors.separator, width: 1),
             textStyle: AppTypography.labelLarge,
           ),
         ),
@@ -67,7 +67,7 @@ abstract class AppTheme {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: AppColors.surfaceLight,
+          fillColor: AppColors.surfaceElevated,
           contentPadding: const EdgeInsets.all(AppSpacing.md),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
@@ -90,7 +90,7 @@ abstract class AppTheme {
           color: AppColors.surface,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(24),
           ),
           margin: EdgeInsets.zero,
         ),
@@ -100,7 +100,7 @@ abstract class AppTheme {
           space: 0,
         ),
         snackBarTheme: SnackBarThemeData(
-          backgroundColor: AppColors.surface,
+          backgroundColor: AppColors.surfaceElevated,
           contentTextStyle: AppTypography.bodyMedium.copyWith(
             color: AppColors.textPrimary,
           ),
@@ -110,7 +110,7 @@ abstract class AppTheme {
           behavior: SnackBarBehavior.floating,
         ),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: AppColors.surface,
+          backgroundColor: AppColors.surfaceElevated,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(AppSpacing.radiusLarge),
@@ -118,7 +118,7 @@ abstract class AppTheme {
           ),
         ),
         dialogTheme: DialogThemeData(
-          backgroundColor: AppColors.surface,
+          backgroundColor: AppColors.surfaceElevated,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
           ),
@@ -130,4 +130,6 @@ abstract class AppTheme {
           ),
         ),
       );
+
+  static ThemeData get light => dark;
 }

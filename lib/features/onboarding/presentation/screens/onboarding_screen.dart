@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -66,61 +67,61 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     });
  
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Page indicators
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.lg,
-                vertical: AppSpacing.md,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  4,
-                  (index) => _buildDot(index, state.currentPage),
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: _OnboardingAtmosphere()),
+          SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                      (index) => _buildDot(index, state.currentPage),
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _buildWelcomePage(),
+                      _buildWakeTimePage(state, controller),
+                      _buildDurationPage(state, controller),
+                      _buildGoalsPage(state, controller),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: AppButton(
+                    label: state.currentPage == 3
+                        ? AppI18n.t('common.finish', langCode)
+                        : state.currentPage == 0
+                            ? AppI18n.t('common.start', langCode)
+                            : AppI18n.t('common.next', langCode),
+                    onPressed: state.canProceed
+                        ? () {
+                            if (state.currentPage == 3) {
+                              controller.completeOnboarding(ref);
+                            } else {
+                              controller.nextPage();
+                            }
+                          }
+                        : null,
+                  ),
+                ),
+              ],
             ),
- 
-            // Pages
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildWelcomePage(),
-                  _buildWakeTimePage(state, controller),
-                  _buildDurationPage(state, controller),
-                  _buildGoalsPage(state, controller),
-                ],
-              ),
-            ),
- 
-            // Bottom button
-            Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: AppButton(
-                label: state.currentPage == 3
-                  ? AppI18n.t('common.finish', langCode)
-                  : state.currentPage == 0
-                    ? AppI18n.t('common.start', langCode)
-                    : AppI18n.t('common.next', langCode),
-                onPressed: state.canProceed
-                    ? () {
-                        if (state.currentPage == 3) {
-                          controller.completeOnboarding(ref);
-                        } else {
-                          controller.nextPage();
-                        }
-                      }
-                    : null,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -130,10 +131,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
-      width: isActive ? 24 : 8,
-      height: 8,
+      width: isActive ? 22 : 7,
+      height: 7,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : AppColors.surfaceLight,
+        color: isActive ? const Color(0xFFF0F2F6) : const Color(0x66DEE3ED),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       ),
     );
@@ -146,14 +147,15 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         width: 100,
         height: 100,
         decoration: BoxDecoration(
-          color: AppColors.primaryLight,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+          color: const Color(0x2EE8EDF8),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+          border: Border.all(color: const Color(0x66F2F5FA)),
         ),
         child: const Center(
           child: Icon(
             Icons.wb_sunny_rounded,
             size: 56,
-            color: AppColors.primary,
+            color: Color(0xFFF2F4F8),
           ),
         ),
       ),
@@ -177,9 +179,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: IconButton(
               onPressed: () => controller.previousPage(),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: AppColors.textPrimary,
+              icon: const Icon(Icons.arrow_back_rounded),
+              color: const Color(0xFFF2F4F8),
+              style: IconButton.styleFrom(
+                backgroundColor: const Color(0x28ECF0F8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                ),
               ),
             ),
           ),
@@ -215,9 +221,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: IconButton(
               onPressed: () => controller.previousPage(),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: AppColors.textPrimary,
+              icon: const Icon(Icons.arrow_back_rounded),
+              color: const Color(0xFFF2F4F8),
+              style: IconButton.styleFrom(
+                backgroundColor: const Color(0x28ECF0F8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                ),
               ),
             ),
           ),
@@ -253,9 +263,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: IconButton(
               onPressed: () => controller.previousPage(),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: AppColors.textPrimary,
+              icon: const Icon(Icons.arrow_back_rounded),
+              color: const Color(0xFFF2F4F8),
+              style: IconButton.styleFrom(
+                backgroundColor: const Color(0x28ECF0F8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                ),
               ),
             ),
           ),
@@ -298,7 +312,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
-      backgroundColor: AppColors.surface,
+      backgroundColor: AppColors.surfaceElevated,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLarge)),
       ),
@@ -353,6 +367,77 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           },
         );
       },
+    );
+  }
+}
+
+class _OnboardingAtmosphere extends StatelessWidget {
+  const _OnboardingAtmosphere();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF6D7886),
+            Color(0xFF5D6470),
+            Color(0xFF4A4851),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -80,
+            left: -70,
+            child: _SoftHalo(size: 220, color: Color(0x45E9F0FF)),
+          ),
+          Positioned(
+            bottom: -90,
+            right: -80,
+            child: _SoftHalo(size: 260, color: Color(0x40FFDCC2)),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0x22000000),
+                      Colors.transparent,
+                      const Color(0x24000000),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SoftHalo extends StatelessWidget {
+  const _SoftHalo({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImageFiltered(
+      imageFilter: ImageFilter.blur(sigmaX: 48, sigmaY: 48),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      ),
     );
   }
 }

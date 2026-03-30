@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -92,28 +93,38 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
     _moodAfter ??= timerState.moodBefore;
  
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: _CompletionAtmosphere()),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               const Spacer(),
  
               // Celebration icon
-              Container(
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                  color: AppColors.surfaceElevated.withValues(alpha: 0.56),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+                  border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
                 ),
                 child: const Center(
                   child: Icon(
                     Icons.emoji_events_outlined,
                     size: 56,
-                    color: AppColors.primary,
+                    color: Color(0xFFEDEEF3),
+                  ),
+                ),
                   ),
                 ),
               ),
@@ -122,7 +133,10 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
               // Title
               Text(
                 AppI18n.t('completion.title', langCode),
-                style: AppTypography.displayMedium,
+                style: AppTypography.displayMedium.copyWith(
+                  color: const Color(0xFFF1F3F7),
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.xxl),
@@ -276,9 +290,10 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                     vertical: AppSpacing.md,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.streak.withValues(alpha: 0.15),
+                    color: AppColors.surfaceElevated.withValues(alpha: 0.55),
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusMedium),
+                    border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -317,9 +332,11 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                         ),
               ),
               const SizedBox(height: AppSpacing.lg),
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -390,6 +407,77 @@ class _StatCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CompletionAtmosphere extends StatelessWidget {
+  const _CompletionAtmosphere();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF222C3F),
+            Color(0xFF171F2F),
+            Color(0xFF131A28),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -110,
+            left: -80,
+            child: _CompletionHalo(size: 240, color: Color(0x2EDCE6FF)),
+          ),
+          Positioned(
+            bottom: -120,
+            right: -80,
+            child: _CompletionHalo(size: 280, color: Color(0x25F0D6C3)),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0x22000000),
+                      Colors.transparent,
+                      const Color(0x20000000),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompletionHalo extends StatelessWidget {
+  const _CompletionHalo({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImageFiltered(
+      imageFilter: ImageFilter.blur(sigmaX: 56, sigmaY: 56),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

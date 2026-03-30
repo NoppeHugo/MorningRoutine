@@ -134,14 +134,15 @@ class RoutineBuilderScreen extends ConsumerWidget {
                     vertical: AppSpacing.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceLight,
+                    color: AppColors.surfaceElevated.withValues(alpha: 0.64),
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusFull),
+                    border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
                   ),
                   child: Text(
                     '${routine.totalDurationMinutes} min',
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -162,7 +163,7 @@ class RoutineBuilderScreen extends ConsumerWidget {
                     proxyDecorator: (child, index, animation) {
                       return Material(
                         color: Colors.transparent,
-                        elevation: 4,
+                        elevation: 1,
                         child: child,
                       );
                     },
@@ -283,9 +284,9 @@ class _RoutineManagementCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        border: Border.all(color: AppColors.surfaceLight),
+        color: AppColors.surfaceElevated.withValues(alpha: 0.62),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
+        border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +303,7 @@ class _RoutineManagementCard extends StatelessWidget {
             isExpanded: true,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.background,
+              fillColor: AppColors.surface.withValues(alpha: 0.75),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
                 borderSide: BorderSide.none,
@@ -406,8 +407,9 @@ class _ActivationSummary extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.primaryLight,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        color: AppColors.surfaceElevated.withValues(alpha: 0.64),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

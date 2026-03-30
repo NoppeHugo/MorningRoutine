@@ -1,5 +1,80 @@
 # Progression — Morning Routine Builder
 
+## Session : 30 Mars 2026 — Refonte Home premium Apple-like (en cours)
+
+### En cours
+
+- Refonte complete de `HomeScreen` pour passer d'un layout dashboard a une experience editoriale emotionnelle
+- Direction visuelle inspiree de la reference fournie:
+  - fond atmospherique brumeux
+  - carte maitresse unique translucide
+  - controls capsules en haut a droite
+  - CTA principal ivoire tres sobre
+- Reduction de la densite d'information visible pour favoriser calme et respiration
+
+### Termine
+
+- Home refactorise sur une structure editoriale premium:
+  - suppression de l'empilement de cartes utilitaires
+  - nouveau hero de salutation avec controles capsule et orb profil
+  - semaine/streak rendus discrets en ligne haute
+  - carte maitresse unique en bas de l'ecran (frosted panel chaud)
+- Fond atmospherique implemente:
+  - grand degrade brumeux multi-tons (gris bleute, taupe, beige fume)
+  - halos diffus tres doux (blanc, aqua pale, sable)
+  - blur global subtil pour la profondeur
+- Carte principale premium implementee:
+  - header minimal avec icone et action discrete
+  - orb centrale lumineuse abstraite
+  - panneau secondaire doux (routine + duree)
+  - CTA principal ivoire tres sobre et tres arrondi
+- Animation d'entree discrete ajoutee (fade + slide vertical leger)
+- Aucune erreur de diagnostic sur les fichiers modifies
+
+## Session : 30 Mars 2026 — Extension refonte premium sur toute l'app
+
+### Ce qui a ete applique
+
+- Design system global bascule en dark premium:
+  - palette `AppColors` revue (fond profond, surfaces graphite, accents subtils)
+  - `AppTheme` unifie en mode dark premium
+  - `App` force en `ThemeMode.dark`
+- Composants core raffines:
+  - `AppButton` refait en CTA doux ivoire / capsule secondaire fine
+  - `AppCard` passe en surface frosted subtile (blur + bord fin)
+  - `AppScaffold` recoit un fond atmospherique global (degrade + halos)
+  - `SettingsTile` adouci (rayons larges, bord discret)
+- Ecrans redesignes avec langage visuel coherent:
+  - Onboarding: fond atmospherique, controls adoucis, progression premium
+  - Routine Builder: cartes/summary/chips adoucis et harmonises
+  - Timer: fond atmospherique, panneaux checklist et preview premium
+  - Completion: ambiance premium, surfaces translucides, hierarchy plus calme
+  - Settings: toggles et contrastes adoucis, rendu global plus haut de gamme
+
+### Validation
+
+✅ Diagnostics sans erreur sur tous les fichiers modifies
+
+## Session : 30 Mars 2026 — Passe polish mobile reel (contraste/blur/lisibilite)
+
+### Ce qui a ete ajuste
+
+- Home:
+  - contraste texte secondaire renforce
+  - brume de fond reduite pour garder la matiere sans voiler la lecture
+  - scrim vertical leger ajoute pour stabiliser la lisibilite
+  - carte principale rendue responsive sur petits ecrans (orb/espacements adaptatifs)
+- Timer + Completion + Onboarding:
+  - scrim d'ambiance ajoute pour lisibilite constante en haut et bas d'ecran
+  - titres importants renforces en contraste
+- Composants:
+  - `AppCard` blur reduit (rendu moins laiteux)
+  - `AppButton` hit area plus fiable + radius interaction aligne
+
+### Validation
+
+✅ Diagnostics sans erreur apres la passe mobile reel
+
 ## Session : 30 Mars 2026 — Reparation coherence globale post-review
 
 ### Corrections appliquees

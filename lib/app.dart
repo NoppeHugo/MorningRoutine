@@ -16,8 +16,9 @@ class App extends ConsumerWidget {
     return MaterialApp.router(
       title: AppI18n.t('app.title', locale.languageCode),
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      themeMode: ThemeMode.light,
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       locale: locale,
       supportedLocales: const [
         Locale('fr'),

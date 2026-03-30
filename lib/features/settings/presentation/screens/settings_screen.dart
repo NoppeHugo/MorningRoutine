@@ -87,7 +87,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.morningReminder', langCode),
             trailing: Switch(
               value: _settings.notificationsEnabled,
-              activeColor: AppColors.primary,
+              activeColor: AppColors.textOnPrimary,
+              activeTrackColor: AppColors.primary,
               onChanged: (value) async {
                 setState(() {
                   _settings =
@@ -139,7 +140,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.sound', langCode),
             trailing: Switch(
               value: _settings.soundEnabled,
-              activeColor: AppColors.primary,
+              activeColor: AppColors.textOnPrimary,
+              activeTrackColor: AppColors.primary,
               onChanged: (value) {
                 setState(() {
                   _settings = _settings.copyWith(soundEnabled: value);
@@ -152,7 +154,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.vibration', langCode),
             trailing: Switch(
               value: _settings.vibrationEnabled,
-              activeColor: AppColors.primary,
+              activeColor: AppColors.textOnPrimary,
+              activeTrackColor: AppColors.primary,
               onChanged: (value) {
                 setState(() {
                   _settings =

@@ -21,23 +21,19 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+      color: AppColors.surfaceElevated.withValues(alpha: 0.55),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
         child: Container(
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.md,
             vertical: AppSpacing.md,
           ),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.surfaceLight,
-                width: 0.5,
-              ),
-            ),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+            border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

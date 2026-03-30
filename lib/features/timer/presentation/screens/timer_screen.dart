@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -73,10 +74,13 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
 
     if (state.sessionMode == RoutineSessionMode.checklist) {
       return Scaffold(
-        backgroundColor: AppColors.background,
-        body: SafeArea(
-          child: Column(
-            children: [
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            const Positioned.fill(child: _TimerAtmosphere()),
+            SafeArea(
+              child: Column(
+                children: [
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -85,13 +89,25 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                     onPressed: () => _confirmQuit(context),
                     icon: const Icon(
                       Icons.close,
-                      color: AppColors.textSecondary,
+                      color: Color(0xFFEFF2F6),
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.surface.withValues(alpha: 0.45),
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceElevated.withValues(alpha: 0.58),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                  border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
+                ),
                 child: Row(
                   children: [
                     Container(
@@ -107,7 +123,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                       child: Text(
                         AppI18n.t('timer.modeChecklist', langCode),
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.primary,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -148,16 +164,24 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                     final isDone = state.completedBlocks.any(
                       (r) => r.blockId == block.id && r.completed,
                     );
-                    return CheckboxListTile(
-                      value: isDone,
-                      onChanged: (value) => controller.toggleChecklistBlock(
-                        block.id,
-                        value ?? false,
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceElevated.withValues(alpha: 0.62),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                        border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
                       ),
-                      title: Text('${block.emoji} ${block.name}'),
-                      subtitle: Text('${block.durationMinutes} min'),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      activeColor: AppColors.secondary,
+                      child: CheckboxListTile(
+                        value: isDone,
+                        onChanged: (value) => controller.toggleChecklistBlock(
+                          block.id,
+                          value ?? false,
+                        ),
+                        title: Text('${block.emoji} ${block.name}'),
+                        subtitle: Text('${block.durationMinutes} min'),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: AppColors.secondary,
+                      ),
                     );
                   },
                 ),
@@ -174,17 +198,22 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                   onPressed: () => controller.finishChecklist(),
                 ),
               ),
-            ],
-          ),
+                ],
+              ),
+            ),
+          ],
         ),
       );
     }
  
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: _TimerAtmosphere()),
+          SafeArea(
+            child: Column(
+              children: [
             // Close button
             Align(
               alignment: Alignment.topRight,
@@ -194,7 +223,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                   onPressed: () => _confirmQuit(context),
                   icon: const Icon(
                     Icons.close,
-                    color: AppColors.textSecondary,
+                    color: Color(0xFFEFF2F6),
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: AppColors.surface.withValues(alpha: 0.45),
                   ),
                 ),
               ),
@@ -263,7 +295,10 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             ),
  
             const SizedBox(height: AppSpacing.xxl),
-          ],
+              ],
+            ),
+          ),
+        ],
         ),
       ),
     );
@@ -277,6 +312,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
+      backgroundColor: AppColors.surfaceElevated,
       builder: (ctx) {
         return SafeArea(
           child: Padding(
@@ -368,6 +404,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
+      backgroundColor: AppColors.surfaceElevated,
       builder: (ctx) {
         return SafeArea(
           child: Padding(
@@ -405,8 +442,9 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+        color: AppColors.surfaceElevated.withValues(alpha: 0.58),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
       ),
       child: Row(
         children: [
@@ -457,6 +495,77 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TimerAtmosphere extends StatelessWidget {
+  const _TimerAtmosphere();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF1D2637),
+            Color(0xFF151E2D),
+            Color(0xFF121927),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -60,
+            left: -90,
+            child: _TimerHalo(size: 220, color: Color(0x2FCFDFFF)),
+          ),
+          Positioned(
+            bottom: -110,
+            right: -70,
+            child: _TimerHalo(size: 280, color: Color(0x26F6DCC8)),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0x1E000000),
+                      Colors.transparent,
+                      const Color(0x20000000),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimerHalo extends StatelessWidget {
+  const _TimerHalo({required this.size, required this.color});
+
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImageFiltered(
+      imageFilter: ImageFilter.blur(sigmaX: 54, sigmaY: 54),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

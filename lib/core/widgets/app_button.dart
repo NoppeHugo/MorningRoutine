@@ -56,6 +56,7 @@ class _AppButtonState extends State<AppButton>
     final isDisabled = widget.onPressed == null || widget.isLoading;
  
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: isDisabled ? null : (_) => _scaleController.forward(),
       onTapUp: isDisabled ? null : (_) => _scaleController.reverse(),
       onTapCancel: isDisabled ? null : () => _scaleController.reverse(),
@@ -86,15 +87,15 @@ class _AppButtonState extends State<AppButton>
       width: widget.isExpanded ? double.infinity : null,
       child: Container(
         decoration: BoxDecoration(
-          color: isDisabled ? AppColors.surfaceLight : AppColors.primary,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+          color: isDisabled ? AppColors.surfaceLight : const Color(0xFFEFEAE3),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           boxShadow: isDisabled
               ? null
-              : [
+              : const [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.25),
-                    offset: const Offset(0, 4),
-                    blurRadius: 16,
+                    color: Color(0x14000000),
+                    offset: Offset(0, 4),
+                    blurRadius: 14,
                   ),
                 ],
         ),
@@ -102,7 +103,7 @@ class _AppButtonState extends State<AppButton>
           color: Colors.transparent,
           child: InkWell(
             onTap: isDisabled ? null : widget.onPressed,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: AppSpacing.md,
@@ -111,7 +112,7 @@ class _AppButtonState extends State<AppButton>
               child: _buildContent(
                 isDisabled
                     ? AppColors.textTertiary
-                    : AppColors.textOnPrimary,
+                      : const Color(0xFF5F5A55),
               ),
             ),
           ),
@@ -125,25 +126,25 @@ class _AppButtonState extends State<AppButton>
       width: widget.isExpanded ? double.infinity : null,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+          color: AppColors.surfaceElevated.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
           border: Border.all(
-            color: isDisabled ? AppColors.surfaceLight : AppColors.primary,
-            width: 1.5,
+            color: isDisabled ? AppColors.surfaceLight : AppColors.separator,
+            width: 1,
           ),
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: isDisabled ? null : widget.onPressed,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: AppSpacing.md,
                 horizontal: AppSpacing.lg,
               ),
               child: _buildContent(
-                isDisabled ? AppColors.textTertiary : AppColors.primary,
+                isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
               ),
             ),
           ),
