@@ -10,6 +10,8 @@ import '../../features/routine_builder/presentation/screens/block_selector_scree
 import '../../features/routine_builder/presentation/screens/routine_builder_screen.dart';
 import '../../features/routine_builder/presentation/screens/template_chooser_screen.dart';
 import '../../features/scoring/presentation/screens/history_screen.dart';
+import '../../features/shared_routines/presentation/screens/shared_routine_detail_screen.dart';
+import '../../features/shared_routines/presentation/screens/shared_routines_catalog_screen.dart';
 import '../../features/settings/presentation/screens/privacy_policy_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/timer/presentation/screens/completion_screen.dart';
@@ -22,6 +24,7 @@ abstract class AppRoutes {
   static const builder = '/builder';
   static const builderBlocks = '/builder/blocks';
   static const templates = '/templates';
+  static const sharedRoutines = '/shared-routines';
   static const timer = '/timer';
   static const completion = '/completion';
   static const settings = '/settings';
@@ -63,6 +66,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.templates,
         builder: (context, state) => const TemplateChooserScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.sharedRoutines,
+        builder: (context, state) => const SharedRoutinesCatalogScreen(),
+      ),
+      GoRoute(
+        path: '${AppRoutes.sharedRoutines}/:templateId',
+        builder: (context, state) => SharedRoutineDetailScreen(
+          templateId: state.pathParameters['templateId'] ?? '',
+        ),
       ),
       GoRoute(
         path: AppRoutes.timer,

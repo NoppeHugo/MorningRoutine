@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -12,12 +13,14 @@ class TimerControls extends StatelessWidget {
     required this.onPlayPause,
     required this.onSkip,
     required this.onDone,
+    required this.langCode,
   });
  
   final TimerStatus status;
   final VoidCallback onPlayPause;
   final VoidCallback onSkip;
   final VoidCallback onDone;
+  final String langCode;
  
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class TimerControls extends StatelessWidget {
         // Skip button
         _ControlButton(
           icon: Icons.skip_next_rounded,
-          label: 'Skip',
+          label: AppI18n.t('timer.skip', langCode),
           color: AppColors.textSecondary,
           onTap: onSkip,
         ),
@@ -41,7 +44,7 @@ class TimerControls extends StatelessWidget {
         // Done button
         _ControlButton(
           icon: Icons.check_rounded,
-          label: 'Done',
+          label: AppI18n.t('timer.done', langCode),
           color: AppColors.secondary,
           onTap: onDone,
         ),

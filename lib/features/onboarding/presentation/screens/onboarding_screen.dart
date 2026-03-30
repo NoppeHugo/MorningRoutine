@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../settings/data/settings_repository.dart';
 import '../onboarding_controller.dart';
 import '../widgets/duration_selector.dart';
 import '../widgets/goals_selector.dart';
@@ -22,11 +24,15 @@ class OnboardingScreen extends ConsumerStatefulWidget {
  
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   late final PageController _pageController;
+  bool _askedLanguage = false;
  
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _promptLanguageOnFirstOpen();
+    });
   }
  
   @override
@@ -45,6 +51,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
  
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(appLanguageProvider);
+    final langCode = locale.languageCode;
     final state = ref.watch(onboardingControllerProvider);
     final controller = ref.read(onboardingControllerProvider.notifier);
  
@@ -95,7 +103,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: AppButton(
-                label: state.currentPage == 3 ? 'Terminer' : state.currentPage == 0 ? 'Commencer' : 'Suivant',
+                label: state.currentPage == 3
+                  ? AppI18n.t('common.finish', langCode)
+                  : state.currentPage == 0
+                    ? AppI18n.t('common.start', langCode)
+                    : AppI18n.t('common.next', langCode),
                 onPressed: state.canProceed
                     ? () {
                         if (state.currentPage == 3) {
@@ -128,6 +140,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
  
   Widget _buildWelcomePage() {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return OnboardingPage(
       iconWidget: Container(
         width: 100,
@@ -144,8 +157,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         ),
       ),
-      title: 'Morning Routine\nBuilder',
-      subtitle: 'Construis ta matinée\nparfaite, bloc par bloc',
+      title: AppI18n.t('onboarding.title', langCode),
+      subtitle: AppI18n.t('onboarding.subtitle', langCode),
     );
   }
  
@@ -153,6 +166,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     dynamic state,
     OnboardingController controller,
   ) {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
@@ -172,7 +186,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'À quelle heure\nte réveilles-tu ?',
+          AppI18n.t('onboarding.wakeTime', langCode),
           style: AppTypography.headingLarge,
           textAlign: TextAlign.center,
         ),
@@ -191,6 +205,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     dynamic state,
     OnboardingController controller,
   ) {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
@@ -209,7 +224,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'Combien de temps\npour ta routine ?',
+          AppI18n.t('onboarding.duration', langCode),
           style: AppTypography.headingLarge,
           textAlign: TextAlign.center,
         ),
@@ -228,6 +243,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     dynamic state,
     OnboardingController controller,
   ) {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
@@ -246,13 +262,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         ),
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'Quels sont tes\nobjectifs ?',
+          AppI18n.t('onboarding.goals', langCode),
           style: AppTypography.headingLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          '(choisis-en plusieurs)',
+          AppI18n.t('onboarding.goalsSub', langCode),
           style: AppTypography.bodyMedium.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -265,6 +281,78 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _promptLanguageOnFirstOpen() async {
+    if (_askedLanguage || !mounted) return;
+
+    final settings = settingsRepositoryInstance.loadSettings();
+    if (settings.hasChosenLanguage) return;
+
+    _askedLanguage = true;
+    final locale = ref.read(appLanguageProvider);
+    String selected = settings.languageCode;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLarge)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppI18n.t('onboarding.languageTitle', locale.languageCode),
+                    style: AppTypography.headingSmall,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    AppI18n.t('onboarding.languageSub', locale.languageCode),
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ...supportedLanguageCodes.map((code) {
+                    final isSelected = selected == code;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(languageLabel(code)),
+                      trailing: isSelected
+                          ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                          : null,
+                      onTap: () => setModalState(() => selected = code),
+                    );
+                  }),
+                  const SizedBox(height: AppSpacing.md),
+                  AppButton(
+                    label: AppI18n.t('onboarding.languageContinue', locale.languageCode),
+                    onPressed: () async {
+                      final current = settingsRepositoryInstance.loadSettings();
+                      await settingsRepositoryInstance.saveSettings(
+                        current.copyWith(
+                          languageCode: selected,
+                          hasChosenLanguage: true,
+                        ),
+                      );
+                      await ref.read(appLanguageProvider.notifier).setLanguage(selected);
+                      if (ctx.mounted) Navigator.of(ctx).pop();
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -24,6 +24,9 @@ class SettingsRepository {
       soundEnabled: _box.get('soundEnabled', defaultValue: true) as bool,
       vibrationEnabled:
           _box.get('vibrationEnabled', defaultValue: true) as bool,
+      languageCode: _box.get('languageCode', defaultValue: 'fr') as String,
+      hasChosenLanguage:
+          _box.get('hasChosenLanguage', defaultValue: false) as bool,
     );
   }
  
@@ -36,6 +39,8 @@ class SettingsRepository {
         'notificationTimeMinute', settings.notificationTime.minute);
     await _box.put('soundEnabled', settings.soundEnabled);
     await _box.put('vibrationEnabled', settings.vibrationEnabled);
+    await _box.put('languageCode', settings.languageCode);
+    await _box.put('hasChosenLanguage', settings.hasChosenLanguage);
   }
  
   Future<void> resetAllData() async {

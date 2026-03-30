@@ -36,6 +36,50 @@
 3. **Tracker** sa progression avec scores et streaks
 4. **Acheter** des routines d'experts (V2)
 
+### 1.1.1 Extension strategique
+
+Le cahier des charges detaille pour la section "routines partagees / createurs inspirants" est documente dans:
+- `ROUTINES_PARTAGEES_CAHIER_DES_CHARGES.md`
+petit extrait : 
+(## 1. Vision produit
+
+Permettre a l'utilisateur de suivre des routines inspirees de createurs connus (sport, productivite, bien-etre, business, spiritualite), avec un cadre motivant et credibilise.
+
+Objectif principal:
+- Transformer l'intention "je veux une routine comme X" en execution quotidienne simple dans l'app.
+
+Objectifs secondaires:
+- Augmenter l'activation de routine en onboarding.
+- Ameliorer la retention D7 et D30.
+- Creer une base premium autour de routines curateurs/expertes.
+
+## 2. Problemes a resoudre
+
+- L'utilisateur debutant ne sait pas quoi mettre dans sa routine.
+- Les routines libres demandent trop de decisions au demarrage.
+- Le manque de modele inspirant reduit l'adherence a long terme.
+
+## 3. Positionnement et principes
+
+### 3.1 Positionnement
+
+- "Inspiree de" et non "copie officielle" par defaut.
+- Focus execution pratique: blocs concrets, durees claires, ordre logique.
+- Identite narrative: chaque routine doit raconter un style de vie.
+
+### 3.2 Principes produit
+
+- Simplicite d'adoption: import en 1 tap.
+- Personnalisation immediate: edition avant activation.
+- Transparence: source de la routine et niveau de verification visibles.
+- Ethique: pas de promesse medicale ni performance irrealiste.
+
+## 4. Personas cibles
+
+- Debutant motive (18-35): veut une routine prete a l'emploi.
+- Fan d'un createur: cherche un cadre identitaire fort.
+- Utilisateur avance: veut partir d'une base experte puis adapter.)
+
 ### 1.2 Scope MVP (V1)
 
 | Inclus dans le MVP ✅ | Exclu (V2+) ❌ |
@@ -93,7 +137,7 @@
 | **Icons** | Lucide Icons (lucide_icons) | Cohérent, moderne |
 | **Fonts** | Inter (Google Fonts) | Moderne, lisible |
 
-### 2.2 Versions minimales
+### 2.2 Versions minimales 
 
 ```yaml
 environment:

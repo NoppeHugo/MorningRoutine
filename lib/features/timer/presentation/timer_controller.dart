@@ -18,8 +18,31 @@ class TimerController extends StateNotifier<TimerState> {
  
   final RoutineModel _routine;
   Timer? _timer;
+
+  void setSessionMode(RoutineSessionMode mode) {
+    state = state.copyWith(sessionMode: mode);
+  }
+
+  void setMoodBefore(String mood) {
+    state = state.copyWith(moodBefore: mood);
+  }
+
+  void setCheckoutData({
+    required String moodAfter,
+    String? reflection,
+    String? intention,
+    String? topPriority,
+  }) {
+    state = state.copyWith(
+      moodAfter: moodAfter,
+      reflection: reflection,
+      intention: intention,
+      topPriority: topPriority,
+    );
+  }
  
   void start() {
+    if (state.sessionMode != RoutineSessionMode.guided) return;
     if (state.status == TimerStatus.running) return;
  
     final now = DateTime.now();
@@ -57,11 +80,64 @@ class TimerController extends StateNotifier<TimerState> {
   }
  
   void completeBlock() {
+    if (state.sessionMode != RoutineSessionMode.guided) return;
     _completeCurrentBlock(completed: true);
   }
  
   void skipBlock() {
+    if (state.sessionMode != RoutineSessionMode.guided) return;
     _completeCurrentBlock(completed: false);
+  }
+
+  void toggleChecklistBlock(String blockId, bool done) {
+    if (state.sessionMode != RoutineSessionMode.checklist) return;
+
+    final existing = [...state.completedBlocks]
+      ..removeWhere((result) => result.blockId == blockId);
+
+    if (done) {
+      final block = state.routine.blocks.firstWhere((b) => b.id == blockId);
+      existing.add(
+        BlockResult(
+          blockId: blockId,
+          completed: true,
+          actualDurationSeconds: block.durationMinutes * 60,
+        ),
+      );
+    }
+
+    state = state.copyWith(
+      completedBlocks: existing,
+      status: TimerStatus.idle,
+      startedAt: state.startedAt ?? DateTime.now(),
+    );
+  }
+
+  void finishChecklist() {
+    if (state.sessionMode != RoutineSessionMode.checklist) return;
+
+    final doneIds = state.completedBlocks
+        .where((b) => b.completed)
+        .map((b) => b.blockId)
+        .toSet();
+
+    final results = state.routine.blocks
+        .map(
+          (block) => BlockResult(
+            blockId: block.id,
+            completed: doneIds.contains(block.id),
+            actualDurationSeconds:
+                doneIds.contains(block.id) ? block.durationMinutes * 60 : 0,
+          ),
+        )
+        .toList();
+
+    state = state.copyWith(
+      completedBlocks: results,
+      status: TimerStatus.completed,
+      secondsRemaining: 0,
+      startedAt: state.startedAt ?? DateTime.now(),
+    );
   }
  
   void _completeCurrentBlock({required bool completed}) {
@@ -117,7 +193,7 @@ class TimerController extends StateNotifier<TimerState> {
 final timerControllerProvider =
     StateNotifierProvider.autoDispose<TimerController, TimerState>((ref) {
   final routineState = ref.read(routineBuilderControllerProvider);
-  final routine = routineState.routine;
+  final routine = routineState.activeRoutine;
  
   if (routine == null || routine.blocks.isEmpty) {
     throw StateError('No routine available to start timer');

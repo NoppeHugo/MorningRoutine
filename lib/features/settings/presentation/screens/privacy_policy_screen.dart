@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -10,8 +11,9 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     return AppScaffold(
-      title: 'Confidentialité',
+      title: AppI18n.t('privacy.title', langCode),
       showBackButton: true,
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),

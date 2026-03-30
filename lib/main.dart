@@ -10,6 +10,7 @@ import 'core/constants/app_constants.dart';
 import 'features/notifications/data/notification_service.dart';
 import 'features/routine_builder/domain/block_model.dart';
 import 'features/routine_builder/domain/routine_model.dart';
+import 'features/shared_routines/data/shared_routines_local_source.dart';
 import 'shared/models/time_of_day_adapter.dart';
 
 Future<void> main() async {
@@ -42,6 +43,10 @@ Future<void> main() async {
     Hive.openBox(AppConstants.scoresBoxName),
     Hive.openBox(AppConstants.settingsBoxName),
   ]);
+
+  // Initialize shared routines cache (offline access)
+  final localSource = SharedRoutinesLocalSource();
+  await localSource.initialize();
 
   // Initialize notifications
   await NotificationService.instance.initialize();

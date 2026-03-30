@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
+import '../../../paywall/presentation/premium_controller.dart';
 import '../../../scoring/presentation/scoring_controller.dart';
 import '../../domain/timer_state.dart';
 import '../timer_controller.dart';
@@ -20,28 +22,24 @@ class CompletionScreen extends ConsumerStatefulWidget {
 }
  
 class _CompletionScreenState extends ConsumerState<CompletionScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Save score after the widget builds
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _saveScore();
-    });
-  }
+  String? _moodAfter;
+  final TextEditingController _reflectionCtrl = TextEditingController();
+  final TextEditingController _intentionCtrl = TextEditingController();
+  final TextEditingController _priorityCtrl = TextEditingController();
+  bool _isSaving = false;
  
-  Future<void> _saveScore() async {
-    try {
-      final timerState = ref.read(timerControllerProvider);
-      await ref
-          .read(scoringControllerProvider.notifier)
-          .saveRoutineResult(timerState);
-    } catch (_) {
-      // Timer provider may have been disposed already
-    }
+  @override
+  void dispose() {
+    _reflectionCtrl.dispose();
+    _intentionCtrl.dispose();
+    _priorityCtrl.dispose();
+    super.dispose();
   }
  
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    final isPremium = ref.watch(premiumControllerProvider).isPremium;
     late final TimerState timerState;
     try {
       timerState = ref.watch(timerControllerProvider);
@@ -67,6 +65,9 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
  
     final scoringState = ref.watch(scoringControllerProvider);
     final streak = scoringState.currentStreak;
+    final moods = ['tired', 'calm', 'stressed', 'focused', 'energized'];
+
+    _moodAfter ??= timerState.moodBefore;
  
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -98,7 +99,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
  
               // Title
               Text(
-                'Routine terminée !',
+                AppI18n.t('completion.title', langCode),
                 style: AppTypography.displayMedium,
                 textAlign: TextAlign.center,
               ),
@@ -118,7 +119,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Score',
+                      AppI18n.t('completion.score', langCode),
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -134,26 +135,116 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                   Expanded(
                     child: _StatCard(
                       value: '$completedCount/$totalBlocks',
-                      label: 'blocs complétés',
+                      label: AppI18n.t('completion.completedBlocks', langCode),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
                       value: '$skippedCount',
-                      label: 'blocs skippés',
+                      label: AppI18n.t('completion.skippedBlocks', langCode),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
                       value: '${totalMinutes}min',
-                      label: 'durée',
+                      label: AppI18n.t('completion.duration', langCode),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.xl),
+
+              if (isPremium) ...[
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppI18n.t('timer.howFeelAfter', langCode),
+                        style: AppTypography.labelMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Wrap(
+                        spacing: AppSpacing.xs,
+                        runSpacing: AppSpacing.xs,
+                        children: moods
+                            .map(
+                              (mood) => ChoiceChip(
+                                label: Text(
+                                  AppI18n.t('mood.$mood', langCode),
+                                ),
+                                selected: _moodAfter == mood,
+                                onSelected: (_) {
+                                  setState(() => _moodAfter = mood);
+                                },
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppI18n.t('completion.journalTitle', langCode),
+                        style: AppTypography.labelMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextField(
+                        controller: _reflectionCtrl,
+                        decoration: InputDecoration(
+                          hintText: AppI18n.t('completion.promptReflection', langCode),
+                        ),
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextField(
+                        controller: _intentionCtrl,
+                        decoration: InputDecoration(
+                          hintText: AppI18n.t('completion.promptIntention', langCode),
+                        ),
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      TextField(
+                        controller: _priorityCtrl,
+                        decoration: InputDecoration(
+                          hintText: AppI18n.t('completion.promptPriority', langCode),
+                        ),
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+              ] else ...[
+                AppCard(
+                  child: Column(
+                    children: [
+                      Text(
+                        AppI18n.t('completion.proInsightsTitle', langCode),
+                        style: AppTypography.labelMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        AppI18n.t('completion.proInsightsSub', langCode),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+              ],
  
               // Streak
               if (streak > 0)
@@ -184,7 +275,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
-                        'de streak',
+                        AppI18n.t('completion.streakSuffix', langCode),
                         style: AppTypography.bodyMedium.copyWith(
                           color: AppColors.streak,
                         ),
@@ -197,8 +288,16 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
  
               // Return button
               AppButton(
-                label: 'Retour à l\'accueil',
-                onPressed: () => context.go(AppRoutes.home),
+                label: _isSaving
+                    ? AppI18n.t('paywall.processing', langCode)
+                    : AppI18n.t('completion.finishSave', langCode),
+                onPressed: _isSaving
+                    ? null
+                    : () => _saveAndExit(
+                          timerState: timerState,
+                          isPremium: isPremium,
+                          langCode: langCode,
+                        ),
               ),
               const SizedBox(height: AppSpacing.lg),
             ],
@@ -206,6 +305,45 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _saveAndExit({
+    required TimerState timerState,
+    required bool isPremium,
+    required String langCode,
+  }) async {
+    setState(() => _isSaving = true);
+
+    try {
+      if (isPremium && _moodAfter != null) {
+        ref.read(timerControllerProvider.notifier).setCheckoutData(
+              moodAfter: _moodAfter!,
+              reflection: _reflectionCtrl.text.trim().isEmpty
+                  ? null
+                  : _reflectionCtrl.text.trim(),
+              intention: _intentionCtrl.text.trim().isEmpty
+                  ? null
+                  : _intentionCtrl.text.trim(),
+              topPriority: _priorityCtrl.text.trim().isEmpty
+                  ? null
+                  : _priorityCtrl.text.trim(),
+            );
+      }
+
+      await ref
+          .read(scoringControllerProvider.notifier)
+          .saveRoutineResult(ref.read(timerControllerProvider));
+
+      if (mounted) {
+        context.go(AppRoutes.home);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppI18n.t('completion.saveError', langCode))),
+      );
+      setState(() => _isSaving = false);
+    }
   }
 }
  

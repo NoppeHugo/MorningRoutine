@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -20,28 +21,31 @@ class RoutineBuilderScreen extends ConsumerWidget {
  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final state = ref.watch(routineBuilderControllerProvider);
     final controller = ref.read(routineBuilderControllerProvider.notifier);
+    final activeRoutine = state.activeRoutine;
+    final scheduledRoutine = state.scheduledRoutine;
  
     if (state.isLoading) {
-      return const AppScaffold(
-        title: 'Ma Routine',
+      return AppScaffold(
+        title: AppI18n.t('builder.title', langCode),
         showBackButton: true,
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
  
     final routine = state.routine;
     if (routine == null) {
-      return const AppScaffold(
-        title: 'Ma Routine',
+      return AppScaffold(
+        title: AppI18n.t('builder.title', langCode),
         showBackButton: true,
-        body: Center(child: Text('Erreur de chargement')),
+        body: Center(child: Text(AppI18n.t('builder.loadError', langCode))),
       );
     }
  
     return AppScaffold(
-      title: 'Ma Routine',
+      title: AppI18n.t('builder.title', langCode),
       showBackButton: true,
       actions: [
         IconButton(
@@ -62,6 +66,40 @@ class RoutineBuilderScreen extends ConsumerWidget {
       ],
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              0,
+            ),
+            child: _RoutineManagementCard(
+              state: state,
+              onSelectRoutine: controller.selectRoutine,
+              onCreateRoutine: controller.createRoutine,
+              onDeleteRoutine: () =>
+                  _confirmDeleteRoutine(context, controller.deleteSelectedRoutine),
+              onActivateNow: controller.activateSelectedRoutineNow,
+              onActivateTomorrow: controller.scheduleSelectedRoutineForTomorrow,
+              onClearTomorrowActivation: controller.clearScheduledActivation,
+            ),
+          ),
+
+          if (activeRoutine != null || scheduledRoutine != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.md,
+                AppSpacing.lg,
+                0,
+              ),
+              child: _ActivationSummary(
+                activeRoutineName: activeRoutine?.name,
+                scheduledRoutineName: scheduledRoutine?.name,
+                scheduledDate: state.pendingActivation?.activationDate,
+              ),
+            ),
+
           // Header info
           Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -72,14 +110,18 @@ class RoutineBuilderScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Réveil: ${DurationUtils.formatTimeOfDay(routine.wakeTime)}',
+                      AppI18n.tf('builder.wakeFmt', langCode, {
+                        'time': DurationUtils.formatTimeOfDay(routine.wakeTime),
+                      }),
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Fin estimée: ${DurationUtils.formatTimeOfDay(routine.endTime)}',
+                      AppI18n.tf('builder.endFmt', langCode, {
+                        'time': DurationUtils.formatTimeOfDay(routine.endTime),
+                      }),
                       style: AppTypography.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -158,12 +200,12 @@ class RoutineBuilderScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Supprimer ce bloc ?'),
-        content: const Text('Cette action est irréversible.'),
+        title: Text(AppI18n.t('builder.confirmDeleteBlock', Localizations.localeOf(context).languageCode)),
+        content: Text(AppI18n.t('builder.deleteBlockIrreversible', Localizations.localeOf(context).languageCode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(AppI18n.t('common.cancel', Localizations.localeOf(context).languageCode)),
           ),
           TextButton(
             onPressed: () {
@@ -171,10 +213,227 @@ class RoutineBuilderScreen extends ConsumerWidget {
               onConfirm();
             },
             child: Text(
-              'Supprimer',
+              AppI18n.t('common.delete', Localizations.localeOf(context).languageCode),
               style: TextStyle(color: AppColors.error),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDeleteRoutine(
+    BuildContext context,
+    Future<void> Function() onConfirm,
+  ) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(AppI18n.t('builder.confirmDeleteRoutine', Localizations.localeOf(context).languageCode)),
+        content: Text(AppI18n.t('builder.deleteRoutineHint', Localizations.localeOf(context).languageCode)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(AppI18n.t('common.cancel', Localizations.localeOf(context).languageCode)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await onConfirm();
+            },
+            child: Text(
+              AppI18n.t('common.delete', Localizations.localeOf(context).languageCode),
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RoutineManagementCard extends StatelessWidget {
+  const _RoutineManagementCard({
+    required this.state,
+    required this.onSelectRoutine,
+    required this.onCreateRoutine,
+    required this.onDeleteRoutine,
+    required this.onActivateNow,
+    required this.onActivateTomorrow,
+    required this.onClearTomorrowActivation,
+  });
+
+  final RoutineBuilderState state;
+  final ValueChanged<String> onSelectRoutine;
+  final Future<void> Function() onCreateRoutine;
+  final Future<void> Function() onDeleteRoutine;
+  final Future<void> Function() onActivateNow;
+  final Future<void> Function() onActivateTomorrow;
+  final Future<void> Function() onClearTomorrowActivation;
+
+  @override
+  Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    final selectedRoutine = state.routine;
+    final isSelectedActive =
+        selectedRoutine != null && selectedRoutine.id == state.activeRoutineId;
+    final hasScheduledActivation = state.pendingActivation != null;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        border: Border.all(color: AppColors.surfaceLight),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            AppI18n.t('builder.manage', langCode),
+            style: AppTypography.labelMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          DropdownButtonFormField<String>(
+            value: selectedRoutine?.id,
+            isExpanded: true,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.background,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+            ),
+            items: state.routines
+                .map(
+                  (routine) => DropdownMenuItem<String>(
+                    value: routine.id,
+                    child: Text(
+                      routine.name,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              if (value == null) return;
+              onSelectRoutine(value);
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: onCreateRoutine,
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: Text(AppI18n.t('builder.new', langCode)),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: state.routines.isEmpty ? null : onDeleteRoutine,
+                  icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                  label: Text(AppI18n.t('common.delete', langCode)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          if (isSelectedActive)
+            AppButton(
+              label: AppI18n.t('builder.activeToday', langCode),
+              variant: AppButtonVariant.secondary,
+              onPressed: null,
+              icon: Icons.check_circle_outline_rounded,
+            )
+          else
+            AppButton(
+              label: AppI18n.t('builder.activateNow', langCode),
+              variant: AppButtonVariant.secondary,
+              onPressed: onActivateNow,
+              icon: Icons.bolt_rounded,
+            ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: AppI18n.t('builder.activateTomorrow', langCode),
+            variant: AppButtonVariant.primary,
+            onPressed: onActivateTomorrow,
+            icon: Icons.calendar_today_rounded,
+          ),
+          if (hasScheduledActivation) ...[
+            const SizedBox(height: AppSpacing.sm),
+            TextButton.icon(
+              onPressed: onClearTomorrowActivation,
+              icon: const Icon(Icons.close_rounded, size: 16),
+              label: Text(AppI18n.t('builder.cancelScheduled', langCode)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ActivationSummary extends StatelessWidget {
+  const _ActivationSummary({
+    required this.activeRoutineName,
+    required this.scheduledRoutineName,
+    required this.scheduledDate,
+  });
+
+  final String? activeRoutineName;
+  final String? scheduledRoutineName;
+  final DateTime? scheduledDate;
+
+  @override
+  Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    final dateText = scheduledDate == null
+        ? null
+        : '${scheduledDate!.day.toString().padLeft(2, '0')}/${scheduledDate!.month.toString().padLeft(2, '0')}/${scheduledDate!.year}';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.primaryLight,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (activeRoutineName != null)
+            Text(
+              AppI18n.tf('builder.activeFmt', langCode, {
+                'name': activeRoutineName!,
+              }),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          if (scheduledRoutineName != null && dateText != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              AppI18n.tf('builder.tomorrowFmt', langCode, {
+                'date': dateText,
+                'name': scheduledRoutineName!,
+              }),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -188,6 +447,7 @@ class _AddBlockButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final isPremium = ref.watch(premiumControllerProvider).isPremium;
     final isAtMax = blockCount >= AppConstants.maxBlocks;
     final isAtFreeLimit =
@@ -195,7 +455,9 @@ class _AddBlockButton extends ConsumerWidget {
 
     if (isAtMax) {
       return AppButton(
-        label: 'Maximum ${AppConstants.maxBlocks} blocs atteint',
+        label: AppI18n.tf('builder.maxBlocksFmt', langCode, {
+          'max': '${AppConstants.maxBlocks}',
+        }),
         variant: AppButtonVariant.secondary,
         onPressed: null,
       );
@@ -205,14 +467,16 @@ class _AddBlockButton extends ConsumerWidget {
       return Column(
         children: [
           AppButton(
-            label: '+ Ajouter un bloc',
+            label: AppI18n.t('builder.addBlock', langCode),
             variant: AppButtonVariant.secondary,
             onPressed: () => context.push(AppRoutes.paywall),
             icon: Icons.lock_outline,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Passe à Pro pour ajouter plus de ${AppConstants.freeBlockLimit} blocs',
+            AppI18n.tf('builder.proBlocksFmt', langCode, {
+              'count': '${AppConstants.freeBlockLimit}',
+            }),
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textTertiary,
             ),
@@ -223,7 +487,7 @@ class _AddBlockButton extends ConsumerWidget {
     }
 
     return AppButton(
-      label: '+ Ajouter un bloc',
+      label: AppI18n.t('builder.addBlock', langCode),
       variant: AppButtonVariant.secondary,
       onPressed: () => context.push(AppRoutes.builderBlocks),
     );

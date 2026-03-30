@@ -9,6 +9,8 @@ class SettingsModel {
     this.notificationTime = const TimeOfDay(hour: 6, minute: 25),
     this.soundEnabled = true,
     this.vibrationEnabled = true,
+    this.languageCode = 'fr',
+    this.hasChosenLanguage = false,
   });
  
   final TimeOfDay wakeTime;
@@ -16,6 +18,8 @@ class SettingsModel {
   final TimeOfDay notificationTime;
   final bool soundEnabled;
   final bool vibrationEnabled;
+  final String languageCode;
+  final bool hasChosenLanguage;
  
   SettingsModel copyWith({
     TimeOfDay? wakeTime,
@@ -23,6 +27,8 @@ class SettingsModel {
     TimeOfDay? notificationTime,
     bool? soundEnabled,
     bool? vibrationEnabled,
+    String? languageCode,
+    bool? hasChosenLanguage,
   }) {
     return SettingsModel(
       wakeTime: wakeTime ?? this.wakeTime,
@@ -30,6 +36,8 @@ class SettingsModel {
       notificationTime: notificationTime ?? this.notificationTime,
       soundEnabled: soundEnabled ?? this.soundEnabled,
       vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
+      languageCode: languageCode ?? this.languageCode,
+      hasChosenLanguage: hasChosenLanguage ?? this.hasChosenLanguage,
     );
   }
 }

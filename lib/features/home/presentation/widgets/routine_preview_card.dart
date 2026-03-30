@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -20,6 +21,7 @@ class RoutinePreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     const maxPreviewBlocks = 3;
     final remainingCount = routine.blocks.length - maxPreviewBlocks;
 
@@ -51,7 +53,9 @@ class RoutinePreviewCard extends StatelessWidget {
                         ),
                         const SizedBox(width: AppSpacing.xs),
                         Text(
-                          '${routine.totalDurationMinutes} min au total',
+                          AppI18n.tf('preview.totalDurationFmt', langCode, {
+                            'minutes': '${routine.totalDurationMinutes}',
+                          }),
                           style: AppTypography.bodySmall,
                         ),
                       ],
@@ -93,7 +97,10 @@ class RoutinePreviewCard extends StatelessWidget {
               children: [
                 const SizedBox(width: AppSpacing.xl + AppSpacing.sm),
                 Text(
-                  '+$remainingCount autre${remainingCount > 1 ? 's' : ''} blocs',
+                  AppI18n.tf('preview.moreBlocksFmt', langCode, {
+                    'count': '$remainingCount',
+                    'suffix': remainingCount > 1 ? 's' : '',
+                  }),
                   style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textTertiary,
                     fontStyle: FontStyle.italic,

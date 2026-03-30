@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -14,13 +15,14 @@ class BlockSelectorScreen extends ConsumerWidget {
  
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final controller = ref.read(routineBuilderControllerProvider.notifier);
     final state = ref.watch(routineBuilderControllerProvider);
     final existingTemplateIds =
         state.routine?.blocks.map((b) => b.templateId).toSet() ?? {};
  
     return AppScaffold(
-      title: 'Ajouter un bloc',
+      title: AppI18n.t('blocks.addTitle', langCode),
       showBackButton: true,
       body: GridView.builder(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -64,6 +66,7 @@ class _BlockTemplateCard extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -105,7 +108,7 @@ class _BlockTemplateCard extends StatelessWidget {
             if (alreadyAdded) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'Déjà ajouté',
+                AppI18n.t('blocks.alreadyAdded', langCode),
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.textTertiary,
                   fontStyle: FontStyle.italic,

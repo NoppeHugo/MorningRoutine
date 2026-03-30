@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -16,6 +17,8 @@ class ScoreDisplay extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+
     if (score == null) {
       return AppCard(
         child: Row(
@@ -23,7 +26,7 @@ class ScoreDisplay extends StatelessWidget {
             const Text('○', style: TextStyle(fontSize: 20)),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              'Pas encore fait aujourd\'hui',
+              AppI18n.t('score.notDoneToday', langCode),
               style: AppTypography.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -46,12 +49,15 @@ class ScoreDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$percent% — ${percent >= 80 ? 'Bien joué !' : 'Peut mieux faire'}',
+                  '$percent% - ${percent >= 80 ? AppI18n.t('score.goodJob', langCode) : AppI18n.t('score.canImprove', langCode)}',
                   style: AppTypography.labelMedium.copyWith(color: color),
                 ),
                 const SizedBox(height: AppSpacing.xxs),
                 Text(
-                  '${score!.completedBlocks}/${score!.totalBlocks} blocs complétés',
+                  AppI18n.tf('score.blocksDoneFmt', langCode, {
+                    'completed': '${score!.completedBlocks}',
+                    'total': '${score!.totalBlocks}',
+                  }),
                   style: AppTypography.bodySmall,
                 ),
               ],

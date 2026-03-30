@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
+import '../../../core/localization/app_i18n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -22,6 +23,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final premiumState = ref.watch(premiumControllerProvider);
 
     if (premiumState.isPremium) {
@@ -33,6 +35,57 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            // Free trial banner
+            Container(
+              margin: const EdgeInsets.all(AppSpacing.md),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.secondary.withValues(alpha: 0.2),
+                    AppColors.primary.withValues(alpha: 0.1),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+                border: Border.all(
+                  color: AppColors.secondary.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.celebration_rounded,
+                    color: AppColors.secondary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppI18n.t('paywall.trial', langCode),
+                          style: AppTypography.labelMedium.copyWith(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          AppI18n.t('paywall.trialSub', langCode),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             // Close button
             Align(
               alignment: Alignment.topRight,
@@ -54,7 +107,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 child: Column(
                   children: [
                     // Header
-                    _buildHeader()
+                    _buildHeader(langCode)
                         .animate()
                         .fadeIn(duration: 400.ms)
                         .slideY(begin: -0.2, end: 0),
@@ -62,7 +115,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // Feature list
-                    _buildFeatures()
+                    _buildFeatures(langCode)
                         .animate()
                         .fadeIn(duration: 400.ms, delay: 150.ms)
                         .slideY(begin: 0.1, end: 0),
@@ -70,7 +123,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                     const SizedBox(height: AppSpacing.xl),
 
                     // Pricing toggle
-                    _buildPricingToggle(premiumState)
+                    _buildPricingToggle(premiumState, langCode)
                         .animate()
                         .fadeIn(duration: 400.ms, delay: 250.ms),
 
@@ -81,7 +134,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             ),
 
             // CTA section
-            _buildCTA(premiumState)
+            _buildCTA(premiumState, langCode)
                 .animate()
                 .fadeIn(duration: 400.ms, delay: 350.ms)
                 .slideY(begin: 0.2, end: 0),
@@ -91,7 +144,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(String langCode) {
     return Column(
       children: [
         Container(
@@ -108,6 +161,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.4),
                 blurRadius: 20,
+                spreadRadius: 2,
                 offset: const Offset(0, 8),
               ),
             ],
@@ -122,7 +176,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ),
         const SizedBox(height: AppSpacing.lg),
         Text(
-          'Morning Routine Pro',
+          AppI18n.t('paywall.title', langCode),
           style: AppTypography.headingLarge.copyWith(
             foreground: Paint()
               ..shader = LinearGradient(
@@ -133,7 +187,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          'Débloque ton plein potentiel matinal',
+          AppI18n.t('paywall.subtitle', langCode),
           style: AppTypography.bodyLarge.copyWith(
             color: AppColors.textSecondary,
           ),
@@ -143,27 +197,27 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildFeatures() {
+  Widget _buildFeatures(String langCode) {
     final features = [
       _FeatureItem(
         iconData: Icons.all_inclusive_rounded,
-        title: 'Blocs illimités',
-        subtitle: 'Jusqu\'à 10 blocs dans ta routine (gratuit : 3)',
+        title: AppI18n.t('paywall.feature.unlimited.title', langCode),
+        subtitle: AppI18n.t('paywall.feature.unlimited.sub', langCode),
+      ),
+      _FeatureItem(
+        iconData: Icons.person_rounded,
+        title: AppI18n.t('paywall.feature.creators.title', langCode),
+        subtitle: AppI18n.t('paywall.feature.creators.sub', langCode),
       ),
       _FeatureItem(
         iconData: Icons.bar_chart_rounded,
-        title: 'Historique complet',
-        subtitle: 'Consulte tes stats des 30 derniers jours',
+        title: AppI18n.t('paywall.feature.analytics.title', langCode),
+        subtitle: AppI18n.t('paywall.feature.analytics.sub', langCode),
       ),
       _FeatureItem(
-        iconData: Icons.track_changes_rounded,
-        title: 'Routines d\'experts',
-        subtitle: 'Accède aux routines des meilleurs performers (bientôt)',
-      ),
-      _FeatureItem(
-        iconData: Icons.notifications_outlined,
-        title: 'Rappels avancés',
-        subtitle: 'Notifications personnalisées par bloc (bientôt)',
+        iconData: Icons.offline_bolt_rounded,
+        title: AppI18n.t('paywall.feature.offline.title', langCode),
+        subtitle: AppI18n.t('paywall.feature.offline.sub', langCode),
       ),
     ];
 
@@ -240,7 +294,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildPricingToggle(PremiumState state) {
+  Widget _buildPricingToggle(PremiumState state, String langCode) {
     final offerings = state.offerings;
     final current = offerings?.current;
     final monthlyPkg = current?.monthly;
@@ -262,7 +316,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             children: [
               Expanded(
                 child: _PricingOption(
-                  label: 'Mensuel',
+                  label: AppI18n.t('paywall.monthly', langCode),
                   price: monthlyPrice,
                   isSelected: !_isAnnual,
                   badge: null,
@@ -271,10 +325,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               ),
               Expanded(
                 child: _PricingOption(
-                  label: 'Annuel',
+                  label: AppI18n.t('paywall.yearly', langCode),
                   price: annualPrice,
                   isSelected: _isAnnual,
-                  badge: 'MEILLEURE OFFRE',
+                  badge: AppI18n.t('paywall.bestOffer', langCode),
                   onTap: () => setState(() => _isAnnual = true),
                 ),
               ),
@@ -285,7 +339,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         if (_isAnnual) ...[
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Économise 50% par rapport au mensuel',
+            AppI18n.t('paywall.save50', langCode),
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.secondary,
               fontWeight: FontWeight.w600,
@@ -297,7 +351,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     );
   }
 
-  Widget _buildCTA(PremiumState state) {
+  Widget _buildCTA(PremiumState state, String langCode) {
     final current = state.offerings?.current;
     final selectedPkg = _isAnnual ? current?.annual : current?.monthly;
 
@@ -307,10 +361,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
         children: [
           AppButton(
             label: _isPurchasing
-                ? 'Traitement...'
+              ? AppI18n.t('paywall.processing', langCode)
                 : _isAnnual
-                    ? 'Essayer Pro — Annuel'
-                    : 'Essayer Pro — Mensuel',
+                ? AppI18n.t('paywall.ctaAnnual', langCode)
+                : AppI18n.t('paywall.ctaMonthly', langCode),
             isLoading: _isPurchasing,
             onPressed: _isPurchasing
                 ? null
@@ -320,7 +374,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           TextButton(
             onPressed: _isPurchasing ? null : () => _handleRestore(),
             child: Text(
-              'Restaurer mes achats',
+              AppI18n.t('paywall.restore', langCode),
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -328,7 +382,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Annulation possible à tout moment depuis les Réglages iOS.',
+            AppI18n.t('paywall.cancelAnytime', langCode),
             style: AppTypography.bodySmall.copyWith(
               color: AppColors.textTertiary,
             ),
@@ -367,14 +421,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   }
 
   void _showNoOfferingsSnackBar() {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Impossible de charger les offres. Réessaie plus tard.'),
+      SnackBar(
+        content: Text(AppI18n.t('paywall.noOffers', langCode)),
       ),
     );
   }
 
   Widget _buildAlreadyPremium() {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -389,10 +445,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 color: AppColors.primary,
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text('Tu es déjà Pro !', style: AppTypography.headingLarge),
+              Text(AppI18n.t('paywall.alreadyPro', langCode), style: AppTypography.headingLarge),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Profite de toutes les fonctionnalités sans limite.',
+                AppI18n.t('paywall.alreadyProSub', langCode),
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -400,7 +456,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               AppButton(
-                label: 'Fermer',
+                label: AppI18n.t('common.close', langCode),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],

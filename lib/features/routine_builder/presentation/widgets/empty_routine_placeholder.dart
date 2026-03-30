@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
  
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -9,6 +10,7 @@ class EmptyRoutinePlaceholder extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -21,12 +23,12 @@ class EmptyRoutinePlaceholder extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Ta routine est vide',
+              AppI18n.t('emptyRoutine.title', langCode),
               style: AppTypography.headingSmall,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Ajoute des blocs pour construire\nta matinée parfaite !',
+              AppI18n.t('emptyRoutine.sub', langCode),
               style: AppTypography.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),

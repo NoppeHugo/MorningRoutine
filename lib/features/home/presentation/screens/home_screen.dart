@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -27,14 +28,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(scoringControllerProvider.notifier).refresh();
+      ref.read(routineBuilderControllerProvider.notifier).refresh();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final langCode = ref.watch(appLanguageProvider).languageCode;
     final routineState = ref.watch(routineBuilderControllerProvider);
     final scoringState = ref.watch(scoringControllerProvider);
-    final routine = routineState.routine;
+    final routine = routineState.activeRoutine;
     final hasRoutine = routine != null && routine.blocks.isNotEmpty;
 
     return Scaffold(
@@ -43,7 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Column(
           children: [
             // ── Header ─────────────────────────────────────────────────────
-            _buildHeader(),
+            _buildHeader(langCode),
 
             // ── Scrollable content ─────────────────────────────────────────
             Expanded(
@@ -81,6 +84,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     else
                       _buildCreateRoutineCTA(context),
 
+                    const SizedBox(height: AppSpacing.md),
+                    _InspiredRoutinesCTA(
+                      onTap: () => context.push(AppRoutes.sharedRoutines),
+                      langCode: langCode,
+                    ),
+
                     const SizedBox(height: AppSpacing.xl),
                   ],
                 ),
@@ -100,6 +109,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   hasCompletedToday: scoringState.hasCompletedToday,
                   totalDurationMinutes: routine?.totalDurationMinutes,
                   onPressed: () => context.go(AppRoutes.timer),
+                  langCode: langCode,
                 ),
               ),
           ],
@@ -110,12 +120,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   // ── Header ────────────────────────────────────────────────────────────────
 
-  Widget _buildHeader() {
+  Widget _buildHeader(String langCode) {
     final hour = DateTime.now().hour;
-    final greeting = 'Bonjour';
+    final greeting = AppI18n.t('home.hello', langCode);
     final subtitle = hour < 12
-        ? 'Pret pour ta matinee ?'
-        : 'Comment s\'est passee ta matinee ?';
+        ? AppI18n.t('home.subtitleMorning', langCode)
+        : AppI18n.t('home.subtitleAfter', langCode);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -172,6 +182,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   // ── Create routine CTA ────────────────────────────────────────────────────
 
   Widget _buildCreateRoutineCTA(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -207,12 +218,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Cree ta routine',
+            AppI18n.t('home.createRoutine', langCode),
             style: AppTypography.headingSmall,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Construis ta matinee parfaite\nbloc par bloc',
+            AppI18n.t('home.createRoutineSub', langCode),
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -220,9 +231,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
           AppButton(
-            label: 'Creer ma routine',
+            label: AppI18n.t('home.createRoutineButton', langCode),
             onPressed: () => context.push(AppRoutes.builder),
             isExpanded: false,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InspiredRoutinesCTA extends StatelessWidget {
+  const _InspiredRoutinesCTA({required this.onTap, required this.langCode});
+
+  final VoidCallback onTap;
+  final String langCode;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
+                ),
+                child: const Icon(
+                  Icons.groups_rounded,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  AppI18n.t('home.inspiredTitle', langCode),
+                  style: AppTypography.labelMedium,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            AppI18n.t('home.inspiredSub', langCode),
+            style: AppTypography.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppButton(
+            label: AppI18n.t('home.inspiredButton', langCode),
+            onPressed: onTap,
+            variant: AppButtonVariant.secondary,
+            icon: Icons.arrow_forward_rounded,
           ),
         ],
       ),
@@ -245,6 +318,7 @@ class _StreakScoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final hasScore = todayScore != null;
     final percent = hasScore ? todayScore!.scorePercent : 0;
     final scoreColor = percent >= 80 ? AppColors.secondary : AppColors.warning;
@@ -290,7 +364,7 @@ class _StreakScoreCard extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
-                        'Streak',
+                        AppI18n.t('home.streak', langCode),
                         style: AppTypography.labelSmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -342,7 +416,7 @@ class _StreakScoreCard extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              'Aujourd\'hui',
+                              AppI18n.t('home.today', langCode),
                               style: AppTypography.labelSmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -374,7 +448,7 @@ class _StreakScoreCard extends StatelessWidget {
                             ),
                             const SizedBox(width: AppSpacing.xs),
                             Text(
-                              'Aujourd\'hui',
+                              AppI18n.t('home.today', langCode),
                               style: AppTypography.labelSmall.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -383,13 +457,13 @@ class _StreakScoreCard extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          'En attente',
+                          AppI18n.t('home.waiting', langCode),
                           style: AppTypography.headingMedium.copyWith(
                             color: AppColors.textTertiary,
                           ),
                         ),
                         Text(
-                          'Lance ta routine !',
+                          AppI18n.t('home.launchNow', langCode),
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.primary,
                           ),
@@ -416,6 +490,7 @@ class _WeeklyTrackerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final now = DateTime.now();
     // Monday of current week
     final monday = now.subtract(Duration(days: now.weekday - 1));
@@ -454,9 +529,15 @@ class _WeeklyTrackerCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Cette semaine', style: AppTypography.labelMedium),
               Text(
-                '$completedCount / 7 jours',
+                AppI18n.t('home.week', langCode),
+                style: AppTypography.labelMedium,
+              ),
+              
+              Text(
+                AppI18n.tf('home.daysFmt', langCode, {
+                  'done': '$completedCount',
+                }),
                 style: AppTypography.bodySmall.copyWith(
                   color: completedCount > 0
                       ? AppColors.secondary
@@ -555,23 +636,26 @@ class _MotivationBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final String message;
     final Color bgColor;
     final Color textColor;
     final IconData icon;
 
     if (streak == 0) {
-      message = 'Commence aujourd\'hui !';
+      message = AppI18n.t('home.motivationStart', langCode);
       bgColor = AppColors.primaryLight;
       textColor = AppColors.primary;
       icon = Icons.rocket_launch_rounded;
     } else if (streak < 7) {
-      message = 'Continue sur ta lancee !';
+      message = AppI18n.t('home.motivationKeep', langCode);
       bgColor = AppColors.secondary.withValues(alpha: 0.1);
       textColor = AppColors.secondary;
       icon = Icons.trending_up_rounded;
     } else {
-      message = 'Tu es en feu ! $streak jours de suite !';
+      message = AppI18n.tf('home.motivationFireFmt', langCode, {
+        'streak': '$streak',
+      });
       bgColor = AppColors.primary.withValues(alpha: 0.1);
       textColor = AppColors.primary;
       icon = Icons.local_fire_department_rounded;

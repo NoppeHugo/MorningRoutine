@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -16,6 +17,7 @@ class TemplateChooserScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final langCode = Localizations.localeOf(context).languageCode;
     final isPremium = ref.watch(premiumControllerProvider).isPremium;
 
     return Scaffold(
@@ -33,7 +35,7 @@ class TemplateChooserScreen extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Routines expertes',
+          AppI18n.t('templates.title', langCode),
           style: AppTypography.headingSmall,
         ),
         centerTitle: true,
@@ -53,7 +55,8 @@ class TemplateChooserScreen extends ConsumerWidget {
             return _PresetCard(
               preset: preset,
               isPremium: isPremium,
-              onTap: () => _handleTap(context, ref, preset, isPremium),
+              onTap: () async =>
+                  _handleTap(context, ref, preset, isPremium),
             );
           },
         ),
@@ -61,19 +64,20 @@ class TemplateChooserScreen extends ConsumerWidget {
     );
   }
 
-  void _handleTap(
+  Future<void> _handleTap(
     BuildContext context,
     WidgetRef ref,
     PresetRoutine preset,
     bool isPremium,
-  ) {
+  ) async {
     if (preset.isPro && !isPremium) {
       context.push(AppRoutes.paywall);
       return;
     }
-    ref
+    await ref
         .read(routineBuilderControllerProvider.notifier)
         .loadPreset(preset);
+    if (!context.mounted) return;
     context.pop();
   }
 }
@@ -169,7 +173,9 @@ class _PresetCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${preset.blockIds.length} blocs',
+                        AppI18n.tf('templates.blocksFmt', langCode, {
+                          'count': '${preset.blockIds.length}',
+                        }),
                         style: AppTypography.bodySmall.copyWith(
                           color: AppColors.textTertiary,
                           fontSize: 11,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -10,6 +11,7 @@ class StartRoutineButton extends StatelessWidget {
     required this.hasCompletedToday,
     required this.onPressed,
     this.totalDurationMinutes,
+    required this.langCode,
   });
 
   final bool hasCompletedToday;
@@ -17,6 +19,7 @@ class StartRoutineButton extends StatelessWidget {
 
   /// Optional total routine duration shown as subtitle.
   final int? totalDurationMinutes;
+  final String langCode;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,9 @@ class StartRoutineButton extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    isCompleted ? 'Refaire ma routine' : 'Lancer ma routine',
+                    isCompleted
+                        ? AppI18n.t('start.redo', langCode)
+                        : AppI18n.t('start.launch', langCode),
                     style: AppTypography.labelLarge.copyWith(
                       color: isCompleted
                           ? AppColors.textSecondary

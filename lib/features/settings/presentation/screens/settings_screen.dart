@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/localization/app_i18n.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -39,9 +40,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final isPremium = ref.watch(premiumControllerProvider).isPremium;
+    final locale = ref.watch(appLanguageProvider);
+    final langCode = locale.languageCode;
 
     return AppScaffold(
-      title: 'Réglages',
+      title: AppI18n.t('settings.title', langCode),
       showBackButton: true,
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
@@ -53,10 +56,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ],
 
           // ROUTINE section
-          _buildSectionTitle('ROUTINE'),
+          _buildSectionTitle(AppI18n.t('settings.section.routine', langCode)),
           const SizedBox(height: AppSpacing.sm),
           SettingsTile(
-            title: 'Heure de réveil',
+            title: AppI18n.t('settings.wakeTime', langCode),
             trailing: Text(
               DurationUtils.formatTimeOfDay(_settings.wakeTime),
               style: AppTypography.bodyMedium.copyWith(
@@ -78,10 +81,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: AppSpacing.xl),
 
           // NOTIFICATIONS section
-          _buildSectionTitle('NOTIFICATIONS'),
+          _buildSectionTitle(AppI18n.t('settings.section.notifications', langCode)),
           const SizedBox(height: AppSpacing.sm),
           SettingsTile(
-            title: 'Rappel matinal',
+            title: AppI18n.t('settings.morningReminder', langCode),
             trailing: Switch(
               value: _settings.notificationsEnabled,
               activeColor: AppColors.primary,
@@ -103,7 +106,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           if (_settings.notificationsEnabled)
             SettingsTile(
-              title: 'Heure du rappel',
+              title: AppI18n.t('settings.reminderTime', langCode),
               trailing: Text(
                 DurationUtils.formatTimeOfDay(_settings.notificationTime),
                 style: AppTypography.bodyMedium.copyWith(
@@ -130,10 +133,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SizedBox(height: AppSpacing.xl),
 
           // SONS & VIBRATIONS section
-          _buildSectionTitle('SONS & VIBRATIONS'),
+          _buildSectionTitle(AppI18n.t('settings.section.sound', langCode)),
           const SizedBox(height: AppSpacing.sm),
           SettingsTile(
-            title: 'Sons',
+            title: AppI18n.t('settings.sound', langCode),
             trailing: Switch(
               value: _settings.soundEnabled,
               activeColor: AppColors.primary,
@@ -146,7 +149,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           SettingsTile(
-            title: 'Vibrations',
+            title: AppI18n.t('settings.vibration', langCode),
             trailing: Switch(
               value: _settings.vibrationEnabled,
               activeColor: AppColors.primary,
@@ -162,11 +165,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
           const SizedBox(height: AppSpacing.xl),
 
-          // ABOUT section
-          _buildSectionTitle('À PROPOS'),
+          // LANGUAGE section
+          _buildSectionTitle(AppI18n.t('settings.section.language', langCode)),
           const SizedBox(height: AppSpacing.sm),
           SettingsTile(
-            title: 'Version',
+            title: AppI18n.t('settings.language', langCode),
+            trailing: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _settings.languageCode,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+                items: supportedLanguageCodes
+                    .map(
+                      (code) => DropdownMenuItem<String>(
+                        value: code,
+                        child: Text(languageLabel(code)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) async {
+                  if (value == null) return;
+                  setState(() {
+                    _settings = _settings.copyWith(
+                      languageCode: value,
+                      hasChosenLanguage: true,
+                    );
+                  });
+                  await _saveSettings();
+                  await ref
+                      .read(appLanguageProvider.notifier)
+                      .setLanguage(value);
+                },
+              ),
+            ),
+          ),
+
+          const SizedBox(height: AppSpacing.xl),
+
+          // ABOUT section
+          _buildSectionTitle(AppI18n.t('settings.section.about', langCode)),
+          const SizedBox(height: AppSpacing.sm),
+          SettingsTile(
+            title: AppI18n.t('settings.version', langCode),
             trailing: Text(
               AppConstants.appVersion,
               style: AppTypography.bodyMedium.copyWith(
@@ -175,7 +214,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           SettingsTile(
-            title: 'Politique de confidentialité',
+            title: AppI18n.t('settings.privacyPolicy', langCode),
             trailing: const Icon(
               Icons.arrow_forward_ios,
               size: 14,
@@ -184,7 +223,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             onTap: () => context.push(AppRoutes.privacyPolicy),
           ),
           SettingsTile(
-            title: 'Réinitialiser les données',
+            title: AppI18n.t('settings.resetData', langCode),
             titleColor: AppColors.error,
             onTap: () => _confirmReset(context),
           ),
@@ -194,6 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Widget _buildProBanner(BuildContext context) {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     return GestureDetector(
       onTap: () => context.push(AppRoutes.paywall),
       child: Container(
@@ -222,13 +262,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Passe à Pro',
+                    AppI18n.t('settings.goPro', langCode),
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.textOnPrimary,
                     ),
                   ),
                   Text(
-                    'Blocs illimités + historique complet',
+                    AppI18n.t('settings.goProSub', langCode),
                     style: AppTypography.bodySmall.copyWith(
                       color: AppColors.textOnPrimary.withValues(alpha: 0.8),
                     ),
@@ -284,17 +324,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _confirmReset(BuildContext context) {
+    final langCode = ref.read(appLanguageProvider).languageCode;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Réinitialiser ?'),
-        content: const Text(
-          'Toutes tes données seront supprimées (routine, scores, streak). Cette action est irréversible.',
-        ),
+        title: Text(AppI18n.t('settings.resetTitle', langCode)),
+        content: Text(AppI18n.t('settings.resetBody', langCode)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(AppI18n.t('common.cancel', langCode)),
           ),
           TextButton(
             onPressed: () async {
@@ -307,7 +346,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               }
             },
             child: Text(
-              'Réinitialiser',
+              AppI18n.t('settings.resetData', langCode),
               style: TextStyle(color: AppColors.error),
             ),
           ),

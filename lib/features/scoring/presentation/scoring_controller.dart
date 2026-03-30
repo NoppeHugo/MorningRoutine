@@ -76,6 +76,12 @@ class ScoringController extends StateNotifier<ScoringState> {
       skippedBlocks: skippedCount,
       totalDurationSeconds: totalDuration,
       actualDurationSeconds: actualDuration,
+      sessionMode: timerState.sessionMode.name,
+      moodBefore: timerState.moodBefore,
+      moodAfter: timerState.moodAfter,
+      reflection: timerState.reflection,
+      intention: timerState.intention,
+      topPriority: timerState.topPriority,
     );
  
     await _repository.saveScore(score);
