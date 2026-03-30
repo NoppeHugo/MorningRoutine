@@ -7,6 +7,8 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
+import '../../../../core/widgets/app_scaffold.dart';
 import '../../../paywall/presentation/premium_controller.dart';
 import '../../data/blocks_repository.dart';
 import '../../data/preset_routines.dart';
@@ -20,26 +22,9 @@ class TemplateChooserScreen extends ConsumerWidget {
     final langCode = Localizations.localeOf(context).languageCode;
     final isPremium = ref.watch(premiumControllerProvider).isPremium;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.surface,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: AppColors.textPrimary,
-            size: AppSpacing.iconSm,
-          ),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(
-          AppI18n.t('templates.title', langCode),
-          style: AppTypography.headingSmall,
-        ),
-        centerTitle: true,
-      ),
+    return AppScaffold(
+      title: AppI18n.t('templates.title', langCode),
+      showBackButton: true,
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: GridView.builder(
@@ -55,6 +40,7 @@ class TemplateChooserScreen extends ConsumerWidget {
             return _PresetCard(
               preset: preset,
               isPremium: isPremium,
+              langCode: langCode,
               onTap: () async =>
                   _handleTap(context, ref, preset, isPremium),
             );
@@ -86,11 +72,13 @@ class _PresetCard extends StatelessWidget {
   const _PresetCard({
     required this.preset,
     required this.isPremium,
+    required this.langCode,
     required this.onTap,
   });
 
   final PresetRoutine preset;
   final bool isPremium;
+  final String langCode;
   final VoidCallback onTap;
 
   int _computeTotalDuration() {
@@ -107,18 +95,10 @@ class _PresetCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+      child: AppGlassContainer(
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x30F8FAFF),
+        borderColor: const Color(0x70F2F5FA),
         child: Stack(
           children: [
             Padding(
@@ -137,7 +117,7 @@ class _PresetCard extends StatelessWidget {
                     ),
                     child: Icon(
                       preset.icon,
-                      color: preset.accentColor,
+                      color: const Color(0xFFEFF3F8),
                       size: AppSpacing.iconMd,
                     ),
                   ),
@@ -146,7 +126,9 @@ class _PresetCard extends StatelessWidget {
                   // Name
                   Text(
                     preset.name,
-                    style: AppTypography.labelMedium,
+                    style: AppTypography.labelMedium.copyWith(
+                      color: const Color(0xFFF2F4F7),
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -156,7 +138,9 @@ class _PresetCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       preset.description,
-                      style: AppTypography.bodySmall,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: const Color(0xD6E6ECF3),
+                      ),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -177,7 +161,7 @@ class _PresetCard extends StatelessWidget {
                           'count': '${preset.blockIds.length}',
                         }),
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textTertiary,
+                          color: const Color(0xCCE2E8F0),
                           fontSize: 11,
                         ),
                       ),
@@ -191,7 +175,7 @@ class _PresetCard extends StatelessWidget {
                       Text(
                         '${totalMinutes}min',
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textTertiary,
+                          color: const Color(0xCCE2E8F0),
                           fontSize: 11,
                         ),
                       ),

@@ -7,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../domain/shared_routine_template.dart';
@@ -56,27 +57,43 @@ class _SharedRoutinesCatalogScreenState
             ),
             child: Column(
               children: [
-                TextField(
-                  controller: _searchController,
-                  onChanged: controller.setQuery,
-                  decoration: InputDecoration(
-                    hintText: AppI18n.t('shared.searchHint', langCode),
-                    prefixIcon: const Icon(Icons.search_rounded),
-                    suffixIcon: state.query.isEmpty
-                        ? null
-                        : IconButton(
-                            onPressed: () {
-                              _searchController.clear();
-                              controller.setQuery('');
-                            },
-                            icon: const Icon(Icons.close_rounded),
-                          ),
-                    filled: true,
-                    fillColor: AppColors.surface,
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radiusMedium),
-                      borderSide: BorderSide.none,
+                AppGlassContainer(
+                  radius: AppSpacing.radiusMedium,
+                  padding: EdgeInsets.zero,
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: controller.setQuery,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: const Color(0xFFF2F4F7),
+                    ),
+                    decoration: InputDecoration(
+                      hintText: AppI18n.t('shared.searchHint', langCode),
+                      hintStyle: AppTypography.bodyLarge.copyWith(
+                        color: const Color(0xB5DEE5EE),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: Color(0xCCE4EAF1),
+                      ),
+                      suffixIcon: state.query.isEmpty
+                          ? null
+                          : IconButton(
+                              onPressed: () {
+                                _searchController.clear();
+                                controller.setQuery('');
+                              },
+                              icon: const Icon(
+                                Icons.close_rounded,
+                                color: Color(0xCCE4EAF1),
+                              ),
+                            ),
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMedium),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
@@ -189,13 +206,16 @@ class _FiltersRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            FilterChip(
-              selected: state.onlyFree,
-              onSelected: (_) => controller.toggleOnlyFree(),
-              label: Text(AppI18n.t('shared.freeOnly', langCode)),
-            ),
           ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Align(
+          alignment: Alignment.centerRight,
+          child: FilterChip(
+            selected: state.onlyFree,
+            onSelected: (_) => controller.toggleOnlyFree(),
+            label: Text(AppI18n.t('shared.freeOnly', langCode)),
+          ),
         ),
       ],
     );
@@ -220,29 +240,42 @@ class _FilterDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
-      value: value,
+      initialValue: value,
+      isExpanded: true,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: const Color(0x2DF8FAFF),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: Color(0x66F2F5FA)),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
       ),
-      hint: Text(hint),
+      dropdownColor: const Color(0xFF7E8695),
+      hint: Text(
+        hint,
+        style: AppTypography.bodyMedium.copyWith(color: const Color(0xE3EAF1F6)),
+      ),
       items: [
         DropdownMenuItem<T>(
           value: null,
-          child: Text(AppI18n.t('shared.all', Localizations.localeOf(context).languageCode)),
+          child: Text(
+            AppI18n.t('shared.all', Localizations.localeOf(context).languageCode),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         ...items.map(
           (item) => DropdownMenuItem<T>(
             value: item,
-            child: Text(labelBuilder(item)),
+            child: Text(
+              labelBuilder(item),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ),
       ],
@@ -268,27 +301,19 @@ class _RoutineCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: AppGlassContainer(
         padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+        radius: AppSpacing.radiusXLarge,
+        color: const Color(0x30F8FAFF),
+        borderColor: const Color(0x70F2F5FA),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.primaryLight,
-                  child: Icon(template.icon, color: AppColors.primary),
+                  backgroundColor: const Color(0x35F2F5FA),
+                  child: Icon(template.icon, color: const Color(0xFFEAF0F6)),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
@@ -299,7 +324,7 @@ class _RoutineCard extends StatelessWidget {
                       Text(
                         creatorName,
                         style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
+                          color: const Color(0xCFE3EAF2),
                         ),
                       ),
                     ],
@@ -352,7 +377,7 @@ class _RoutineCard extends StatelessWidget {
             Text(
               template.subtitle,
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: const Color(0xD8E6EDF4),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -382,18 +407,17 @@ class _MetaChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AppGlassContainer(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-      ),
+      radius: AppSpacing.radiusSmall,
+      color: const Color(0x24F8FAFF),
+      borderColor: const Color(0x66F2F5FA),
       child: Text(
         label,
-        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.bodySmall.copyWith(color: const Color(0xE7EDF3F8)),
       ),
     );
   }
@@ -410,32 +434,37 @@ class _EmptyState extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.search_off_rounded,
-              size: AppSpacing.iconXl,
-              color: AppColors.textTertiary,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(AppI18n.t('shared.emptyTitle', langCode), style: AppTypography.headingSmall),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              AppI18n.t('shared.emptySub', langCode),
-              textAlign: TextAlign.center,
-              style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+        child: AppGlassContainer(
+          radius: AppSpacing.radiusXLarge,
+          color: const Color(0x26F8FAFF),
+          borderColor: const Color(0x66F2F5FA),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.search_off_rounded,
+                size: AppSpacing.iconXl,
+                color: Color(0xD0DEE6EF),
               ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            AppButton(
-              label: AppI18n.t('shared.resetFilters', langCode),
-              onPressed: onReset,
-              isExpanded: false,
-              variant: AppButtonVariant.secondary,
-            ),
-          ],
+              const SizedBox(height: AppSpacing.md),
+              Text(AppI18n.t('shared.emptyTitle', langCode), style: AppTypography.headingSmall),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                AppI18n.t('shared.emptySub', langCode),
+                textAlign: TextAlign.center,
+                style: AppTypography.bodyMedium.copyWith(
+                  color: const Color(0xD5E2E9F2),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              AppButton(
+                label: AppI18n.t('shared.resetFilters', langCode),
+                onPressed: onReset,
+                isExpanded: false,
+                variant: AppButtonVariant.secondary,
+              ),
+            ],
+          ),
         ),
       ),
     );

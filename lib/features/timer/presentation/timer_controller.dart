@@ -8,15 +8,14 @@ import '../../routine_builder/presentation/routine_builder_controller.dart';
 import '../domain/timer_state.dart';
  
 class TimerController extends StateNotifier<TimerState> {
-  TimerController(this._routine)
+  TimerController(RoutineModel routine)
       : super(TimerState(
-          routine: _routine,
-          secondsRemaining: _routine.blocks.isNotEmpty
-              ? _routine.blocks.first.durationMinutes * 60
+          routine: routine,
+          secondsRemaining: routine.blocks.isNotEmpty
+              ? routine.blocks.first.durationMinutes * 60
               : 0,
         ));
- 
-  final RoutineModel _routine;
+
   Timer? _timer;
 
   void setSessionMode(RoutineSessionMode mode) {

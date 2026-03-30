@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -8,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../paywall/presentation/premium_controller.dart';
 import '../../domain/timer_state.dart';
@@ -77,68 +77,50 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            const Positioned.fill(child: _TimerAtmosphere()),
+            const Positioned.fill(child: AppAtmosphericBackground()),
             SafeArea(
               child: Column(
                 children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: IconButton(
-                    onPressed: () => _confirmQuit(context),
-                    icon: const Icon(
-                      Icons.close,
-                      color: Color(0xFFEFF2F6),
-                    ),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.surface.withValues(alpha: 0.45),
-                    ),
+              _buildCloseButton(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: AppGlassContainer(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.sm,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceElevated.withValues(alpha: 0.58),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-                  border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryLight,
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusSmall),
-                      ),
-                      child: Text(
-                        AppI18n.t('timer.modeChecklist', langCode),
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w600,
+                  color: const Color(0x24F8FAFF),
+                  borderColor: const Color(0x66F2F5FA),
+                  child: Row(
+                    children: [
+                      AppGlassContainer(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.sm,
+                          vertical: AppSpacing.xs,
+                        ),
+                        radius: AppSpacing.radiusSmall,
+                        color: const Color(0x30F6F8FF),
+                        borderColor: const Color(0x80F2F5FA),
+                        child: Text(
+                          AppI18n.t('timer.modeChecklist', langCode),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: const Color(0xFFF2F5FA),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      AppI18n.tf('timer.doneCountFmt', langCode, {
-                        'done': '${state.completedBlocks.where((b) => b.completed).length}',
-                        'total': '${state.totalBlocksCount}',
-                      }),
-                      style: AppTypography.bodyMedium.copyWith(
-                        color: AppColors.textSecondary,
+                      const Spacer(),
+                      Text(
+                        AppI18n.tf('timer.doneCountFmt', langCode, {
+                          'done': '${state.completedBlocks.where((b) => b.completed).length}',
+                          'total': '${state.totalBlocksCount}',
+                        }),
+                        style: AppTypography.bodyMedium.copyWith(
+                          color: const Color(0xDCE3EAF5),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -150,7 +132,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                     'total': '${state.totalBlocksCount}',
                   }),
                   style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.textSecondary,
+                    color: const Color(0xDCE3EAF5),
                   ),
                 ),
               ),
@@ -166,21 +148,45 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                     );
                     return Container(
                       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceElevated.withValues(alpha: 0.62),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-                        border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
-                      ),
-                      child: CheckboxListTile(
-                        value: isDone,
-                        onChanged: (value) => controller.toggleChecklistBlock(
-                          block.id,
-                          value ?? false,
+                      child: AppGlassContainer(
+                        padding: EdgeInsets.zero,
+                        radius: AppSpacing.radiusLarge,
+                        color: const Color(0x26F8FAFF),
+                        borderColor: const Color(0x66F2F5FA),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            checkboxTheme: CheckboxThemeData(
+                              fillColor: WidgetStateProperty.resolveWith(
+                                (states) => const Color(0xFFF2F5FA),
+                              ),
+                              checkColor: WidgetStateProperty.resolveWith(
+                                (states) => const Color(0xFF273043),
+                              ),
+                            ),
+                          ),
+                          child: CheckboxListTile(
+                            value: isDone,
+                            onChanged: (value) => controller.toggleChecklistBlock(
+                              block.id,
+                              value ?? false,
+                            ),
+                            title: Text(
+                              '${block.emoji} ${block.name}',
+                              style: AppTypography.bodyMedium.copyWith(
+                                color: const Color(0xFFF3F6FB),
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${block.durationMinutes} min',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: const Color(0xDCE3EAF5),
+                              ),
+                            ),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            activeColor: const Color(0xFFF2F5FA),
+                            side: const BorderSide(color: Color(0xA7EEF3FB)),
+                          ),
                         ),
-                        title: Text('${block.emoji} ${block.name}'),
-                        subtitle: Text('${block.durationMinutes} min'),
-                        controlAffinity: ListTileControlAffinity.leading,
-                        activeColor: AppColors.secondary,
                       ),
                     );
                   },
@@ -210,27 +216,11 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          const Positioned.fill(child: _TimerAtmosphere()),
+          const Positioned.fill(child: AppAtmosphericBackground()),
           SafeArea(
             child: Column(
               children: [
-            // Close button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: IconButton(
-                  onPressed: () => _confirmQuit(context),
-                  icon: const Icon(
-                    Icons.close,
-                    color: Color(0xFFEFF2F6),
-                  ),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.surface.withValues(alpha: 0.45),
-                  ),
-                ),
-              ),
-            ),
+            _buildCloseButton(),
  
             const SizedBox(height: AppSpacing.md),
  
@@ -241,7 +231,7 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
                 'total': '${state.totalBlocksCount}',
               }),
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+                color: const Color(0xDCE3EAF5),
               ),
             ),
             const SizedBox(height: AppSpacing.md),
@@ -300,7 +290,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
           ),
         ],
         ),
-      ),
     );
   }
 
@@ -312,83 +301,83 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
-      backgroundColor: AppColors.surfaceElevated,
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppI18n.t('timer.modeTitle', langCode),
-                  style: AppTypography.headingSmall,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                ListTile(
-                  leading: const Icon(Icons.checklist_rounded),
-                  title: Text(AppI18n.t('timer.modeChecklist', langCode)),
-                  subtitle: Text(AppI18n.t('timer.modeChecklistSub', langCode)),
-                  onTap: () => Navigator.of(ctx).pop(RoutineSessionMode.checklist),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.timer_outlined),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(AppI18n.t('timer.modeGuided', langCode)),
-                      ),
-                      if (!isPremium)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.xs,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.warning.withValues(alpha: 0.15),
-                            borderRadius:
-                                BorderRadius.circular(AppSpacing.radiusSmall),
-                          ),
-                          child: Text(
-                            AppI18n.t('common.pro', langCode),
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.warning,
-                              fontWeight: FontWeight.w700,
+            child: AppGlassContainer(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppI18n.t('timer.modeTitle', langCode),
+                    style: AppTypography.headingSmall,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ListTile(
+                    leading: const Icon(Icons.checklist_rounded, color: Color(0xFFEFF3FA)),
+                    title: Text(AppI18n.t('timer.modeChecklist', langCode)),
+                    subtitle: Text(AppI18n.t('timer.modeChecklistSub', langCode)),
+                    onTap: () => Navigator.of(ctx).pop(RoutineSessionMode.checklist),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.timer_outlined, color: Color(0xFFEFF3FA)),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(AppI18n.t('timer.modeGuided', langCode)),
+                        ),
+                        if (!isPremium)
+                          AppGlassContainer(
+                            radius: AppSpacing.radiusSmall,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                              vertical: 2,
+                            ),
+                            color: const Color(0x30F6F8FF),
+                            borderColor: const Color(0x80F2F5FA),
+                            child: Text(
+                              AppI18n.t('common.pro', langCode),
+                              style: AppTypography.bodySmall.copyWith(
+                                color: const Color(0xFFF2F5FA),
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                  subtitle: Text(AppI18n.t('timer.modeGuidedSub', langCode)),
-                  onTap: () async {
-                    if (isPremium) {
-                      if (ctx.mounted) {
-                        Navigator.of(ctx).pop(RoutineSessionMode.guided);
-                      }
-                      return;
-                    }
-
-                    if (ctx.mounted) Navigator.of(ctx).pop();
-                    final unlocked = await context.push(AppRoutes.paywall);
-                    if (!mounted) return;
-                    if (unlocked == true) {
-                      final updatedPremium =
-                          ref.read(premiumControllerProvider).isPremium;
-                      if (updatedPremium) {
-                        ref
-                            .read(timerControllerProvider.notifier)
-                            .setSessionMode(RoutineSessionMode.guided);
-                        ref.read(timerControllerProvider.notifier).start();
+                      ],
+                    ),
+                    subtitle: Text(AppI18n.t('timer.modeGuidedSub', langCode)),
+                    onTap: () async {
+                      if (isPremium) {
+                        if (ctx.mounted) {
+                          Navigator.of(ctx).pop(RoutineSessionMode.guided);
+                        }
                         return;
                       }
-                    }
-                    ref
-                        .read(timerControllerProvider.notifier)
-                        .setSessionMode(RoutineSessionMode.checklist);
-                  },
-                ),
-              ],
+
+                      if (ctx.mounted) Navigator.of(ctx).pop();
+                      final unlocked = await context.push(AppRoutes.paywall);
+                      if (!mounted) return;
+                      if (unlocked == true) {
+                        final updatedPremium =
+                            ref.read(premiumControllerProvider).isPremium;
+                        if (updatedPremium) {
+                          ref
+                              .read(timerControllerProvider.notifier)
+                              .setSessionMode(RoutineSessionMode.guided);
+                          ref.read(timerControllerProvider.notifier).start();
+                          return;
+                        }
+                      }
+                      ref
+                          .read(timerControllerProvider.notifier)
+                          .setSessionMode(RoutineSessionMode.checklist);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -404,30 +393,34 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
-      backgroundColor: AppColors.surfaceElevated,
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppTypography.headingSmall),
-                const SizedBox(height: AppSpacing.md),
-                Wrap(
-                  spacing: AppSpacing.xs,
-                  runSpacing: AppSpacing.xs,
-                  children: moods
-                      .map(
-                        (mood) => ActionChip(
-                          label: Text(AppI18n.t('mood.$mood', langCode)),
-                          onPressed: () => Navigator.of(ctx).pop(mood),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
+            child: AppGlassContainer(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: AppTypography.headingSmall),
+                  const SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: AppSpacing.xs,
+                    runSpacing: AppSpacing.xs,
+                    children: moods
+                        .map(
+                          (mood) => ActionChip(
+                            label: Text(AppI18n.t('mood.$mood', langCode)),
+                            backgroundColor: const Color(0x26F8FAFF),
+                            side: const BorderSide(color: Color(0x66F2F5FA)),
+                            onPressed: () => Navigator.of(ctx).pop(mood),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -438,36 +431,55 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
   Widget _buildNextBlockPreview(TimerState state) {
     final langCode = ref.read(appLanguageProvider).languageCode;
     final nextBlock = state.routine.blocks[state.currentBlockIndex + 1];
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceElevated.withValues(alpha: 0.58),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.skip_next_rounded,
+              size: 18,
+              color: Color(0xDCE3EAF5),
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              AppI18n.t('timer.next', langCode),
+              style: AppTypography.bodyMedium.copyWith(
+                color: const Color(0xDCE3EAF5),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                '${nextBlock.name} (${nextBlock.durationMinutes}min)',
+                style: AppTypography.bodyMedium,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.skip_next_rounded,
-            size: 18,
-            color: AppColors.textSecondary,
+    );
+  }
+
+  Widget _buildCloseButton() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: IconButton(
+          onPressed: () => _confirmQuit(context),
+          icon: const Icon(
+            Icons.close,
+            color: Color(0xFFEFF2F6),
           ),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            AppI18n.t('timer.next', langCode),
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0x2EF6F8FF),
+            side: const BorderSide(color: Color(0x66F2F5FA)),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              '${nextBlock.name} (${nextBlock.durationMinutes}min)',
-              style: AppTypography.bodyMedium,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -495,77 +507,6 @@ class _TimerScreenState extends ConsumerState<TimerScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _TimerAtmosphere extends StatelessWidget {
-  const _TimerAtmosphere();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF1D2637),
-            Color(0xFF151E2D),
-            Color(0xFF121927),
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -60,
-            left: -90,
-            child: _TimerHalo(size: 220, color: Color(0x2FCFDFFF)),
-          ),
-          Positioned(
-            bottom: -110,
-            right: -70,
-            child: _TimerHalo(size: 280, color: Color(0x26F6DCC8)),
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0x1E000000),
-                      Colors.transparent,
-                      const Color(0x20000000),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TimerHalo extends StatelessWidget {
-  const _TimerHalo({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 54, sigmaY: 54),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

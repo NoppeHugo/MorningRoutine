@@ -9,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../shared/providers/storage_provider.dart';
 import '../../../notifications/data/notification_service.dart';
@@ -87,8 +88,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.morningReminder', langCode),
             trailing: Switch(
               value: _settings.notificationsEnabled,
-              activeColor: AppColors.textOnPrimary,
-              activeTrackColor: AppColors.primary,
+              activeThumbColor: const Color(0xFFF2F4F7),
+              activeTrackColor: const Color(0xFF8E95FF),
+              inactiveThumbColor: const Color(0xFFE8EDF4),
+              inactiveTrackColor: const Color(0x66F2F5FA),
               onChanged: (value) async {
                 setState(() {
                   _settings =
@@ -140,8 +143,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.sound', langCode),
             trailing: Switch(
               value: _settings.soundEnabled,
-              activeColor: AppColors.textOnPrimary,
-              activeTrackColor: AppColors.primary,
+              activeThumbColor: const Color(0xFFF2F4F7),
+              activeTrackColor: const Color(0xFF8E95FF),
+              inactiveThumbColor: const Color(0xFFE8EDF4),
+              inactiveTrackColor: const Color(0x66F2F5FA),
               onChanged: (value) {
                 setState(() {
                   _settings = _settings.copyWith(soundEnabled: value);
@@ -154,8 +159,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: AppI18n.t('settings.vibration', langCode),
             trailing: Switch(
               value: _settings.vibrationEnabled,
-              activeColor: AppColors.textOnPrimary,
-              activeTrackColor: AppColors.primary,
+              activeThumbColor: const Color(0xFFF2F4F7),
+              activeTrackColor: const Color(0xFF8E95FF),
+              inactiveThumbColor: const Color(0xFFE8EDF4),
+              inactiveTrackColor: const Color(0x66F2F5FA),
               onChanged: (value) {
                 setState(() {
                   _settings =
@@ -239,25 +246,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final langCode = ref.read(appLanguageProvider).languageCode;
     return GestureDetector(
       onTap: () => context.push(AppRoutes.paywall),
-      child: Container(
+      child: AppGlassContainer(
         padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primary.withValues(alpha: 0.8),
-              AppColors.secondary.withValues(alpha: 0.6),
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-        ),
+        radius: AppSpacing.radiusMedium,
+        color: const Color(0x32F8FAFF),
+        borderColor: const Color(0x74F2F5FA),
         child: Row(
           children: [
             const Icon(
               Icons.workspace_premium_rounded,
               size: 28,
-              color: AppColors.textOnPrimary,
+              color: Color(0xFFF2F4F7),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -267,13 +266,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   Text(
                     AppI18n.t('settings.goPro', langCode),
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textOnPrimary,
+                      color: const Color(0xFFF2F4F7),
                     ),
                   ),
                   Text(
                     AppI18n.t('settings.goProSub', langCode),
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textOnPrimary.withValues(alpha: 0.8),
+                      color: const Color(0xDDE7EDF3),
                     ),
                   ),
                 ],
@@ -282,7 +281,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: AppColors.textOnPrimary,
+              color: Color(0xDDE7EDF3),
             ),
           ],
         ),

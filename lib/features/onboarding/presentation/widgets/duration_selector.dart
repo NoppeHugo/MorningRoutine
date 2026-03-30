@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
  
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
  
 class DurationSelector extends StatelessWidget {
   const DurationSelector({
@@ -58,36 +58,37 @@ class _DurationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
+      child: AnimatedScale(
+        scale: isSelected ? 1.0 : 0.985,
         duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceLight,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-          border: isSelected
-              ? null
-              : Border.all(color: AppColors.surfaceLight, width: 1),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${duration}min',
-              style: AppTypography.headingMedium.copyWith(
-                color: isSelected
-                    ? AppColors.textOnPrimary
-                    : AppColors.textPrimary,
+        child: AppGlassContainer(
+          radius: AppSpacing.radiusMedium,
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.sm,
+          ),
+          color: isSelected ? const Color(0x3BF6F8FF) : const Color(0x24F8FAFF),
+          borderColor: isSelected ? const Color(0xA3F2F5FA) : const Color(0x66F2F5FA),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${duration}min',
+                style: AppTypography.headingMedium.copyWith(
+                  color: const Color(0xFFF3F6FB),
+                ),
               ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              label,
-              style: AppTypography.bodySmall.copyWith(
-                color: isSelected
-                    ? AppColors.textOnPrimary.withValues(alpha: 0.8)
-                    : AppColors.textSecondary,
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                label,
+                style: AppTypography.bodySmall.copyWith(
+                  color: isSelected
+                      ? const Color(0xFFF0F3F9)
+                      : const Color(0xD9DDE6F0),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

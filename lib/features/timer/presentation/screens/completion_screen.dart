@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -8,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../paywall/presentation/premium_controller.dart';
@@ -96,7 +96,7 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          const Positioned.fill(child: _CompletionAtmosphere()),
+          const Positioned.fill(child: AppAtmosphericBackground()),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -106,25 +106,20 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
               const Spacer(),
  
               // Celebration icon
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
+              SizedBox(
                 width: 100,
                 height: 100,
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceElevated.withValues(alpha: 0.56),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
-                  border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.emoji_events_outlined,
-                    size: 56,
-                    color: Color(0xFFEDEEF3),
-                  ),
-                ),
+                child: AppGlassContainer(
+                  padding: EdgeInsets.zero,
+                  radius: AppSpacing.radiusXLarge,
+                  color: const Color(0x2CF6F8FF),
+                  borderColor: const Color(0x80F2F5FA),
+                  child: const Center(
+                    child: Icon(
+                      Icons.emoji_events_outlined,
+                      size: 56,
+                      color: Color(0xFFEDEEF3),
+                    ),
                   ),
                 ),
               ),
@@ -284,17 +279,14 @@ class _CompletionScreenState extends ConsumerState<CompletionScreen> {
  
               // Streak
               if (streak > 0)
-                Container(
+                AppGlassContainer(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.md,
                   ),
-                  decoration: BoxDecoration(
-                    color: AppColors.surfaceElevated.withValues(alpha: 0.55),
-                    borderRadius:
-                        BorderRadius.circular(AppSpacing.radiusMedium),
-                    border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
-                  ),
+                  radius: AppSpacing.radiusMedium,
+                  color: const Color(0x24F8FAFF),
+                  borderColor: const Color(0x66F2F5FA),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -407,77 +399,6 @@ class _StatCard extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _CompletionAtmosphere extends StatelessWidget {
-  const _CompletionAtmosphere();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF222C3F),
-            Color(0xFF171F2F),
-            Color(0xFF131A28),
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -110,
-            left: -80,
-            child: _CompletionHalo(size: 240, color: Color(0x2EDCE6FF)),
-          ),
-          Positioned(
-            bottom: -120,
-            right: -80,
-            child: _CompletionHalo(size: 280, color: Color(0x25F0D6C3)),
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0x22000000),
-                      Colors.transparent,
-                      const Color(0x20000000),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CompletionHalo extends StatelessWidget {
-  const _CompletionHalo({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 56, sigmaY: 56),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
       ),
     );
   }

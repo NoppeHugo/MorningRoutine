@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
  
-import '../theme/app_colors.dart';
+import 'app_atmosphere.dart';
+import '../theme/app_typography.dart';
  
 class AppScaffold extends StatelessWidget {
   const AppScaffold({
@@ -25,19 +25,53 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
+      extendBodyBehindAppBar: true,
       appBar: title != null
           ? AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              scrolledUnderElevation: 0,
+              surfaceTintColor: Colors.transparent,
               centerTitle: true,
-              title: Text(title!),
-              automaticallyImplyLeading: showBackButton,
-              actions: actions,
+              leadingWidth: showBackButton ? 64 : null,
+              leading: showBackButton
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: _AppBarIconOrb(
+                        icon: Icons.arrow_back_ios_new_rounded,
+                        tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                        onTap: () => Navigator.of(context).maybePop(),
+                      ),
+                    )
+                  : null,
+              title: AppGlassContainer(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                radius: 24,
+                child: Text(
+                  title!,
+                  style: AppTypography.labelLarge.copyWith(
+                    color: const Color(0xFFF4F6F8),
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ),
+              actions: actions
+                  ?.map(
+                    (action) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _AppBarActionWrapper(child: action),
+                    ),
+                  )
+                  .toList(),
             )
           : null,
       body: Stack(
         children: [
-          const Positioned.fill(child: _ScaffoldAtmosphere()),
+          const Positioned.fill(child: AppAtmosphericBackground()),
           SafeArea(child: body),
         ],
       ),
@@ -47,57 +81,66 @@ class AppScaffold extends StatelessWidget {
   }
 }
 
-class _ScaffoldAtmosphere extends StatelessWidget {
-  const _ScaffoldAtmosphere();
+class _AppBarIconOrb extends StatelessWidget {
+  const _AppBarIconOrb({
+    required this.icon,
+    required this.onTap,
+    this.tooltip,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF20293C),
-            Color(0xFF171F2F),
-            Color(0xFF141B29),
-          ],
-          stops: [0, 0.48, 1],
+    return AppGlassContainer(
+      padding: EdgeInsets.zero,
+      radius: 22,
+      child: Material(
+        color: Colors.transparent,
+        child: Tooltip(
+          message: tooltip ?? '',
+          child: InkWell(
+            borderRadius: BorderRadius.circular(22),
+            onTap: onTap,
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: Icon(icon, size: 18, color: const Color(0xFFF1F4F7)),
+            ),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -90,
-            left: -70,
-            child: _Halo(size: 220, color: const Color(0x50DDEBFF)),
-          ),
-          Positioned(
-            bottom: -100,
-            right: -60,
-            child: _Halo(size: 250, color: const Color(0x38F2D9C8)),
-          ),
-        ],
       ),
     );
   }
 }
 
-class _Halo extends StatelessWidget {
-  const _Halo({required this.size, required this.color});
+class _AppBarActionWrapper extends StatelessWidget {
+  const _AppBarActionWrapper({required this.child});
 
-  final double size;
-  final Color color;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 52, sigmaY: 52),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      ),
-    );
+    if (child is IconButton) {
+      final iconButton = child as IconButton;
+      return AppGlassContainer(
+        padding: EdgeInsets.zero,
+        radius: 22,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: IconButton(
+            onPressed: iconButton.onPressed,
+            icon: iconButton.icon,
+            tooltip: iconButton.tooltip,
+            color: const Color(0xFFF1F4F7),
+            splashRadius: 20,
+          ),
+        ),
+      );
+    }
+    return child;
   }
 }

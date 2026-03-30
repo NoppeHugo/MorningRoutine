@@ -757,18 +757,19 @@ class _PrimarySoftCTA extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
       child: Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: const Color(0xEAF5F3EE),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-      ),
-      child: Center(
-        child: Text(
-          label,
-          style: AppTypography.headingMedium.copyWith(
-            color: const Color(0xFF6A6460),
-            fontWeight: FontWeight.w600,
-            letterSpacing: -0.2,
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: const Color(0xEAF5F3EE),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: AppTypography.headingMedium.copyWith(
+              color: const Color(0xFF6A6460),
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
+            ),
           ),
         ),
       ),

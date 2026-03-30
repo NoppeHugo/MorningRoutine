@@ -2,10 +2,10 @@ import 'dart:math';
  
 import 'package:flutter/material.dart';
  
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
  
 class CircularTimer extends StatelessWidget {
   const CircularTimer({
@@ -30,35 +30,41 @@ class CircularTimer extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Background circle
-          CustomPaint(
-            size: Size(size, size),
-            painter: _TimerPainter(
-              progress: progress,
-              backgroundColor: AppColors.timerBackground,
-              progressColor: AppColors.timerProgress,
-              strokeWidth: 8,
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        radius: 120,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CustomPaint(
+              size: Size(size, size),
+              painter: _TimerPainter(
+                progress: progress,
+                backgroundColor: const Color(0x66D4DCE9),
+                progressColor: const Color(0xFFF3F6FB),
+                strokeWidth: 8,
+              ),
             ),
-          ),
-          // Timer text and emoji
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DurationUtils.formatTimer(secondsRemaining),
-                style: AppTypography.timer,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                emoji,
-                style: const TextStyle(fontSize: 32),
-              ),
-            ],
-          ),
-        ],
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  DurationUtils.formatTimer(secondsRemaining),
+                  style: AppTypography.timer.copyWith(
+                    color: const Color(0xFFF3F6FB),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 32),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

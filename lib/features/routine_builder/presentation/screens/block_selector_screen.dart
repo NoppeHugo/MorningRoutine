@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
 import '../../../../core/localization/app_i18n.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../data/blocks_repository.dart';
 import '../routine_builder_controller.dart';
@@ -69,53 +69,52 @@ class _BlockTemplateCard extends StatelessWidget {
     final langCode = Localizations.localeOf(context).languageCode;
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
+      child: AppGlassContainer(
+        radius: 22,
+        color: alreadyAdded
+            ? const Color(0x18F8FAFF)
+            : const Color(0x2EF8FAFF),
+        borderColor: alreadyAdded
+            ? const Color(0x38F2F5FA)
+            : const Color(0x66F2F5FA),
+        child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: alreadyAdded
-              ? AppColors.surfaceLight.withValues(alpha: 0.5)
-              : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-          border: Border.all(
-            color: alreadyAdded ? Colors.transparent : AppColors.surfaceLight,
-            width: 1,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              template.emoji,
-              style: const TextStyle(fontSize: 40),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              template.name,
-              style: AppTypography.labelMedium.copyWith(
-                color: alreadyAdded
-                    ? AppColors.textTertiary
-                    : AppColors.textPrimary,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                template.emoji,
+                style: const TextStyle(fontSize: 40),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              '${template.defaultDurationMinutes} min',
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textTertiary,
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                template.name,
+                style: AppTypography.labelMedium.copyWith(
+                  color: alreadyAdded
+                      ? const Color(0xA2E5EAF1)
+                      : const Color(0xFFF1F4F7),
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            if (alreadyAdded) ...[
               const SizedBox(height: AppSpacing.xs),
               Text(
-                AppI18n.t('blocks.alreadyAdded', langCode),
+                '${template.defaultDurationMinutes} min',
                 style: AppTypography.bodySmall.copyWith(
-                  color: AppColors.textTertiary,
-                  fontStyle: FontStyle.italic,
+                  color: const Color(0xCAE4E9F1),
                 ),
               ),
+              if (alreadyAdded) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  AppI18n.t('blocks.alreadyAdded', langCode),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: const Color(0xAEE2E8F0),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

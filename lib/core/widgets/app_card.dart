@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
- 
-import '../theme/app_colors.dart';
-import '../theme/app_spacing.dart';
+
+import 'app_atmosphere.dart';
  
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -21,25 +19,13 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = ClipRRect(
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: Container(
-          padding: padding ?? const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: (color ?? AppColors.surfaceElevated).withValues(alpha: 0.62),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-            border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x12000000),
-                offset: Offset(0, 6),
-                blurRadius: 18,
-              ),
-            ],
-          ),
-          child: child,
-        ),
+      borderRadius: BorderRadius.circular(28),
+      child: AppGlassContainer(
+        padding: padding ?? const EdgeInsets.all(24),
+        radius: 28,
+        color: color ?? const Color(0x26F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: child,
       ),
     );
  
@@ -48,8 +34,8 @@ class AppCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-          splashColor: AppColors.surfaceHighlight,
+          borderRadius: BorderRadius.circular(28),
+          splashColor: const Color(0x24F7FAFF),
           child: content,
         ),
       );

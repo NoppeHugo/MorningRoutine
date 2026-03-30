@@ -7,6 +7,7 @@ import '../../../core/localization/app_i18n.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_atmosphere.dart';
 import '../../../core/widgets/app_button.dart';
 import 'premium_controller.dart';
 
@@ -31,58 +32,54 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AppAtmosphericBackground()),
+          SafeArea(
+            child: Column(
+              children: [
             // Free trial banner
-            Container(
-              margin: const EdgeInsets.all(AppSpacing.md),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.secondary.withValues(alpha: 0.2),
-                    AppColors.primary.withValues(alpha: 0.1),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: AppGlassContainer(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
+                radius: AppSpacing.radiusSmall,
+                color: const Color(0x2EF8FAFF),
+                borderColor: const Color(0x80F2F5FA),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.celebration_rounded,
+                      color: Color(0xFFF2F5FA),
+                      size: 20,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppI18n.t('paywall.trial', langCode),
+                            style: AppTypography.labelMedium.copyWith(
+                              color: const Color(0xFFF2F5FA),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            AppI18n.t('paywall.trialSub', langCode),
+                            style: AppTypography.bodySmall.copyWith(
+                              color: const Color(0xDDE7EDF3),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-                border: Border.all(
-                  color: AppColors.secondary.withValues(alpha: 0.3),
-                ),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.celebration_rounded,
-                    color: AppColors.secondary,
-                    size: 20,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppI18n.t('paywall.trial', langCode),
-                          style: AppTypography.labelMedium.copyWith(
-                            color: AppColors.secondary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          AppI18n.t('paywall.trialSub', langCode),
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
 
@@ -95,7 +92,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                   onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(
                     Icons.close,
-                    color: AppColors.textSecondary,
+                    color: Color(0xDDE7EDF3),
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: const Color(0x2EF6F8FF),
+                    side: const BorderSide(color: Color(0x66F2F5FA)),
                   ),
                 ),
               ),
@@ -138,8 +139,10 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 .animate()
                 .fadeIn(duration: 400.ms, delay: 350.ms)
                 .slideY(begin: 0.2, end: 0),
-          ],
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -222,19 +225,17 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     ];
 
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
-        ),
-      ),
+      child: AppGlassContainer(
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
       child: Column(
         children: features
             .asMap()
             .entries
             .map((entry) => _buildFeatureRow(entry.value, entry.key == features.length - 1))
             .toList(),
+      ),
       ),
     );
   }
@@ -250,14 +251,15 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
+                  color: const Color(0x2CF6F8FF),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+                  border: Border.all(color: const Color(0x66F2F5FA)),
                 ),
                 child: Center(
                   child: Icon(
                     feature.iconData,
                     size: 22,
-                    color: AppColors.primary,
+                    color: const Color(0xFFF2F5FA),
                   ),
                 ),
               ),
@@ -277,16 +279,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               ),
               const Icon(
                 Icons.check_circle,
-                color: AppColors.secondary,
+                color: Color(0xFFF2F5FA),
                 size: AppSpacing.iconSm,
               ),
             ],
           ),
         ),
         if (!isLast)
-          Divider(
+          const Divider(
             height: 1,
-            color: AppColors.surfaceLight,
+            color: Color(0x42F2F5FA),
             indent: AppSpacing.md,
             endIndent: AppSpacing.md,
           ),
@@ -306,12 +308,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
     return Column(
       children: [
         // Toggle
-        Container(
+        AppGlassContainer(
           padding: const EdgeInsets.all(AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-          ),
+          radius: AppSpacing.radiusMedium,
+          color: const Color(0x24F8FAFF),
+          borderColor: const Color(0x66F2F5FA),
           child: Row(
             children: [
               Expanded(
@@ -341,7 +342,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
           Text(
             AppI18n.t('paywall.save50', langCode),
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.secondary,
+              color: const Color(0xFFF2F5FA),
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
@@ -432,13 +433,16 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
   Widget _buildAlreadyPremium() {
     final langCode = ref.read(appLanguageProvider).languageCode;
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AppAtmosphericBackground()),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
               const Icon(
                 Icons.workspace_premium_rounded,
                 size: 64,
@@ -450,7 +454,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
               Text(
                 AppI18n.t('paywall.alreadyProSub', langCode),
                 style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                  color: const Color(0xDDE7EDF3),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -459,9 +463,11 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 label: AppI18n.t('common.close', langCode),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-            ],
+                ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -504,28 +510,32 @@ class _PricingOption extends StatelessWidget {
           horizontal: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : Colors.transparent,
+          color: isSelected ? const Color(0x3BF6F8FF) : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+          border: Border.all(
+            color: isSelected ? const Color(0xA3F2F5FA) : Colors.transparent,
+          ),
         ),
         child: Column(
           children: [
             if (badge != null)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xxs,
-                ),
-                margin: const EdgeInsets.only(bottom: AppSpacing.xs),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                ),
-                child: Text(
-                  badge!,
-                  style: AppTypography.labelSmall.copyWith(
-                    color: AppColors.background,
-                    fontSize: 9,
-                    letterSpacing: 0.5,
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                child: AppGlassContainer(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xxs,
+                  ),
+                  radius: AppSpacing.radiusFull,
+                  color: const Color(0x32F6F8FF),
+                  borderColor: const Color(0x80F2F5FA),
+                  child: Text(
+                    badge!,
+                    style: AppTypography.labelSmall.copyWith(
+                      color: const Color(0xFFF2F5FA),
+                      fontSize: 9,
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
               ),
@@ -533,8 +543,8 @@ class _PricingOption extends StatelessWidget {
               label,
               style: AppTypography.labelSmall.copyWith(
                 color: isSelected
-                    ? AppColors.textOnPrimary
-                    : AppColors.textSecondary,
+                    ? const Color(0xFFF2F5FA)
+                    : const Color(0xDDE7EDF3),
               ),
             ),
             const SizedBox(height: AppSpacing.xxs),
@@ -542,7 +552,7 @@ class _PricingOption extends StatelessWidget {
               price,
               style: AppTypography.labelMedium.copyWith(
                 color: isSelected
-                    ? AppColors.textOnPrimary
+                    ? const Color(0xFFF2F5FA)
                     : AppColors.textPrimary,
                 fontWeight: FontWeight.w700,
               ),

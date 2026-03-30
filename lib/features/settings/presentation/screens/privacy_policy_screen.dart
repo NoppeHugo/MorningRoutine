@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_i18n.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -65,28 +65,24 @@ class PrivacyPolicyScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: AppSpacing.xl),
-          Container(
+          AppGlassContainer(
             padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-              border: Border.all(
-                color: AppColors.secondary.withValues(alpha: 0.3),
-              ),
-            ),
+            radius: AppSpacing.radiusMedium,
+            color: const Color(0x24F8FAFF),
+            borderColor: const Color(0x66F2F5FA),
             child: Row(
               children: [
                 const Icon(
                   Icons.verified_user_outlined,
                   size: 24,
-                  color: AppColors.secondary,
+                  color: Color(0xFFF2F5FA),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     AppI18n.t('privacy.badge', langCode),
                     style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.secondary,
+                      color: const Color(0xDDE7EDF3),
                     ),
                   ),
                 ),
@@ -110,19 +106,30 @@ class _Section extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: AppTypography.labelMedium),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            body,
-            style: AppTypography.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.6,
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x20F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: AppTypography.labelMedium.copyWith(
+                color: const Color(0xFFF2F5FA),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              body,
+              style: AppTypography.bodyMedium.copyWith(
+                color: const Color(0xDCE3EAF5),
+                height: 1.6,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

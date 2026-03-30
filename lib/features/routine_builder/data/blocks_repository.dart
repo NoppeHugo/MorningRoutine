@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../domain/block_model.dart';
-
 /// Block categories for grouping in the catalogue.
 enum BlockCategory {
   mindfulness,

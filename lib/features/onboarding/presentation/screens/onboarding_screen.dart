@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
  
@@ -8,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../settings/data/settings_repository.dart';
 import '../onboarding_controller.dart';
@@ -70,7 +70,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          const Positioned.fill(child: _OnboardingAtmosphere()),
+          const Positioned.fill(child: AppAtmosphericBackground()),
           SafeArea(
             child: Column(
               children: [
@@ -172,24 +172,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
-        // Back button
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: IconButton(
-              onPressed: () => controller.previousPage(),
-              icon: const Icon(Icons.arrow_back_rounded),
-              color: const Color(0xFFF2F4F8),
-              style: IconButton.styleFrom(
-                backgroundColor: const Color(0x28ECF0F8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-                ),
-              ),
-            ),
-          ),
-        ),
+        _buildBackButton(onPressed: controller.previousPage),
         const SizedBox(height: AppSpacing.xl),
         Text(
           AppI18n.t('onboarding.wakeTime', langCode),
@@ -215,23 +198,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: IconButton(
-              onPressed: () => controller.previousPage(),
-              icon: const Icon(Icons.arrow_back_rounded),
-              color: const Color(0xFFF2F4F8),
-              style: IconButton.styleFrom(
-                backgroundColor: const Color(0x28ECF0F8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-                ),
-              ),
-            ),
-          ),
-        ),
+        _buildBackButton(onPressed: controller.previousPage),
         const SizedBox(height: AppSpacing.xl),
         Text(
           AppI18n.t('onboarding.duration', langCode),
@@ -257,23 +224,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     return Column(
       children: [
         const SizedBox(height: AppSpacing.xxl),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: IconButton(
-              onPressed: () => controller.previousPage(),
-              icon: const Icon(Icons.arrow_back_rounded),
-              color: const Color(0xFFF2F4F8),
-              style: IconButton.styleFrom(
-                backgroundColor: const Color(0x28ECF0F8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-                ),
-              ),
-            ),
-          ),
-        ),
+        _buildBackButton(onPressed: controller.previousPage),
         const SizedBox(height: AppSpacing.xl),
         Text(
           AppI18n.t('onboarding.goals', langCode),
@@ -312,56 +263,82 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       context: context,
       isDismissible: false,
       enableDrag: false,
-      backgroundColor: AppColors.surfaceElevated,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLarge)),
       ),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppI18n.t('onboarding.languageTitle', locale.languageCode),
-                    style: AppTypography.headingSmall,
+            return SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: AppGlassContainer(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppI18n.t('onboarding.languageTitle', locale.languageCode),
+                        style: AppTypography.headingSmall,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        AppI18n.t('onboarding.languageSub', locale.languageCode),
+                        style: AppTypography.bodySmall.copyWith(color: const Color(0xFFDCE1EA)),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      ...supportedLanguageCodes.map((code) {
+                        final isSelected = selected == code;
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+                            onTap: () => setModalState(() => selected = code),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.sm,
+                                horizontal: AppSpacing.sm,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      languageLabel(code),
+                                      style: AppTypography.bodyMedium,
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    const Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Color(0xFFF2F5FB),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: AppSpacing.md),
+                      AppButton(
+                        label: AppI18n.t('onboarding.languageContinue', locale.languageCode),
+                        onPressed: () async {
+                          final current = settingsRepositoryInstance.loadSettings();
+                          await settingsRepositoryInstance.saveSettings(
+                            current.copyWith(
+                              languageCode: selected,
+                              hasChosenLanguage: true,
+                            ),
+                          );
+                          await ref.read(appLanguageProvider.notifier).setLanguage(selected);
+                          if (ctx.mounted) Navigator.of(ctx).pop();
+                        },
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    AppI18n.t('onboarding.languageSub', locale.languageCode),
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  ...supportedLanguageCodes.map((code) {
-                    final isSelected = selected == code;
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(languageLabel(code)),
-                      trailing: isSelected
-                          ? const Icon(Icons.check_rounded, color: AppColors.primary)
-                          : null,
-                      onTap: () => setModalState(() => selected = code),
-                    );
-                  }),
-                  const SizedBox(height: AppSpacing.md),
-                  AppButton(
-                    label: AppI18n.t('onboarding.languageContinue', locale.languageCode),
-                    onPressed: () async {
-                      final current = settingsRepositoryInstance.loadSettings();
-                      await settingsRepositoryInstance.saveSettings(
-                        current.copyWith(
-                          languageCode: selected,
-                          hasChosenLanguage: true,
-                        ),
-                      );
-                      await ref.read(appLanguageProvider.notifier).setLanguage(selected);
-                      if (ctx.mounted) Navigator.of(ctx).pop();
-                    },
-                  ),
-                ],
+                ),
               ),
             );
           },
@@ -369,74 +346,24 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       },
     );
   }
-}
 
-class _OnboardingAtmosphere extends StatelessWidget {
-  const _OnboardingAtmosphere();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF6D7886),
-            Color(0xFF5D6470),
-            Color(0xFF4A4851),
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -80,
-            left: -70,
-            child: _SoftHalo(size: 220, color: Color(0x45E9F0FF)),
-          ),
-          Positioned(
-            bottom: -90,
-            right: -80,
-            child: _SoftHalo(size: 260, color: Color(0x40FFDCC2)),
-          ),
-          Positioned.fill(
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      const Color(0x22000000),
-                      Colors.transparent,
-                      const Color(0x24000000),
-                    ],
-                  ),
-                ),
-              ),
+  Widget _buildBackButton({required VoidCallback onPressed}) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: IconButton(
+          onPressed: onPressed,
+          icon: const Icon(Icons.arrow_back_rounded),
+          color: const Color(0xFFF2F4F8),
+          style: IconButton.styleFrom(
+            backgroundColor: const Color(0x30ECF0F8),
+            side: const BorderSide(color: Color(0x66F2F5FA)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SoftHalo extends StatelessWidget {
-  const _SoftHalo({required this.size, required this.color});
-
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 48, sigmaY: 48),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
       ),
     );
   }

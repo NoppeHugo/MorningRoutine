@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/localization/app_i18n.dart';
@@ -19,11 +20,28 @@ class App extends ConsumerWidget {
       theme: AppTheme.dark,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.dark,
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(
+            textScaler: mediaQuery.textScaler.clamp(
+              minScaleFactor: 1.0,
+              maxScaleFactor: 1.35,
+            ),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       locale: locale,
       supportedLocales: const [
         Locale('fr'),
         Locale('nl'),
         Locale('en'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       routerConfig: router,
     );

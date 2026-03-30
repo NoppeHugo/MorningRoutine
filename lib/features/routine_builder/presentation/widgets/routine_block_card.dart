@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
  
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../domain/block_model.dart';
  
 class RoutineBlockCard extends StatelessWidget {
@@ -21,21 +21,18 @@ class RoutineBlockCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Container(
+      child: AppGlassContainer(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.sm,
         ),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-        ),
+        radius: 18,
         child: Row(
           children: [
             // Drag handle
             const Icon(
               Icons.drag_handle,
-              color: AppColors.textTertiary,
+              color: Color(0xB9E8ECF2),
               size: AppSpacing.iconMd,
             ),
             const SizedBox(width: AppSpacing.sm),
@@ -54,12 +51,16 @@ class RoutineBlockCard extends StatelessWidget {
                 children: [
                   Text(
                     block.name,
-                    style: AppTypography.labelMedium,
+                    style: AppTypography.labelMedium.copyWith(
+                      color: const Color(0xFFF2F4F7),
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
                     '${block.durationMinutes} min',
-                    style: AppTypography.bodySmall,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: const Color(0xD3E5EAF1),
+                    ),
                   ),
                 ],
               ),
@@ -91,7 +92,7 @@ class RoutineBlockCard extends StatelessWidget {
               onTap: onDelete,
               child: const Icon(
                 Icons.close,
-                color: AppColors.textTertiary,
+                color: Color(0xC4E5EAF1),
                 size: AppSpacing.iconSm,
               ),
             ),
@@ -120,15 +121,16 @@ class _DurationButton extends StatelessWidget {
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: isDisabled
-              ? AppColors.surfaceLight.withValues(alpha: 0.5)
-              : AppColors.surfaceLight,
+          color: isDisabled ? const Color(0x2FF8FAFF) : const Color(0x45F8FAFF),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
+          border: Border.all(color: const Color(0x55F2F5FA)),
         ),
         child: Icon(
           icon,
           size: 16,
-          color: isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
+          color: isDisabled
+              ? const Color(0x92E2E8F0)
+              : const Color(0xFFF2F4F7),
         ),
       ),
     );

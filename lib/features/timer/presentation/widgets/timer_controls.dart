@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
  
 import '../../../../core/localization/app_i18n.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../domain/timer_state.dart';
  
 class TimerControls extends StatelessWidget {
@@ -31,7 +31,7 @@ class TimerControls extends StatelessWidget {
         _ControlButton(
           icon: Icons.skip_next_rounded,
           label: AppI18n.t('timer.skip', langCode),
-          color: AppColors.textSecondary,
+          color: const Color(0xDCE3EAF5),
           onTap: onSkip,
         ),
  
@@ -45,7 +45,7 @@ class TimerControls extends StatelessWidget {
         _ControlButton(
           icon: Icons.check_rounded,
           label: AppI18n.t('timer.done', langCode),
-          color: AppColors.secondary,
+          color: const Color(0xFFF2F6FB),
           onTap: onDone,
         ),
       ],
@@ -66,24 +66,19 @@ class _PlayPauseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: 72,
         height: 72,
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.25),
-              offset: const Offset(0, 4),
-              blurRadius: 16,
-            ),
-          ],
-        ),
-        child: Icon(
-          isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-          color: AppColors.textOnPrimary,
-          size: AppSpacing.iconLg,
+        child: AppGlassContainer(
+          padding: EdgeInsets.zero,
+          radius: 36,
+          color: const Color(0x40F6F8FF),
+          borderColor: const Color(0xAFF2F5FA),
+          child: Icon(
+            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            color: const Color(0xFFF3F6FB),
+            size: AppSpacing.iconLg,
+          ),
         ),
       ),
     );
@@ -110,14 +105,16 @@ class _ControlButton extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          SizedBox(
             width: 52,
             height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
-              shape: BoxShape.circle,
+            child: AppGlassContainer(
+              padding: EdgeInsets.zero,
+              radius: 26,
+              color: const Color(0x26F8FAFF),
+              borderColor: const Color(0x66F2F5FA),
+              child: Icon(icon, color: color, size: AppSpacing.iconMd),
             ),
-            child: Icon(icon, color: color, size: AppSpacing.iconMd),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(

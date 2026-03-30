@@ -7,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../paywall/presentation/premium_controller.dart';
@@ -73,21 +74,19 @@ class _SharedRoutineDetailScreenState
 
               return Container(
                 margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                child: AppGlassContainer(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  radius: AppSpacing.radiusMedium,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                     CircleAvatar(
                       radius: 14,
-                      backgroundColor: AppColors.primaryLight,
+                      backgroundColor: const Color(0x35F2F5FA),
                       child: Text(
                         '${index + 1}',
                         style: AppTypography.labelSmall.copyWith(
-                          color: AppColors.primary,
+                          color: const Color(0xFFF1F4F7),
                         ),
                       ),
                     ),
@@ -98,11 +97,15 @@ class _SharedRoutineDetailScreenState
                         children: [
                           Text(
                             '${refBlock?.emoji ?? '•'} ${refBlock?.name ?? block.templateId}',
-                            style: AppTypography.labelMedium,
+                            style: AppTypography.labelMedium.copyWith(
+                              color: const Color(0xFFF2F4F7),
+                            ),
                           ),
                           Text(
                             '${block.durationMinutes} min',
-                            style: AppTypography.bodySmall,
+                            style: AppTypography.bodySmall.copyWith(
+                              color: const Color(0xD3E4EAF2),
+                            ),
                           ),
                           if (block.note != null)
                             Padding(
@@ -110,14 +113,15 @@ class _SharedRoutineDetailScreenState
                               child: Text(
                                 block.note!,
                                 style: AppTypography.bodySmall.copyWith(
-                                  color: AppColors.textSecondary,
+                                  color: const Color(0xC7DCE4EE),
                                 ),
                               ),
                             ),
                         ],
                       ),
                     ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             }),
@@ -125,7 +129,7 @@ class _SharedRoutineDetailScreenState
             Text(
               template.disclaimer,
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: const Color(0xD5E2E9F2),
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -227,18 +231,14 @@ class _Header extends StatelessWidget {
     final langCode = Localizations.localeOf(context).languageCode;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: AppColors.primaryGradient,
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x34F8FAFF),
+        borderColor: const Color(0x70F2F5FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Text(
             creatorName == null
                 ? AppI18n.t('shared.inspiredRoutine', langCode)
@@ -253,10 +253,11 @@ class _Header extends StatelessWidget {
           Text(
             template.subtitle,
             style: AppTypography.bodyLarge.copyWith(
-              color: AppColors.textOnPrimary,
+              color: const Color(0xFFF2F4F7),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -272,14 +273,12 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        radius: AppSpacing.radiusMedium,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Text(template.goal, style: AppTypography.bodyMedium),
           const SizedBox(height: AppSpacing.sm),
           Wrap(
@@ -304,10 +303,11 @@ class _InfoCard extends StatelessWidget {
           Text(
             template.sourceLabel,
             style: AppTypography.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+              color: const Color(0xD4E5EAF2),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -320,18 +320,17 @@ class _Pill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AppGlassContainer(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,
       ),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSmall),
-      ),
+      radius: AppSpacing.radiusSmall,
+      color: const Color(0x24F8FAFF),
+      borderColor: const Color(0x66F2F5FA),
       child: Text(
         text,
-        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+        style: AppTypography.bodySmall.copyWith(color: const Color(0xE7EDF3F8)),
       ),
     );
   }

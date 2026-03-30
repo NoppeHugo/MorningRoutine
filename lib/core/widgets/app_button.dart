@@ -55,18 +55,23 @@ class _AppButtonState extends State<AppButton>
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null || widget.isLoading;
  
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTapDown: isDisabled ? null : (_) => _scaleController.forward(),
-      onTapUp: isDisabled ? null : (_) => _scaleController.reverse(),
-      onTapCancel: isDisabled ? null : () => _scaleController.reverse(),
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) => Transform.scale(
-          scale: _scaleAnimation.value,
-          child: child,
+    return Semantics(
+      button: true,
+      enabled: !isDisabled,
+      label: widget.label,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: isDisabled ? null : (_) => _scaleController.forward(),
+        onTapUp: isDisabled ? null : (_) => _scaleController.reverse(),
+        onTapCancel: isDisabled ? null : () => _scaleController.reverse(),
+        child: AnimatedBuilder(
+          animation: _scaleAnimation,
+          builder: (context, child) => Transform.scale(
+            scale: _scaleAnimation.value,
+            child: child,
+          ),
+          child: _buildButton(isDisabled),
         ),
-        child: _buildButton(isDisabled),
       ),
     );
   }
@@ -109,10 +114,15 @@ class _AppButtonState extends State<AppButton>
                 vertical: AppSpacing.md,
                 horizontal: AppSpacing.lg,
               ),
-              child: _buildContent(
-                isDisabled
-                    ? AppColors.textTertiary
-                      : const Color(0xFF5F5A55),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 24),
+                child: Center(
+                  child: _buildContent(
+                    isDisabled
+                        ? AppColors.textTertiary
+                        : const Color(0xFF5F5A55),
+                  ),
+                ),
               ),
             ),
           ),
@@ -143,8 +153,13 @@ class _AppButtonState extends State<AppButton>
                 vertical: AppSpacing.md,
                 horizontal: AppSpacing.lg,
               ),
-              child: _buildContent(
-                isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 24),
+                child: Center(
+                  child: _buildContent(
+                    isDisabled ? AppColors.textTertiary : AppColors.textPrimary,
+                  ),
+                ),
               ),
             ),
           ),

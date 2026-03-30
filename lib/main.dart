@@ -44,6 +44,18 @@ Future<void> main() async {
     Hive.openBox(AppConstants.settingsBoxName),
   ]);
 
+  // One-time fresh reset so the app starts like a new account.
+  final settingsBox = Hive.box(AppConstants.settingsBoxName);
+  final resetDone =
+      settingsBox.get('__fresh_reset_done__', defaultValue: false) as bool;
+  if (!resetDone) {
+    await Hive.box(AppConstants.routineBoxName).clear();
+    await Hive.box(AppConstants.scoresBoxName).clear();
+    await settingsBox.clear();
+    await settingsBox.put('isOnboardingCompleted', false);
+    await settingsBox.put('__fresh_reset_done__', true);
+  }
+
   // Initialize shared routines cache (offline access)
   final localSource = SharedRoutinesLocalSource();
   await localSource.initialize();

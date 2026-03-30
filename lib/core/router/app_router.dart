@@ -1,15 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/paywall/presentation/paywall_screen.dart';
 import '../../features/routine_builder/presentation/screens/block_selector_screen.dart';
 import '../../features/routine_builder/presentation/screens/routine_builder_screen.dart';
 import '../../features/routine_builder/presentation/screens/template_chooser_screen.dart';
-import '../../features/scoring/presentation/screens/history_screen.dart';
 import '../../features/shared_routines/presentation/screens/shared_routine_detail_screen.dart';
 import '../../features/shared_routines/presentation/screens/shared_routines_catalog_screen.dart';
 import '../../features/settings/presentation/screens/privacy_policy_screen.dart';

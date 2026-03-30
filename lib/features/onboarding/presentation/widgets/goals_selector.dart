@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
  
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
  
 class GoalsSelector extends StatelessWidget {
   const GoalsSelector({
@@ -49,42 +49,39 @@ class _GoalTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
+      child: AnimatedScale(
+        scale: isSelected ? 1.0 : 0.985,
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(
-          vertical: AppSpacing.md,
-          horizontal: AppSpacing.lg,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceLight,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-          border: isSelected
-              ? null
-              : Border.all(color: AppColors.surfaceLight, width: 1),
-        ),
-        child: Row(
-          children: [
-            Text(
-              goal.emoji,
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Text(
-              goal.label,
-              style: AppTypography.bodyLarge.copyWith(
-                color: isSelected
-                    ? AppColors.textOnPrimary
-                    : AppColors.textPrimary,
+        child: AppGlassContainer(
+          radius: AppSpacing.radiusMedium,
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacing.md,
+            horizontal: AppSpacing.lg,
+          ),
+          color: isSelected ? const Color(0x3BF6F8FF) : const Color(0x24F8FAFF),
+          borderColor: isSelected ? const Color(0xA3F2F5FA) : const Color(0x66F2F5FA),
+          child: Row(
+            children: [
+              Text(
+                goal.emoji,
+                style: const TextStyle(fontSize: 24),
               ),
-            ),
-            const Spacer(),
-            if (isSelected)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.textOnPrimary,
-                size: AppSpacing.iconMd,
+              const SizedBox(width: AppSpacing.md),
+              Text(
+                goal.label,
+                style: AppTypography.bodyLarge.copyWith(
+                  color: const Color(0xFFF3F6FB),
+                ),
               ),
-          ],
+              const Spacer(),
+              if (isSelected)
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: Color(0xFFF3F6FB),
+                  size: AppSpacing.iconMd,
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_atmosphere.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../domain/achievement_model.dart';
 import 'achievements_controller.dart';
@@ -130,58 +131,50 @@ class _HeaderStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
         AppSpacing.md,
         AppSpacing.md,
         AppSpacing.sm,
       ),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Progression',
-                style: AppTypography.headingSmall,
-              ),
-              Text(
-                '$unlocked / $total débloqués',
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w600,
+      child: AppGlassContainer(
+        radius: AppSpacing.radiusMedium,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Progression',
+                  style: AppTypography.headingSmall,
+                ),
+                Text(
+                  '$unlocked / $total débloqués',
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: const Color(0xDDE7EDF3),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 8,
+                backgroundColor: const Color(0x66F2F5FA),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color(0xFFF2F5FA),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          ClipRRect(
-            borderRadius:
-                BorderRadius.circular(AppSpacing.radiusFull),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: AppColors.surfaceLight,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                AppColors.primary,
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -242,69 +235,59 @@ class _AchievementCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tierColor = achievement.tier.color;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.xs,
       ),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // ── Badge ──────────────────────────────────────────────────────
-          _AchievementBadge(
-            icon: achievement.icon,
-            tierColor: tierColor,
-            isUnlocked: isUnlocked,
-          ),
-          const SizedBox(width: AppSpacing.md),
-
-          // ── Text content ───────────────────────────────────────────────
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  achievement.title,
-                  style: AppTypography.labelLarge.copyWith(
-                    color: isUnlocked
-                        ? AppColors.textPrimary
-                        : AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxs),
-                Text(
-                  achievement.description,
-                  style: AppTypography.bodySmall.copyWith(
-                    color: isUnlocked
-                        ? AppColors.textSecondary
-                        : AppColors.textTertiary,
-                  ),
-                ),
-                if (!isUnlocked) ...[
-                  const SizedBox(height: AppSpacing.xs),
+      child: AppGlassContainer(
+        radius: AppSpacing.radiusMedium,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Row(
+          children: [
+            _AchievementBadge(
+              icon: achievement.icon,
+              tierColor: tierColor,
+              isUnlocked: isUnlocked,
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    achievement.condition,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textTertiary,
-                      fontStyle: FontStyle.italic,
+                    achievement.title,
+                    style: AppTypography.labelLarge.copyWith(
+                      color: isUnlocked
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
                     ),
                   ),
+                  const SizedBox(height: AppSpacing.xxs),
+                  Text(
+                    achievement.description,
+                    style: AppTypography.bodySmall.copyWith(
+                      color: isUnlocked
+                          ? const Color(0xDDE7EDF3)
+                          : AppColors.textTertiary,
+                    ),
+                  ),
+                  if (!isUnlocked) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      achievement.condition,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textTertiary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -334,7 +317,7 @@ class _AchievementBadge extends StatelessWidget {
           decoration: BoxDecoration(
             color: isUnlocked
                 ? tierColor
-                : AppColors.surfaceLight.withOpacity(0.6),
+                : AppColors.surfaceLight.withValues(alpha: 0.6),
             shape: BoxShape.circle,
           ),
           child: Icon(

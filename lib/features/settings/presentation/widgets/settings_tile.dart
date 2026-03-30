@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
  
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
  
 class SettingsTile extends StatelessWidget {
   const SettingsTile({
@@ -20,37 +20,38 @@ class SettingsTile extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surfaceElevated.withValues(alpha: 0.55),
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.md,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-            border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: AppTypography.bodyLarge.copyWith(
-                  color: titleColor ?? AppColors.textPrimary,
+    return AppGlassContainer(
+      padding: EdgeInsets.zero,
+      radius: AppSpacing.radiusLarge,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.md,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: titleColor ?? const Color(0xFFF2F4F7),
+                    ),
+                  ),
                 ),
-              ),
-              if (trailing != null) trailing!,
-              if (onTap != null && trailing == null)
-                const Icon(
-                  Icons.chevron_right,
-                  color: AppColors.textTertiary,
-                ),
-            ],
+                if (trailing != null) trailing!,
+                if (onTap != null && trailing == null)
+                  const Icon(
+                    Icons.chevron_right,
+                    color: Color(0xCBE4EAF1),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

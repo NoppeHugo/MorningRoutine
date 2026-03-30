@@ -63,7 +63,7 @@ abstract class StreakCalculator {
       if (lastDate == null) {
         currentStreak = 1;
       } else {
-        final diff = scoreDate.difference(lastDate!).inDays;
+        final diff = scoreDate.difference(lastDate).inDays;
         if (diff == 1) {
           currentStreak++;
         } else {

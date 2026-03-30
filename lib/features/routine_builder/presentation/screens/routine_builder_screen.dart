@@ -9,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/utils/duration_utils.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../paywall/presentation/premium_controller.dart';
@@ -77,8 +78,7 @@ class RoutineBuilderScreen extends ConsumerWidget {
               state: state,
               onSelectRoutine: controller.selectRoutine,
               onCreateRoutine: controller.createRoutine,
-              onDeleteRoutine: () =>
-                  _confirmDeleteRoutine(context, controller.deleteSelectedRoutine),
+              onDeleteRoutine: () async => _confirmDeleteRoutine(context, controller.deleteSelectedRoutine),
               onActivateNow: controller.activateSelectedRoutineNow,
               onActivateTomorrow: controller.scheduleSelectedRoutineForTomorrow,
               onClearTomorrowActivation: controller.clearScheduledActivation,
@@ -134,15 +134,15 @@ class RoutineBuilderScreen extends ConsumerWidget {
                     vertical: AppSpacing.sm,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceElevated.withValues(alpha: 0.64),
+                    color: const Color(0x35F8FAFF),
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusFull),
-                    border: Border.all(color: AppColors.separator.withValues(alpha: 0.8)),
+                    border: Border.all(color: const Color(0x66F2F5FA)),
                   ),
                   child: Text(
                     '${routine.totalDurationMinutes} min',
                     style: AppTypography.labelMedium.copyWith(
-                      color: AppColors.textPrimary,
+                      color: const Color(0xFFF1F4F7),
                     ),
                   ),
                 ),
@@ -282,28 +282,25 @@ class _RoutineManagementCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceElevated.withValues(alpha: 0.62),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXLarge),
-        border: Border.all(color: AppColors.separator.withValues(alpha: 0.75)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        radius: 28,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Text(
             AppI18n.t('builder.manage', langCode),
             style: AppTypography.labelMedium.copyWith(
-              color: AppColors.textSecondary,
+              color: const Color(0xDDECF0F5),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
           DropdownButtonFormField<String>(
-            value: selectedRoutine?.id,
+            initialValue: selectedRoutine?.id,
             isExpanded: true,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.surface.withValues(alpha: 0.75),
+              fillColor: const Color(0x3AF7FAFF),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMedium),
                 borderSide: BorderSide.none,
@@ -313,12 +310,16 @@ class _RoutineManagementCard extends StatelessWidget {
                 vertical: AppSpacing.sm,
               ),
             ),
+            dropdownColor: const Color(0xFF596072),
             items: state.routines
                 .map(
                   (routine) => DropdownMenuItem<String>(
                     value: routine.id,
                     child: Text(
                       routine.name,
+                      style: AppTypography.bodyLarge.copyWith(
+                        color: const Color(0xFFF2F4F7),
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -337,6 +338,11 @@ class _RoutineManagementCard extends StatelessWidget {
                   onPressed: onCreateRoutine,
                   icon: const Icon(Icons.add_rounded, size: 18),
                   label: Text(AppI18n.t('builder.new', langCode)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF8F96FF),
+                    side: const BorderSide(color: Color(0x66F2F5FA)),
+                    backgroundColor: const Color(0x1FF8FAFF),
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -345,6 +351,11 @@ class _RoutineManagementCard extends StatelessWidget {
                   onPressed: state.routines.isEmpty ? null : onDeleteRoutine,
                   icon: const Icon(Icons.delete_outline_rounded, size: 18),
                   label: Text(AppI18n.t('common.delete', langCode)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF8F96FF),
+                    side: const BorderSide(color: Color(0x66F2F5FA)),
+                    backgroundColor: const Color(0x1FF8FAFF),
+                  ),
                 ),
               ),
             ],
@@ -379,7 +390,8 @@ class _RoutineManagementCard extends StatelessWidget {
               label: Text(AppI18n.t('builder.cancelScheduled', langCode)),
             ),
           ],
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -403,14 +415,9 @@ class _ActivationSummary extends StatelessWidget {
         ? null
         : '${scheduledDate!.day.toString().padLeft(2, '0')}/${scheduledDate!.month.toString().padLeft(2, '0')}/${scheduledDate!.year}';
 
-    return Container(
-      width: double.infinity,
+    return AppGlassContainer(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceElevated.withValues(alpha: 0.64),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        border: Border.all(color: AppColors.separator.withValues(alpha: 0.7)),
-      ),
+      radius: 22,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -420,7 +427,7 @@ class _ActivationSummary extends StatelessWidget {
                 'name': activeRoutineName!,
               }),
               style: AppTypography.bodyMedium.copyWith(
-                color: AppColors.textPrimary,
+                color: const Color(0xFFF2F4F7),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -432,7 +439,7 @@ class _ActivationSummary extends StatelessWidget {
                 'name': scheduledRoutineName!,
               }),
               style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+                color: const Color(0xE3EAF0F5),
               ),
             ),
           ],

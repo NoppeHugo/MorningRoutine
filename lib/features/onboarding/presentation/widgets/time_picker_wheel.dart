@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
  
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
  
 class TimePickerWheel extends StatefulWidget {
   const TimePickerWheel({
@@ -50,80 +50,89 @@ class _TimePickerWheelState extends State<TimePickerWheel> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        height: 200,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Hours
-            SizedBox(
-              width: 80,
-              child: ListWheelScrollView.useDelegate(
-                controller: _hourController,
-                itemExtent: 50,
-                physics: const FixedExtentScrollPhysics(),
-                onSelectedItemChanged: (index) {
-                  _selectedHour = index;
-                  _onChanged();
-                },
-                childDelegate: ListWheelChildBuilderDelegate(
-                  childCount: 24,
-                  builder: (context, index) {
-                    final isSelected = index == _selectedHour;
-                    return Center(
-                      child: Text(
-                        index.toString().padLeft(2, '0'),
-                        style: isSelected
-                            ? AppTypography.headingLarge
-                            : AppTypography.headingMedium.copyWith(
-                                color: AppColors.textTertiary,
-                              ),
-                      ),
-                    );
+      child: AppGlassContainer(
+        radius: AppSpacing.radiusXLarge,
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.md,
+          horizontal: AppSpacing.lg,
+        ),
+        child: SizedBox(
+          height: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 80,
+                child: ListWheelScrollView.useDelegate(
+                  controller: _hourController,
+                  itemExtent: 50,
+                  physics: const FixedExtentScrollPhysics(),
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      _selectedHour = index;
+                    });
+                    _onChanged();
                   },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    childCount: 24,
+                    builder: (context, index) {
+                      final isSelected = index == _selectedHour;
+                      return Center(
+                        child: Text(
+                          index.toString().padLeft(2, '0'),
+                          style: isSelected
+                              ? AppTypography.headingLarge.copyWith(color: const Color(0xFFF3F6FB))
+                              : AppTypography.headingMedium.copyWith(
+                                  color: const Color(0x9FDDE3ED),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            // Separator
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-              child: Text(
-                ':',
-                style: AppTypography.headingLarge,
-              ),
-            ),
-            // Minutes (by 5)
-            SizedBox(
-              width: 80,
-              child: ListWheelScrollView.useDelegate(
-                controller: _minuteController,
-                itemExtent: 50,
-                physics: const FixedExtentScrollPhysics(),
-                onSelectedItemChanged: (index) {
-                  _selectedMinute = index;
-                  _onChanged();
-                },
-                childDelegate: ListWheelChildBuilderDelegate(
-                  childCount: 12,
-                  builder: (context, index) {
-                    final minuteValue = index * 5;
-                    final isSelected = index == _selectedMinute;
-                    return Center(
-                      child: Text(
-                        minuteValue.toString().padLeft(2, '0'),
-                        style: isSelected
-                            ? AppTypography.headingLarge
-                            : AppTypography.headingMedium.copyWith(
-                                color: AppColors.textTertiary,
-                              ),
-                      ),
-                    );
-                  },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                child: Text(
+                  ':',
+                  style: AppTypography.headingLarge.copyWith(
+                    color: const Color(0xF2F2F5FA),
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(
+                width: 80,
+                child: ListWheelScrollView.useDelegate(
+                  controller: _minuteController,
+                  itemExtent: 50,
+                  physics: const FixedExtentScrollPhysics(),
+                  onSelectedItemChanged: (index) {
+                    setState(() {
+                      _selectedMinute = index;
+                    });
+                    _onChanged();
+                  },
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    childCount: 12,
+                    builder: (context, index) {
+                      final minuteValue = index * 5;
+                      final isSelected = index == _selectedMinute;
+                      return Center(
+                        child: Text(
+                          minuteValue.toString().padLeft(2, '0'),
+                          style: isSelected
+                              ? AppTypography.headingLarge.copyWith(color: const Color(0xFFF3F6FB))
+                              : AppTypography.headingMedium.copyWith(
+                                  color: const Color(0x9FDDE3ED),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

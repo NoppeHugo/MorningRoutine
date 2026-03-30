@@ -7,6 +7,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/app_atmosphere.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../paywall/presentation/premium_controller.dart';
@@ -124,28 +125,29 @@ class HistoryScreen extends ConsumerWidget {
         .toList();
 
     if (withMood.isEmpty) {
-      return Container(
+      return SizedBox(
         width: double.infinity,
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppI18n.t('history.energyTitle', langCode),
-              style: AppTypography.labelLarge,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              AppI18n.t('history.energyNoData', langCode),
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+        child: AppGlassContainer(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          radius: AppSpacing.radiusLarge,
+          color: const Color(0x24F8FAFF),
+          borderColor: const Color(0x66F2F5FA),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                AppI18n.t('history.energyTitle', langCode),
+                style: AppTypography.labelLarge,
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                AppI18n.t('history.energyNoData', langCode),
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -184,39 +186,40 @@ class HistoryScreen extends ConsumerWidget {
       }
     }
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppI18n.t('history.energyTitle', langCode),
-            style: AppTypography.labelLarge,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            AppI18n.tf('history.energyAvgDeltaFmt', langCode, {
-              'delta': deltaLabel,
-            }),
-            style: AppTypography.bodyMedium,
-          ),
-          if (bestModeLabel != null) ...[
-            const SizedBox(height: AppSpacing.xs),
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              AppI18n.tf('history.bestModeFmt', langCode, {
-                'mode': bestModeLabel!,
-              }),
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
+              AppI18n.t('history.energyTitle', langCode),
+              style: AppTypography.labelLarge,
             ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              AppI18n.tf('history.energyAvgDeltaFmt', langCode, {
+                'delta': deltaLabel,
+              }),
+              style: AppTypography.bodyMedium,
+            ),
+            if (bestModeLabel != null) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                AppI18n.tf('history.bestModeFmt', langCode, {
+                  'mode': bestModeLabel,
+                }),
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -249,12 +252,11 @@ class HistoryScreen extends ConsumerWidget {
     required int activeDaysThisMonth,
     String langCode = 'fr',
   }) {
-    return Container(
+    return AppGlassContainer(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
+      radius: AppSpacing.radiusLarge,
+      color: const Color(0x24F8FAFF),
+      borderColor: const Color(0x66F2F5FA),
       child: Row(
         children: [
           Expanded(
@@ -301,7 +303,7 @@ class HistoryScreen extends ConsumerWidget {
     return Container(
       width: 1,
       height: 48,
-      color: AppColors.surfaceLight,
+      color: const Color(0x4CF2F5FA),
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
     );
   }
@@ -311,19 +313,19 @@ class HistoryScreen extends ConsumerWidget {
   // ---------------------------------------------------------------------------
 
   Widget _buildRecentSessionsList(List<DailyScore> scores, String langCode) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
+    return AppGlassContainer(
+      padding: EdgeInsets.zero,
+      radius: AppSpacing.radiusLarge,
+      color: const Color(0x24F8FAFF),
+      borderColor: const Color(0x66F2F5FA),
       child: ListView.separated(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: scores.length,
-        separatorBuilder: (_, __) => Divider(
+        separatorBuilder: (_, __) => const Divider(
           height: 1,
           thickness: 1,
-          color: AppColors.surfaceLight,
+          color: Color(0x42F2F5FA),
           indent: AppSpacing.md,
           endIndent: AppSpacing.md,
         ),
@@ -345,43 +347,50 @@ class HistoryScreen extends ConsumerWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: AppSpacing.iconXxl + AppSpacing.lg,
-                height: AppSpacing.iconXxl + AppSpacing.lg,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  shape: BoxShape.circle,
+          child: AppGlassContainer(
+            radius: AppSpacing.radiusXLarge,
+            color: const Color(0x24F8FAFF),
+            borderColor: const Color(0x66F2F5FA),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: AppSpacing.iconXxl + AppSpacing.lg,
+                  height: AppSpacing.iconXxl + AppSpacing.lg,
+                  child: AppGlassContainer(
+                    padding: EdgeInsets.zero,
+                    radius: (AppSpacing.iconXxl + AppSpacing.lg) / 2,
+                    color: const Color(0x30F6F8FF),
+                    borderColor: const Color(0x80F2F5FA),
+                    child: const Icon(
+                      Icons.lock_outline_rounded,
+                      size: AppSpacing.iconXl,
+                      color: Color(0xFFF2F5FA),
+                    ),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.lock_outline_rounded,
-                  size: AppSpacing.iconXl,
-                  color: AppColors.primary,
+                const SizedBox(height: AppSpacing.lg),
+                Text(
+                  AppI18n.t('history.fullTitle', langCode),
+                  style: AppTypography.headingMedium,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                AppI18n.t('history.fullTitle', langCode),
-                style: AppTypography.headingMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                AppI18n.t('history.fullSub', langCode),
-                style: AppTypography.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  AppI18n.t('history.fullSub', langCode),
+                  style: AppTypography.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              AppButton(
-                label: AppI18n.t('history.unlockPro', langCode),
-                icon: Icons.star_rounded,
-                onPressed: () => context.push(AppRoutes.paywall),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.xl),
+                AppButton(
+                  label: AppI18n.t('history.unlockPro', langCode),
+                  icon: Icons.star_rounded,
+                  onPressed: () => context.push(AppRoutes.paywall),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -468,84 +477,83 @@ class _MonthCalendar extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLarge),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Month title + legend
-          Text(AppI18n.t('history.monthOverview', langCode), style: AppTypography.labelSmall),
-          const SizedBox(height: AppSpacing.xxs),
-          Text(monthLabel, style: AppTypography.labelLarge),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              _LegendChip(
-                color: AppColors.secondary,
-                label: AppI18n.t('history.legend.done', langCode),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              _LegendChip(
-                color: AppColors.surfaceLight,
-                label: AppI18n.t('history.legend.missed', langCode),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.sm),
+      child: AppGlassContainer(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        radius: AppSpacing.radiusLarge,
+        color: const Color(0x24F8FAFF),
+        borderColor: const Color(0x66F2F5FA),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(AppI18n.t('history.monthOverview', langCode), style: AppTypography.labelSmall),
+            const SizedBox(height: AppSpacing.xxs),
+            Text(monthLabel, style: AppTypography.labelLarge),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                _LegendChip(
+                  color: const Color(0xFFF2F5FA),
+                  label: AppI18n.t('history.legend.done', langCode),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                _LegendChip(
+                  color: const Color(0x66F2F5FA),
+                  label: AppI18n.t('history.legend.missed', langCode),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
 
-          // Day-of-week header
-          Row(
-            children: dayLabels
-                .map(
-                  (d) => Expanded(
-                    child: Center(
-                      child: Text(
-                        d,
-                        style: AppTypography.bodySmall.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textTertiary,
+            Row(
+              children: dayLabels
+                  .map(
+                    (d) => Expanded(
+                      child: Center(
+                        child: Text(
+                          d,
+                          style: AppTypography.bodySmall.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textTertiary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: AppSpacing.xs),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: AppSpacing.xs),
 
-          // Day grid
-          ...List.generate(rows, (row) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-              child: Row(
-                children: List.generate(7, (col) {
-                  final cellIndex = row * 7 + col;
-                  final dayNumber = cellIndex - firstWeekdayIdx + 1;
+            ...List.generate(rows, (row) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+                child: Row(
+                  children: List.generate(7, (col) {
+                    final cellIndex = row * 7 + col;
+                    final dayNumber = cellIndex - firstWeekdayIdx + 1;
 
-                  if (dayNumber < 1 || dayNumber > daysInMonth) {
-                    return const Expanded(child: SizedBox());
-                  }
+                    if (dayNumber < 1 || dayNumber > daysInMonth) {
+                      return const Expanded(child: SizedBox());
+                    }
 
-                  final date = DateTime(month.year, month.month, dayNumber);
-                  final key = _dateKey(date);
-                  final score = scoresByKey[key];
-                  final isToday = date == today;
-                  final isFuture = date.isAfter(today);
+                    final date = DateTime(month.year, month.month, dayNumber);
+                    final key = _dateKey(date);
+                    final score = scoresByKey[key];
+                    final isToday = date == today;
+                    final isFuture = date.isAfter(today);
 
-                  return Expanded(
-                    child: _DayCell(
-                      score: score,
-                      isToday: isToday,
-                      isFuture: isFuture,
-                    ),
-                  );
-                }),
-              ),
-            );
-          }),
-        ],
+                    return Expanded(
+                      child: _DayCell(
+                        score: score,
+                        isToday: isToday,
+                        isFuture: isFuture,
+                      ),
+                    );
+                  }),
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -572,11 +580,11 @@ class _DayCell extends StatelessWidget {
     BoxBorder? border;
 
     if (isFuture) {
-      bgColor = AppColors.background;
+      bgColor = const Color(0x14FFFFFF);
     } else if (score == null) {
-      bgColor = AppColors.surfaceLight;
+      bgColor = const Color(0x52F2F5FA);
     } else {
-      bgColor = AppColors.secondary;
+      bgColor = const Color(0xFFF2F5FA);
     }
 
     if (isToday) {
