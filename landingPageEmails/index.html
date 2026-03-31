@@ -742,7 +742,7 @@
             <span class="trust-pill">Early access</span>
           </div>
 
-          <form class="waitlist-shell reveal" id="waitlist-top" novalidate>
+          <form class="waitlist-shell reveal" id="waitlist-top" action="https://formspree.io/f/mbdpyajr" method="POST" novalidate>
             <div class="form-row">
               <label>
                 <span class="sr-only">Name</span>
@@ -908,7 +908,7 @@
             Join the waitlist and be first in line when Morning Routine launches.
           </p>
 
-          <form class="waitlist-shell" id="waitlist-bottom" novalidate style="margin: 1.4rem auto 0;">
+          <form class="waitlist-shell" id="waitlist-bottom" action="https://formspree.io/f/mbdpyajr" method="POST" novalidate style="margin: 1.4rem auto 0;">
             <div class="form-row">
               <label>
                 <span class="sr-only">Name</span>
@@ -953,27 +953,21 @@
       if (!form || !feedback) return;
 
       form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        feedback.className = "form-feedback";
-        feedback.textContent = "";
-
         const emailInput = form.querySelector('input[name="email"]');
         const email = emailInput ? emailInput.value.trim() : "";
         const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
         if (!validEmail) {
+          event.preventDefault();
+          feedback.className = "form-feedback";
           feedback.classList.add("error");
           feedback.textContent = "Please enter a valid email address.";
           if (emailInput) emailInput.focus();
           return;
         }
 
-        feedback.classList.add("ok");
-        feedback.textContent = "You're on the waitlist. We'll reach out soon.";
-        form.reset();
-
-        // TODO:
-        // Replace this with your actual backend / Formspree / ConvertKit / Supabase / MailerLite call
+        // Valid email: allow form to submit to Formspree
+        // Form will POST to https://formspree.io/f/YOUR_FORM_ID
       });
     }
 
