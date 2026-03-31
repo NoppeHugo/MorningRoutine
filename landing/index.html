@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morning Routine | A Calmer Way to Start Your Day</title>
+  <meta name="description" content="Build a realistic routine, follow it step by step, and stop improvising your first hour. Free app with guided execution.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #8a949f;
+      --bg-2: #929aa2;
+      --bg-3: #8c8483;
+      --bg-4: #746563;
+      --text-primary: #f4f5f7;
+      --text-secondary: rgba(238, 240, 244, 0.92);
+      --text-muted: rgba(226, 228, 232, 0.8);
+      --muted: rgba(238, 240, 244, 0.86);
+      --glass: rgba(248, 250, 255, 0.15);
+      --glass-strong: rgba(255, 255, 255, 0.18);
+      --glass-border: rgba(242, 245, 250, 0.4);
+      --soft-card: rgba(255, 255, 255, 0.18);
+      --soft-card-2: rgba(255, 255, 255, 0.12);
+      --cta-bg: #eaf5f3ee;
+      --cta-text: #6a6460;
+      --radius-xl: 42px;
+      --radius-lg: 28px;
+      --radius-md: 24px;
+      --radius-sm: 18px;
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.14);
+      --shadow-float: 0 18px 42px rgba(0, 0, 0, 0.2);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text-primary);
+      background: linear-gradient(
+        180deg,
+        var(--bg-1) 0%,
+        var(--bg-2) 30%,
+        var(--bg-3) 66%,
+        var(--bg-4) 100%
+      );
+      font-family: "Instrument Sans", "Segoe UI", sans-serif;
+      line-height: 1.62;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    body::before {
+      width: 320px;
+      height: 320px;
+      top: -130px;
+      left: -95px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    body::after {
+      width: 300px;
+      height: 300px;
+      bottom: 110px;
+      left: -80px;
+      background: rgba(246, 223, 193, 0.4);
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
+      background-size: 3px 3px;
+      opacity: 0.2;
+      z-index: -1;
+    }
+
+    .grain::before {
+      content: "";
+      position: fixed;
+      width: 250px;
+      height: 250px;
+      top: 200px;
+      right: -85px;
+      border-radius: 50%;
+      background: rgba(207, 229, 244, 0.36);
+      filter: blur(64px);
+      pointer-events: none;
+    }
+
+    .container {
+      width: min(1140px, calc(100% - 2.5rem));
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(242, 245, 250, 0.22);
+    }
+
+    .nav-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text-primary);
+    }
+
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, rgba(216, 242, 255, 0.88), rgba(234, 165, 138, 0.82));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.93rem;
+      opacity: 0.9;
+      transition: opacity 200ms ease;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .btn {
+      border: 1px solid transparent;
+      padding: 0.74rem 1.24rem;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.93rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 180ms ease;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--cta-bg);
+      color: var(--cta-text);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-secondary {
+      border-color: rgba(242, 245, 250, 0.5);
+      color: var(--text-primary);
+      background: rgba(248, 250, 255, 0.12);
+    }
+
+    section { padding: 5rem 0; }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 0.9rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(242, 244, 248, 0.9);
+      border: 1px solid rgba(242, 245, 250, 0.45);
+      background: rgba(248, 250, 255, 0.12);
+      backdrop-filter: blur(10px);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 5vw, 4.2rem);
+      max-width: 14ch;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3.5vw, 2.8rem);
+      max-width: 18ch;
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin-bottom: 0.42rem;
+    }
+
+    .sub {
+      color: var(--text-secondary);
+      max-width: 62ch;
+      margin: 0.95rem 0 0;
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      line-height: 1.6;
+    }
+
+    .intro {
+      color: var(--text-secondary);
+      max-width: 65ch;
+      margin: 1.2rem 0 0;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .hero {
+      padding-top: 3rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.2rem 0 1.1rem;
+    }
+
+    .badge {
+      font-size: 0.78rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(242, 245, 250, 0.44);
+      background: rgba(248, 250, 255, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.3rem;
+    }
+
+    .points {
+      margin: 1.2rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      color: rgba(244, 246, 249, 0.95);
+    }
+
+    .points li::before {
+      content: "●";
+      color: rgba(247, 248, 250, 0.96);
+      font-size: 0.6rem;
+      margin-right: 0.5rem;
+    }
+
+    .micro {
+      margin-top: 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .phone-stack {
+      position: relative;
+      min-height: 480px;
+      display: grid;
+      place-items: center;
+      perspective: 1400px;
+    }
+
+    .phone-stack::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      top: 120px;
+      right: -74px;
+      border-radius: 50%;
+      background: rgba(207, 229, 244, 0.36);
+      filter: blur(60px);
+      z-index: 1;
+    }
+
+    .phone {
+      width: min(300px, 75vw);
+      aspect-ratio: 9 / 19;
+      border-radius: 42px;
+      border: 1px solid rgba(244, 226, 215, 0.62);
+      background: rgba(165, 154, 146, 0.36);
+      padding: 1.1rem;
+      box-shadow: var(--shadow-float);
+      position: absolute;
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 74px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .phone-1 {
+      transform: rotate(-5deg) translateX(-40px);
+      z-index: 3;
+    }
+
+    .phone-2 {
+      transform: rotate(8deg) translateX(45px) translateY(42px);
+      z-index: 2;
+      opacity: 0.96;
+      background: rgba(164, 154, 145, 0.3);
+    }
+
+    .mock-section {
+      margin-top: 1.35rem;
+      border: 1px solid rgba(242, 245, 250, 0.34);
+      border-radius: 24px;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 2;
+    }
+
+    .mock-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      color: rgba(244, 246, 250, 0.95);
+    }
+
+    .mock-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.35rem;
+      font-size: 0.8rem;
+      color: rgba(235, 240, 245, 0.95);
+    }
+
+    .pill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      margin-top: 1.4rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(242, 245, 250, 0.34);
+      background: rgba(248, 250, 255, 0.12);
+      backdrop-filter: blur(10px);
+      padding: 0.86rem 1rem;
+      text-align: center;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .panel {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(244, 226, 215, 0.6);
+      background: rgba(165, 154, 146, 0.22);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      padding: clamp(1.4rem, 3vw, 2.2rem);
+      margin-top: 1.4rem;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .split h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: rgba(244, 246, 249, 0.98);
+    }
+
+    .split p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 1.6rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+      margin-top: 1.6rem;
+    }
+
+    .card-sm {
+      border: 1px solid rgba(242, 245, 250, 0.34);
+      border-radius: var(--radius-sm);
+      background: var(--soft-card);
+      padding: 1.1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-sm .num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      background: rgba(248, 252, 255, 0.2);
+      color: rgba(244, 246, 250, 0.96);
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+    }
+
+    .card-sm h3 {
+      font-size: 1.05rem;
+      margin-bottom: 0.35rem;
+      color: rgba(244, 246, 249, 0.98);
+    }
+
+    .card-sm p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .spotlight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.3rem;
+      margin-top: 1.6rem;
+    }
+
+    .spotlight {
+      border-radius: var(--radius-lg);
+      padding: 1.3rem;
+      border: 1px solid rgba(242, 245, 250, 0.34);
+      background: var(--soft-card);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spotlight::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      right: -100px;
+      top: -100px;
+      background: radial-gradient(circle, rgba(207, 229, 244, 0.3), transparent 70%);
+      pointer-events: none;
+    }
+
+    .spotlight h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.45rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .spotlight > .sub {
+      margin-top: 0.65rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benefit-list {
+      margin: 0.95rem 0 0;
+      padding-left: 1.2rem;
+      display: grid;
+      gap: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benefit-list li {
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+      line-height: 1.55;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.3rem;
+      margin-top: 1.6rem;
+    }
+
+    .pricing-card {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(242, 245, 250, 0.35);
+      background: var(--soft-card-2);
+      backdrop-filter: blur(12px);
+      padding: 1.3rem;
+      position: relative;
+      transition: all 300ms ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    }
+
+    .pricing-card:hover {
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .pricing-card.featured {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(248, 252, 255, 0.6);
+    }
+
+    .chip {
+      display: inline-block;
+      margin-bottom: 0.6rem;
+      padding: 0.26rem 0.62rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      border: 1px solid rgba(242, 245, 250, 0.42);
+      color: var(--text-secondary);
+      background: rgba(248, 250, 255, 0.1);
+    }
+
+    .price {
+      margin: 0.3rem 0 0.15rem;
+      font-size: 2rem;
+      font-family: "Space Grotesk", sans-serif;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+      color: rgba(245, 247, 251, 0.98);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.6rem;
+    }
+
+    details {
+      border: 1px solid rgba(242, 245, 250, 0.34);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.1rem;
+    }
+
+    details[open] {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    summary {
+      cursor: pointer;
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 600;
+      list-style: none;
+      position: relative;
+      padding-right: 1.5rem;
+      font-size: 0.98rem;
+      color: rgba(244, 246, 250, 0.98);
+    }
+
+    summary::after {
+      content: "+";
+      position: absolute;
+      right: 0;
+      top: -2px;
+      color: rgba(248, 252, 255, 0.92);
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    details p {
+      margin: 0.7rem 0 0;
+      color: var(--text-secondary);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .final {
+      text-align: center;
+      padding-bottom: 6rem;
+    }
+
+    .final h2 {
+      margin-inline: auto;
+    }
+
+    footer {
+      border-top: 1px solid rgba(242, 245, 250, 0.26);
+      padding: 1.8rem 0 2.5rem;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(10px);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 650ms ease, transform 650ms ease;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1000px) {
+      .hero-grid,
+      .spotlight-grid,
+      .split,
+      .grid-3,
+      .grid-2,
+      .pricing-grid,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links a:not(.btn) {
+        display: none;
+      }
+
+      .phone-stack {
+        min-height: 420px;
+      }
+
+      section { padding: 3.8rem 0; }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: calc(100% - 1.5rem);
+      }
+
+      .ctas {
+        flex-direction: column;
+      }
+
+      .ctas .btn {
+        width: 100%;
+      }
+
+      .pill-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone { width: min(280px, 85vw); }
+      .phone-1 { transform: rotate(-3deg) translateX(-25px); }
+      .phone-2 { transform: rotate(6deg) translateX(30px) translateY(35px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <header>
+    <div class="container nav-inner">
+      <div class="brand"><span class="brand-dot"></span>Morning Routine</div>
+      <nav class="nav-links" aria-label="Navigation">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a class="btn btn-primary" href="#">Download</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="tag">Morning system</span>
+          <h1>A calmer way to start your day.</h1>
+          <p class="sub">Build a realistic routine, follow it step by step, and stop improvising your first hour.</p>
+
+          <div class="badges">
+            <span class="badge">iOS App</span>
+            <span class="badge">Free + Premium</span>
+            <span class="badge">EN / FR / NL</span>
+          </div>
+
+          <ul class="points">
+            <li>See what's next (no decisions half-asleep)</li>
+            <li>Realistic routines that actually stick</li>
+            <li>Guided when your energy is low</li>
+          </ul>
+
+          <div class="ctas">
+            <a class="btn btn-primary" href="#">Download on the App Store</a>
+            <a class="btn btn-secondary" href="#how">See how it works</a>
+          </div>
+          <p class="micro">Structure, not pressure.</p>
+        </div>
+
+        <div class="phone-stack reveal" aria-hidden="true">
+          <div class="phone phone-1">
+            <div class="mock-section">
+              <div class="mock-label">Today's flow</div>
+              <div class="mock-row"><span>Hydrate</span><span>03m</span></div>
+              <div class="mock-row"><span>Stretch</span><span>07m</span></div>
+              <div class="mock-row"><span>Deep Work</span><span>10m</span></div>
+            </div>
+            <div class="mock-section">
+              <div class="mock-label">Momentum</div>
+              <div class="mock-row"><span>Score</span><span>92%</span></div>
+              <div class="mock-row"><span>Streak</span><span>9 days</span></div>
+            </div>
+          </div>
+
+          <div class="phone phone-2">
+            <div class="mock-section">
+              <div class="mock-label">Guided Mode</div>
+              <div class="mock-row"><span>Current</span><span>Focus Plan</span></div>
+              <div class="mock-row"><span>Remaining</span><span>05:22</span></div>
+            </div>
+            <div class="mock-section">
+              <div class="mock-label">Plan for tomorrow</div>
+              <div class="mock-row"><span>Active at</span><span>06:45</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal">
+        <div class="pill-grid">
+          <div class="pill">Routine builder with flexible blocks</div>
+          <div class="pill">Guided timer mode for focused execution</div>
+          <div class="pill">Daily score, streaks, and history</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal panel">
+        <span class="tag">Real mornings</span>
+        <h2>Built for real mornings (not fantasy routines).</h2>
+        <p class="sub">Not 90-minute rituals. Not 5AM guru routines. Just a clear system you can actually keep.</p>
+        <p class="intro">Morning Routine is designed for mornings that need to fit real life: rushed schedules, low energy, imperfect days.</p>
+
+        <div class="grid-3">
+          <div class="card-sm">
+            <h3>Short by design</h3>
+            <p>Routines that fit your actual schedule (15-60 minutes, not hours).</p>
+          </div>
+          <div class="card-sm">
+            <h3>Guided when energy is low</h3>
+            <p>So you don't have to think or decide when you're half awake.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Flexible, not fragile</h3>
+            <p>Miss a day, reset, keep going. Consistency without perfectionism.</p>
+          </div>
+        </div>
+        <p class="micro">Designed for people who wake up, not for people who dream.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal">
+        <span class="tag">For you</span>
+        <h2>Made for people who want better mornings—without turning life into a project.</h2>
+        <p class="sub">Perfect if you:</p>
+
+        <ul class="points" style="margin: 1.2rem 0 0;">
+          <li>Wake up and immediately lose momentum</li>
+          <li>Want a calmer first hour</li>
+          <li>Struggle to stick to routines that look good on paper</li>
+          <li>Like clean, useful apps that don't overcomplicate everything</li>
+          <li>Believe consistency beats perfection</li>
+        </ul>
+        <p class="micro">Still not sure? That's the point—you don't need to be perfect here either.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal panel">
+        <span class="tag">Problem</span>
+        <h2>Your mornings are just chaotic.</h2>
+        <p class="sub">You wake up. You open your phone. Next thing you know, it's 8:30 and you haven't started.</p>
+
+        <div class="split">
+          <div>
+            <h3>Before</h3>
+            <p>Wake groggy. No plan. Open phone. 45 minutes gone. Not ready.</p>
+          </div>
+          <div>
+            <h3>After</h3>
+            <p>Wake. Know what's next. Follow blocks. Feel ready. Clear momentum.</p>
+          </div>
+        </div>
+
+        <div class="ctas" style="justify-content: flex-start;">
+          <a class="btn btn-secondary" href="#how">Replace chaos with clarity</a>
+        </div>
+        <p class="micro">A better start does not require a perfect routine—just a clear one.</p>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container reveal">
+        <span class="tag">How it works</span>
+        <h2>Three steps. Less friction from day one.</h2>
+        <p class="sub">Set your routine, run it your way, and track your progress automatically.</p>
+
+        <div class="grid-3">
+          <div class="card-sm">
+            <div class="num">1</div>
+            <h3>Build your routine</h3>
+            <p>Create a realistic sequence with simple activity blocks and clear timing.</p>
+          </div>
+          <div class="card-sm">
+            <div class="num">2</div>
+            <h3>Run your morning flow</h3>
+            <p>Use Checklist mode for free or Guided mode for timed, block-by-block execution.</p>
+          </div>
+          <div class="card-sm">
+            <div class="num">3</div>
+            <h3>Keep momentum</h3>
+            <p>Review score, streak, and insights, then plan tomorrow in seconds.</p>
+          </div>
+        </div>
+        <p class="micro">No setup maze. No complicated dashboards.</p>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container reveal">
+        <span class="tag">Features</span>
+        <h2>Built for consistency in real mornings.</h2>
+        <p class="sub">Powerful enough to guide you, simple enough to keep using.</p>
+
+        <div class="grid-2">
+          <div class="card-sm">
+            <h3>Multi-routines</h3>
+            <p>Keep multiple routine setups and switch your active routine instantly.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Plan for tomorrow</h3>
+            <p>Schedule tomorrow's active routine now and remove morning guesswork.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Templates and shared routines</h3>
+            <p>Start faster with curated structures instead of building from scratch.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Post-session reflection</h3>
+            <p>Capture mood, intention, and notes to improve your morning system.</p>
+          </div>
+        </div>
+        <p class="micro">Every feature supports execution, not distraction.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal">
+        <div class="spotlight-grid">
+          <div class="spotlight">
+            <span class="tag">Widgets</span>
+            <h3>Keep your morning visible before your day gets noisy.</h3>
+            <p class="sub">See your routine, progress, and momentum directly from your Home Screen—no app needed.</p>
+            <ul class="benefit-list">
+              <li>Quick visual progress cues</li>
+              <li>Stronger consistency trigger</li>
+              <li>Native iOS feel</li>
+            </ul>
+          </div>
+
+          <div class="spotlight">
+            <span class="tag">Guided mode</span>
+            <h3>Guided mode keeps you moving.</h3>
+            <p class="sub">Block-by-block timing for focused, calm execution when motivation is low.</p>
+            <ul class="benefit-list">
+              <li>Automatic progression</li>
+              <li>Play, pause, skip, done controls</li>
+              <li>Better follow-through under low motivation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal panel">
+        <span class="tag">Progress</span>
+        <h2>Progress you can feel, not just track.</h2>
+        <p class="sub">Turn completed mornings into visible momentum.</p>
+
+        <div class="grid-2">
+          <div class="card-sm">
+            <h3>Daily completion score</h3>
+            <p>See exactly how much of your routine you completed each day.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Current and best streak</h3>
+            <p>Make your consistency visible with immediate momentum signals.</p>
+          </div>
+          <div class="card-sm">
+            <h3>History view</h3>
+            <p>Review trends over time and identify your strongest routine patterns.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Mood-based insights</h3>
+            <p>Understand how your morning flow impacts your state and focus.</p>
+          </div>
+        </div>
+        <p class="micro">Measure what helps you repeat success.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container reveal">
+        <span class="tag">Premium</span>
+        <h2>Upgrade to make mornings feel easier.</h2>
+        <p class="sub">Get guided sessions, deeper progress, and a smoother routine flow throughout the year.</p>
+
+        <div class="grid-2">
+          <div class="card-sm">
+            <h3>Follow, don't think</h3>
+            <p>Guided mode keeps you moving block by block. No decisions when energy is low.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Build deeper routines</h3>
+            <p>Go beyond the essentials with up to 10 blocks. More flexibility, more options.</p>
+          </div>
+          <div class="card-sm">
+            <h3>See what actually works</h3>
+            <p>Track streaks, score, mood, and session history. Understand your patterns.</p>
+          </div>
+          <div class="card-sm">
+            <h3>Save time with ready-made routines</h3>
+            <p>Use premium templates built for focus, calm, and energy.</p>
+          </div>
+        </div>
+        <p class="micro">Try Premium and keep what improves your mornings.</p>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <div class="container reveal">
+        <span class="tag">Pricing</span>
+        <h2>Simple pricing, clear value.</h2>
+        <p class="sub">Start free. Upgrade when you want deeper structure.</p>
+
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <span class="chip">Free</span>
+            <h3>Start with the core flow</h3>
+            <div class="price">$0</div>
+            <p style="margin: 0.5rem 0; color: var(--muted); font-size: 0.93rem;">Build routines and run Checklist mode without pressure.</p>
+            <ul class="benefit-list">
+              <li>Checklist mode</li>
+              <li>Up to 3 blocks</li>
+              <li>Basic tracking</li>
+            </ul>
+            <div class="ctas" style="margin-top: 1.2rem;">
+              <a class="btn btn-secondary" href="#" style="width: 100%;">Start free</a>
+            </div>
+          </div>
+
+          <div class="pricing-card featured">
+            <span class="chip">Best value</span>
+            <h3>Premium (Monthly / Yearly)</h3>
+            <div class="price">From $4.99</div>
+            <p style="margin: 0.5rem 0; color: var(--muted); font-size: 0.93rem;">Guided execution and full progress depth for real consistency.</p>
+            <ul class="benefit-list">
+              <li>Guided mode timer</li>
+              <li>Up to 10 blocks</li>
+              <li>Premium routines and templates</li>
+              <li>Full history + insights</li>
+            </ul>
+            <div class="ctas" style="margin-top: 1.2rem;">
+              <a class="btn btn-primary" href="#" style="width: 100%;">Go Premium</a>
+            </div>
+          </div>
+        </div>
+
+        <p class="micro">No manipulative tricks. Cancel anytime.</p>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container reveal">
+        <span class="tag">FAQ</span>
+        <h2>Quick answers before you start.</h2>
+
+        <div class="faq-grid">
+          <details>
+            <summary>Is Morning Routine just another habit tracker?</summary>
+            <p>No. It is built specifically for mornings and focuses on guided execution, not only habit logging.</p>
+          </details>
+          <details>
+            <summary>Can I use it for free?</summary>
+            <p>Yes. You can build routines and run them in Checklist mode for free.</p>
+          </details>
+          <details>
+            <summary>What do I get with Premium?</summary>
+            <p>Guided mode, more routine depth, premium templates, and advanced progress insights.</p>
+          </details>
+          <details>
+            <summary>Is this app for strict productivity people only?</summary>
+            <p>No. The product is designed for gentle structure, not pressure.</p>
+          </details>
+          <details>
+            <summary>Does it support multiple languages?</summary>
+            <p>Yes. Morning Routine supports English, French, and Dutch.</p>
+          </details>
+          <details>
+            <summary>How quickly can I create my first routine?</summary>
+            <p>Most users can build and run a first routine in just a few minutes.</p>
+          </details>
+        </div>
+
+        <p class="micro">Still unsure? Start free and feel the flow first.</p>
+      </div>
+    </section>
+
+    <section class="final">
+      <div class="container reveal">
+        <span class="tag">Start now</span>
+        <h2>Your best mornings do not need more motivation. They need a better system.</h2>
+        <p class="sub">Build your routine. Follow it calmly. Keep it going.</p>
+        <div class="ctas" style="justify-content: center;">
+          <a class="btn btn-primary" href="#">Download on the App Store</a>
+          <a class="btn btn-secondary" href="#pricing">Choose your plan</a>
+        </div>
+        <p class="micro">Start free. Upgrade when you are ready.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Morning Routine — Structure your morning. Keep your peace.</p>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach((el, idx) => {
+      el.style.transitionDelay = `${Math.min(idx * 50, 200)}ms`;
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

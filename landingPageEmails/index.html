@@ -1,0 +1,984 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morning Routine | Join the Waitlist</title>
+  <meta
+    name="description"
+    content="A calmer way to start your day. Join the Morning Routine waitlist for early access."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=SF+Pro+Display:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-top: #f4f5f7;
+      --bg-mid: #eceef1;
+      --bg-bottom: #e5e2df;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-strong: rgba(255, 255, 255, 0.86);
+      --surface-border: rgba(255, 255, 255, 0.65);
+      --text-primary: #17181b;
+      --text-secondary: rgba(23, 24, 27, 0.72);
+      --text-muted: rgba(23, 24, 27, 0.54);
+      --accent: #111214;
+      --accent-soft: #f5f5f5;
+      --success-bg: rgba(56, 127, 97, 0.1);
+      --success-border: rgba(56, 127, 97, 0.2);
+      --error-bg: rgba(190, 88, 88, 0.1);
+      --error-border: rgba(190, 88, 88, 0.2);
+      --radius-xl: 36px;
+      --radius-lg: 28px;
+      --radius-md: 22px;
+      --radius-sm: 18px;
+      --shadow-soft: 0 10px 40px rgba(17, 18, 20, 0.06);
+      --shadow-float: 0 24px 80px rgba(17, 18, 20, 0.14);
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      color: var(--text-primary);
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.9), transparent 26%),
+        radial-gradient(circle at 90% 20%, rgba(212, 229, 238, 0.52), transparent 22%),
+        radial-gradient(circle at 50% 100%, rgba(226, 211, 198, 0.4), transparent 28%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.018) 0.6px, transparent 0.6px);
+      background-size: 6px 6px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      width: min(var(--max-width), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d7ebf5, #d8b8a4);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.7);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.92rem 1.3rem;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(17, 18, 20, 0.14);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    main {
+      padding: 2rem 0 5rem;
+    }
+
+    section {
+      padding: 2.4rem 0;
+    }
+
+    .hero {
+      padding-top: 3rem;
+      min-height: calc(100vh - 76px);
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: clamp(2.2rem, 4vw, 4rem);
+      align-items: center;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      padding-right: clamp(0rem, 1.2vw, 0.9rem);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      letter-spacing: -0.04em;
+      line-height: 1.02;
+    }
+
+    h1 {
+      margin-top: 1.2rem;
+      font-size: clamp(2.6rem, 6vw, 5.8rem);
+      font-weight: 800;
+      max-width: 10ch;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 750;
+      max-width: 14ch;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .sub {
+      margin: 1.1rem 0 0;
+      max-width: 58ch;
+      font-size: clamp(1.02rem, 1.5vw, 1.18rem);
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin: 1.5rem 0 1.25rem;
+    }
+
+    .trust-pill {
+      padding: 0.52rem 0.78rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .waitlist-shell {
+      margin-top: 1.5rem;
+      padding: 0.95rem;
+      border-radius: 26px;
+      width: min(680px, 100%);
+      background: var(--surface-strong);
+      border: 1px solid rgba(255,255,255,0.72);
+      box-shadow: 0 14px 40px rgba(17, 18, 20, 0.08);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr auto;
+      gap: 0.65rem;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid rgba(17, 18, 20, 0.08);
+      border-radius: 16px;
+      padding: 0.96rem 1rem;
+      font: inherit;
+      font-size: 0.96rem;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.88);
+      outline: none;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    input::placeholder {
+      color: rgba(23, 24, 27, 0.42);
+    }
+
+    input:focus {
+      border-color: rgba(17, 18, 20, 0.16);
+      box-shadow: 0 0 0 4px rgba(17, 18, 20, 0.05);
+      background: rgba(255, 255, 255, 0.98);
+    }
+
+    .micro {
+      margin: 0.75rem 0 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .form-feedback {
+      display: none;
+      margin-top: 0.75rem;
+      border-radius: 14px;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .form-feedback.ok {
+      display: block;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: #275840;
+    }
+
+    .form-feedback.error {
+      display: block;
+      background: var(--error-bg);
+      border: 1px solid var(--error-border);
+      color: #8f4040;
+    }
+
+    .device-zone {
+      position: relative;
+      min-height: 700px;
+      display: grid;
+      place-items: center;
+      margin: 1.2rem 0 2rem;
+      padding: 2.2rem 0 2.6rem;
+      overflow: visible;
+    }
+
+    .hero + section {
+      padding-top: 3rem;
+    }
+
+    .glow {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.85), rgba(215,235,245,0.34), transparent 70%);
+      filter: blur(20px);
+      z-index: 0;
+    }
+
+    .phone {
+      position: absolute;
+      width: min(320px, 78vw);
+      aspect-ratio: 9 / 19;
+      border-radius: 46px;
+      background: linear-gradient(180deg, #f8f7f6 0%, #efebe7 100%);
+      border: 10px solid #111214;
+      box-shadow: var(--shadow-float);
+      overflow: hidden;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 34%;
+      height: 28px;
+      border-radius: 999px;
+      background: #111214;
+      z-index: 4;
+    }
+
+    .phone-screen {
+      position: absolute;
+      inset: 0;
+      padding: 3.6rem 1rem 1rem;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.9), transparent 18%),
+        linear-gradient(180deg, #f4f3f1 0%, #eae6e1 100%);
+    }
+
+    .phone-back {
+      transform: rotate(-8deg) translateX(-52px) translateY(24px);
+      opacity: 0.94;
+      z-index: 1;
+      filter: saturate(0.95);
+    }
+
+    .phone-front {
+      transform: rotate(7deg) translateX(58px) translateY(-18px);
+      z-index: 3;
+    }
+
+    .status-row,
+    .app-row,
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-row {
+      font-size: 0.76rem;
+      color: rgba(17, 18, 20, 0.68);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .app-row {
+      margin-bottom: 1rem;
+    }
+
+    .app-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .app-sub {
+      margin-top: 0.2rem;
+      color: rgba(17, 18, 20, 0.56);
+      font-size: 0.82rem;
+    }
+
+    .circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d7ebf5, #d8b8a4);
+      box-shadow: inset 0 1px 3px rgba(255,255,255,0.8);
+    }
+
+    .screen-card {
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(17, 18, 20, 0.05);
+      padding: 0.95rem;
+      box-shadow: 0 12px 30px rgba(17, 18, 20, 0.05);
+      margin-bottom: 0.9rem;
+    }
+
+    .screen-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(17, 18, 20, 0.56);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.55rem;
+    }
+
+    .mini-row {
+      font-size: 0.9rem;
+      color: rgba(17, 18, 20, 0.82);
+      padding: 0.34rem 0;
+    }
+
+    .mini-row strong {
+      font-weight: 600;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      padding: 0.34rem 0.62rem;
+      background: #f6f6f7;
+      color: rgba(17, 18, 20, 0.66);
+      font-size: 0.78rem;
+      font-weight: 600;
+      border: 1px solid rgba(17, 18, 20, 0.04);
+    }
+
+    .week-strip {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.34rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .day-dot {
+      height: 28px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(17, 18, 20, 0.58);
+      background: rgba(17, 18, 20, 0.06);
+      border: 1px solid rgba(17, 18, 20, 0.04);
+    }
+
+    .day-dot.done {
+      background: rgba(17, 18, 20, 0.13);
+      color: rgba(17, 18, 20, 0.82);
+    }
+
+    .day-dot.today {
+      border: 1px solid rgba(17, 18, 20, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .mini-note {
+      font-size: 0.8rem;
+      color: rgba(17, 18, 20, 0.62);
+      line-height: 1.42;
+      margin: 0.2rem 0 0.55rem;
+    }
+
+    .home-cta {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 0.62rem 0.72rem;
+      background: #eef2f4;
+      color: rgba(17, 18, 20, 0.86);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid rgba(17, 18, 20, 0.08);
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .section-head h2 {
+      max-width: none;
+      margin-inline: auto;
+    }
+
+    .section-head .sub {
+      margin-inline: auto;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .benefit-card,
+    .mini-product-card,
+    .final-card {
+      border-radius: 28px;
+      padding: 1.35rem;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.66);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .benefit-card p,
+    .mini-product-card p,
+    .final-card p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .mini-product {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #111214;
+      color: white;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+    }
+
+    .final-wrap {
+      width: min(860px, 100%);
+      margin: 0 auto;
+    }
+
+    .final-card {
+      text-align: center;
+      padding: 2rem 1.2rem;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    footer {
+      padding: 2rem 0 2.4rem;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 800ms cubic-bezier(.2,.8,.2,1), transform 800ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+      .hero {
+        min-height: auto;
+        padding-top: 2rem;
+      }
+
+      .hero-grid,
+      .benefits-grid,
+      .mini-product {
+        grid-template-columns: 1fr;
+      }
+
+      .device-zone {
+        min-height: 660px;
+        margin: 0.8rem 0 1.9rem;
+        padding: 1.6rem 0 2.2rem;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-row .btn {
+        grid-column: 1 / -1;
+      }
+
+      h1 {
+        max-width: 12ch;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        width: calc(100% - 1.2rem);
+      }
+
+      .nav {
+        min-height: 70px;
+      }
+
+      main {
+        padding: 1rem 0 4rem;
+      }
+
+      section {
+        padding: 1.8rem 0;
+      }
+
+      .hero-grid {
+        gap: 1.55rem;
+      }
+
+      h1 {
+        font-size: clamp(2.35rem, 11vw, 3.7rem);
+      }
+
+      .waitlist-shell {
+        padding: 0.8rem;
+        border-radius: 22px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .btn,
+      .form-row .btn {
+        width: 100%;
+      }
+
+      .device-zone {
+        min-height: 620px;
+        margin: 0.6rem 0 2rem;
+        padding: 1.2rem 0 2.5rem;
+      }
+
+      .phone {
+        width: min(270px, 84vw);
+        border-radius: 40px;
+        border-width: 8px;
+      }
+
+      .phone-back {
+        transform: rotate(-6deg) translateX(-30px) translateY(20px);
+      }
+
+      .phone-front {
+        transform: rotate(5deg) translateX(30px) translateY(-12px);
+      }
+
+      .final-card {
+        padding: 1.6rem 1rem;
+      }
+
+      .hero + section {
+        padding-top: 2.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#top" class="brand">
+        <span class="brand-mark"></span>
+        Morning Routine
+      </a>
+      <a href="#waitlist-top" class="btn btn-primary">Join Waitlist</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">Pre-launch waitlist</div>
+          <h1>Structure your morning. Keep your peace.</h1>
+          <p class="sub">
+            Morning Routine helps you stop improvising your first hour with a simple guided flow you can actually follow.
+          </p>
+
+          <div class="trust-row" aria-label="Trust indicators">
+            <span class="trust-pill">Built for iPhone</span>
+            <span class="trust-pill">Free at launch</span>
+            <span class="trust-pill">Early access</span>
+          </div>
+
+          <form class="waitlist-shell reveal" id="waitlist-top" novalidate>
+            <div class="form-row">
+              <label>
+                <span class="sr-only">Name</span>
+                <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
+              </label>
+              <label>
+                <span class="sr-only">Email</span>
+                <input type="email" name="email" placeholder="Your email" required autocomplete="email" />
+              </label>
+              <button class="btn btn-primary" type="submit">Join Waitlist</button>
+            </div>
+            <p class="micro">Be first to know when we launch. Early users get priority access.</p>
+            <p class="form-feedback" id="feedback-top" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="device-zone reveal" aria-hidden="true">
+          <div class="glow"></div>
+
+          <div class="phone phone-back">
+            <div class="phone-screen">
+              <div class="status-row">
+                <span>9:41</span>
+                <span>Morning Routine</span>
+              </div>
+
+              <div class="app-row">
+                <div>
+                  <div class="app-title">Hello</div>
+                  <div class="app-sub">Ready for your morning?</div>
+                </div>
+                <div class="circle"></div>
+              </div>
+
+              <div class="screen-card">
+                <div class="screen-label">Week</div>
+                <div class="week-strip">
+                  <span class="day-dot done">M</span>
+                  <span class="day-dot done">T</span>
+                  <span class="day-dot done">W</span>
+                  <span class="day-dot done today">T</span>
+                  <span class="day-dot">F</span>
+                  <span class="day-dot">S</span>
+                  <span class="day-dot">S</span>
+                </div>
+                <div class="mini-row"><strong>9</strong><span>days</span></div>
+              </div>
+
+              <div class="screen-card">
+                <div class="screen-label">Inspired routines</div>
+                <div class="mini-row"><strong>Naval's morning</strong><span>18 min</span></div>
+                <div class="mini-row"><strong>Marcus Aurelius</strong><span>22 min</span></div>
+                <p class="mini-note">Start with routines built by people who live what they teach.</p>
+                <div class="home-cta">Try one now</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phone phone-front">
+            <div class="phone-screen">
+              <div class="status-row">
+                <span>9:41</span>
+                <span>Morning Routine</span>
+              </div>
+
+              <div class="app-row">
+                <div>
+                  <div class="app-title">Hello</div>
+                  <div class="app-sub">How was your morning?</div>
+                </div>
+                <div class="pill">Home</div>
+              </div>
+
+              <div class="screen-card">
+                <div class="screen-label">Week</div>
+                <div class="week-strip">
+                  <span class="day-dot done">M</span>
+                  <span class="day-dot done today">T</span>
+                  <span class="day-dot">W</span>
+                  <span class="day-dot">T</span>
+                  <span class="day-dot">F</span>
+                  <span class="day-dot">S</span>
+                  <span class="day-dot">S</span>
+                </div>
+                <div class="mini-row"><strong>2</strong><span>days</span></div>
+              </div>
+
+              <div class="screen-card">
+                <div class="screen-label">Inspired routines</div>
+                <div class="mini-row"><strong>David Goggins</strong><span>20 min</span></div>
+                <div class="mini-row"><strong>Marcus Aurelius</strong><span>22 min</span></div>
+                <p class="mini-note">Routines from people who built clarity without rushing.</p>
+                <div class="home-cta">Try one now</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>A simple morning system for real life.</h2>
+          <p class="sub">
+            Less chaos. Better mornings. No pressure, just a cleaner start.
+          </p>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-card reveal">
+            <h3>Less chaos</h3>
+            <p>Know exactly what to do next when you wake up.</p>
+          </div>
+
+          <div class="benefit-card reveal">
+            <h3>More consistency</h3>
+            <p>Build a routine you can actually keep without overthinking it.</p>
+          </div>
+
+          <div class="benefit-card reveal">
+            <h3>No pressure</h3>
+            <p>A calm structure designed for real mornings, not fantasy routines.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>How it works</h2>
+          <p class="sub">A simple flow designed to reduce friction from the moment you wake up.</p>
+        </div>
+
+        <div class="mini-product">
+          <div class="mini-product-card reveal">
+            <div class="step-num">1</div>
+            <h3>Build it</h3>
+            <p>Create a realistic sequence that fits your actual morning.</p>
+          </div>
+
+          <div class="mini-product-card reveal">
+            <div class="step-num">2</div>
+            <h3>Follow it</h3>
+            <p>Use a guided flow so you always know what comes next.</p>
+          </div>
+
+          <div class="mini-product-card reveal">
+            <div class="step-num">3</div>
+            <h3>Keep it</h3>
+            <p>Stay consistent with a calmer system you can repeat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container final-wrap">
+        <div class="final-card reveal">
+          <h2>Want early access?</h2>
+          <p class="sub" style="margin-inline:auto;">
+            Join the waitlist and be first in line when Morning Routine launches.
+          </p>
+
+          <form class="waitlist-shell" id="waitlist-bottom" novalidate style="margin: 1.4rem auto 0;">
+            <div class="form-row">
+              <label>
+                <span class="sr-only">Name</span>
+                <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
+              </label>
+              <label>
+                <span class="sr-only">Email</span>
+                <input type="email" name="email" placeholder="Your email" required autocomplete="email" />
+              </label>
+              <button class="btn btn-primary" type="submit">Join Waitlist</button>
+            </div>
+            <p class="form-feedback" id="feedback-bottom" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Morning Routine — Built for calm, clear mornings.
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach((el, idx) => {
+      el.style.transitionDelay = `${Math.min(idx * 70, 240)}ms`;
+      observer.observe(el);
+    });
+
+    function wireWaitlistForm(formId, feedbackId) {
+      const form = document.getElementById(formId);
+      const feedback = document.getElementById(feedbackId);
+      if (!form || !feedback) return;
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        feedback.className = "form-feedback";
+        feedback.textContent = "";
+
+        const emailInput = form.querySelector('input[name="email"]');
+        const email = emailInput ? emailInput.value.trim() : "";
+        const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        if (!validEmail) {
+          feedback.classList.add("error");
+          feedback.textContent = "Please enter a valid email address.";
+          if (emailInput) emailInput.focus();
+          return;
+        }
+
+        feedback.classList.add("ok");
+        feedback.textContent = "You're on the waitlist. We'll reach out soon.";
+        form.reset();
+
+        // TODO:
+        // Replace this with your actual backend / Formspree / ConvertKit / Supabase / MailerLite call
+      });
+    }
+
+    wireWaitlistForm("waitlist-top", "feedback-top");
+    wireWaitlistForm("waitlist-bottom", "feedback-bottom");
+  </script>
+</body>
+</html>
